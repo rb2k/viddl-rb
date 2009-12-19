@@ -1,10 +1,6 @@
 class Vimeo < PluginBase
 	def self.matches_provider?(string)
-		if string.include?("vimeo.com")
-			true
-		else
-			false
-		end
+		string.include?("vimeo.com")
 	end
 	
 	def self.download(url)
