@@ -11,6 +11,7 @@ if ARGV.first.nil?
 	exit
 end
 
+puts "Loading Plugins"
 Dir["plugins/*.rb"].each do |plugin|
 	load plugin
 end
@@ -20,7 +21,7 @@ puts "Plugins loaded: #{PluginBase.registered_plugins}"
 
 url = ARGV.first
 puts "Analyzing URL: #{url}"
-PluginBase.registered_plugins.sort.each do |plugin|
+PluginBase.registered_plugins.each do |plugin|
 	if plugin.matches_provider?(url)
 		puts "#{plugin}: true"
 		plugin.download(url)
