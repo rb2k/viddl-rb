@@ -1,5 +1,5 @@
 require "open-uri"
-require "progressbar"
+require "progressbar" #http://github.com/nex3/ruby-progressbar
 
 
 def fetch_file(uri)

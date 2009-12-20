@@ -1,2 +1,3 @@
 Gems needed so far:  
-* Nokogiri (vimeo)
+* Progressbar (download-helper) -> gem install progressbar
+* Nokogiri (vimeo) -> gem install nokogiri
