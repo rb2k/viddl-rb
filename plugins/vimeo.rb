@@ -1,4 +1,7 @@
 class Vimeo < PluginBase
+	require "nokogiri"
+	require "open-uri"
+
 	def self.matches_provider?(string)
 		string.include?("vimeo.com")
 	end

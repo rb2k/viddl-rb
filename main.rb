@@ -1,7 +1,5 @@
 $LOAD_PATH << './helper'
 
-require "nokogiri"
-require "open-uri"
 require "download-helper.rb"
 require "plugin-helper.rb"
 

@@ -1,4 +1,6 @@
 class Youtube < PluginBase
+	require "cgi"
+	require "open-uri"
 
 	def self.matches_provider?(string)
 		string.include?("youtube.com")
@@ -6,7 +8,7 @@ class Youtube < PluginBase
 	
 	def self.download(url)
 		
-		require "cgi"
+
 		
 		video_id = url[/v=(\w*)&?/, 1]
 		puts "ID FOUND: " + video_id
