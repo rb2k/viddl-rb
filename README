@@ -1,3 +1,8 @@
 Gems needed so far:  
-* Progressbar (download-helper) -> gem install progressbar
-* Nokogiri (vimeo) -> gem install nokogiri
+* Progressbar (used in the download-helper)  
+-> gem install progressbar  
+homepage: http://github.com/nex3/ruby-progressbar/  
+  
+* Nokogiri (used in the vimeo plugin)  
+-> gem install nokogiri  
+homepage: http://nokogiri.org/  
