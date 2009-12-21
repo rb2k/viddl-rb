@@ -2,19 +2,21 @@ class Youtube < PluginBase
 	require "cgi"
 	require "open-uri"
 
-	def self.matches_provider?(string)
-		string.include?("youtube.com")
+	#this will be called by the main app to check weather this plugin is responsible for the url passed
+	def self.matches_provider?(url)
+		url.include?("youtube.com")
 	end
 	
 	def self.download(url)
-		
-
-		
+		#the youtube video ID looks like this: [...]v=abc5a5afe5agae6g&[...], we only want the ID (the \w in the brackets)
 		video_id = url[/v=(\w*)&?/, 1]
 		puts "ID FOUND: " + video_id
 		
+		#let's get some infos about the video. data is urlencoded
 		video_info = CGI::unescape(open("http://youtube.com/get_video_info?video_id=#{video_id}").read)
 
+		#converting the huge infostring into a hash. simply by splitting it at the & and then splitting it into key and value arround the =
+		#[...]blabla=blubb&narf=poit&marc=awesome[...]
 		video_info_hash = Hash[*video_info.split("&").collect { |v| 
 			[v.split("=")[0], v.split("=")[1]]
 		}.flatten]
