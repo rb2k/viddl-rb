@@ -1,0 +1,9 @@
+README.txt
+Manifest.txt
+Rakefile
+CHANGELOG.txt
+plugins/vimeo.rb
+plugins/youtube.rb
+helper/download-helper.rb
+helper/plugin-helper.rb
+bin/viddl-rb

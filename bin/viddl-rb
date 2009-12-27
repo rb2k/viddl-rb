@@ -1,4 +1,5 @@
-$LOAD_PATH << './helper'
+#/bin/bash/env ruby
+$LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'helper')
 
 require "download-helper.rb"
 require "plugin-helper.rb"
@@ -10,7 +11,7 @@ if ARGV.first.nil?
 end
 
 puts "Loading Plugins"
-Dir["plugins/*.rb"].each do |plugin|
+Dir[File.join(File.dirname(__FILE__),"../plugins/*.rb")].each do |plugin|
 	load plugin
 end
 
