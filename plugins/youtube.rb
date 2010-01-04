@@ -1,16 +1,50 @@
 class Youtube < PluginBase
 	require "cgi"
 	require "open-uri"
+	require "nokogiri"
 
 	#this will be called by the main app to check weather this plugin is responsible for the url passed
 	def self.matches_provider?(url)
 		url.include?("youtube.com")
 	end
 	
+	def self.parse_playlist(url)
+		#http://www.youtube.com/view_play_list?p=F96B063007B44E1E&search_query=welt+auf+schwäbisch
+		#http://www.youtube.com/watch?v=9WEP5nCxkEY&videos=jKY836_WMhE&playnext_from=TL&playnext=1
+		#http://www.youtube.com/watch?v=Tk78sr5JMIU&videos=jKY836_WMhE
+
+		playlist_ID = url[/p=(\w{16})&?/,1]
+		puts "[YOUTUBE] Playlist ID: #{playlist_ID}"
+		url_array = Array.new
+		video_info = Nokogiri::HTML(open("http://gdata.youtube.com/feeds/api/playlists/#{playlist_ID}?v=2"))
+		video_info.search("//content").each do |video|
+			url_array << video["url"] if video["url"].include?("http://www.youtube.com/v/") #filters out rtsp links
+		end
+
+		puts "[YOUTUBE] #{url_array.size} links found!"
+		url_array
+	end
+	
+	
 	def self.download(url)
+		if url.include?("view_play_list")
+			puts "[YOUTUBE] playlist found! analyzing..."
+			files = self.parse_playlist(url)
+			puts "[YOUTUBE] Starting playlist download"
+			files.each do |file|
+				puts "[YOUTUBE] Downloading next movie on the playlist (#{file})"
+				self.download_movie(file)
+			end	
+		else
+			self.download_movie(url)
+		end
+	end
+	
+	def self.download_movie(url)
 		#the youtube video ID looks like this: [...]v=abc5a5afe5agae6g&[...], we only want the ID (the \w in the brackets)
-		video_id = url[/v=(\w*)&?/, 1]
-		puts "ID FOUND: " + video_id
+		#addition: might also look like this /v/abc5a5afe5agae6g
+		video_id = url[/v[\/=](\w*)&?/, 1]
+		puts "[YOUTUBE] ID FOUND: " + video_id
 		
 		#let's get some infos about the video. data is urlencoded
 		video_info = CGI::unescape(open("http://youtube.com/get_video_info?video_id=#{video_id}").read)
