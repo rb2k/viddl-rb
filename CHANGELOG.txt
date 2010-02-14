@@ -1,8 +1,5 @@
-=== HEAD
+=== 0.3
 * New Features
 
-  * Some new stuff here
+  * added megavideo plugin
 
-* Bug fixes
-
-  * Some bugs already solved here.

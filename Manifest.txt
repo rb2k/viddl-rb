@@ -4,6 +4,7 @@ Rakefile
 CHANGELOG.txt
 plugins/vimeo.rb
 plugins/youtube.rb
+plugins/megavideo.rb
 helper/download-helper.rb
 helper/plugin-helper.rb
 bin/viddl-rb
