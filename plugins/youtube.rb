@@ -41,9 +41,10 @@ class Youtube < PluginBase
 	end
 	
 	def self.download_movie(url)
-		#the youtube video ID looks like this: [...]v=abc5a5afe5agae6g&[...], we only want the ID (the \w in the brackets)
-		#addition: might also look like this /v/abc5a5afe5agae6g
-		video_id = url[/v[\/=](\w*)&?/, 1]
+		#the youtube video ID looks like this: [...]v=abc5a5_afe5agae6g&[...], we only want the ID (the \w in the brackets)
+		#addition: might also look like this /v/abc5-a5afe5agae6g
+		# alternative:	video_id = url[/v[\/=]([\w-]*)&?/, 1]
+		video_id = url[/v[\/=](.*)/,1]
 		puts "[YOUTUBE] ID FOUND: " + video_id
 		
 		#let's get some infos about the video. data is urlencoded
