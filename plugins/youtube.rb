@@ -56,6 +56,11 @@ class Youtube < PluginBase
 			[v.split("=")[0], v.split("=")[1]]
 		}.flatten]
 		
+		if video_info_hash["status"] == "fail"
+			puts "Error: embedding disabled, no video info found"
+			return false
+		end
+		
 		title = video_info_hash["title"]
 		length_s = video_info_hash["length_seconds"]
 		token = video_info_hash["token"]
