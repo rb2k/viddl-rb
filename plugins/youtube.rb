@@ -48,12 +48,25 @@ class Youtube < PluginBase
 		puts "[YOUTUBE] ID FOUND: " + video_id
 		
 		#let's get some infos about the video. data is urlencoded
-		video_info = CGI::unescape(open("http://youtube.com/get_video_info?video_id=#{video_id}").read)
+		video_info = open("http://youtube.com/get_video_info?video_id=#{video_id}").read
 
 		#converting the huge infostring into a hash. simply by splitting it at the & and then splitting it into key and value arround the =
 		#[...]blabla=blubb&narf=poit&marc=awesome[...]
 		video_info_hash = Hash[*video_info.split("&").collect { |v| 
-			[v.split("=")[0], v.split("=")[1]]
+      key, value = v.split "="
+      value = CGI::unescape(value) if value
+      if key =~ /_map/
+        value = value.split(",")
+        value = if key == "fmt_map"
+            Hash[*value.collect{ |v| 
+              k2, *v2 = v.split("/")
+              [k2, v2]
+            }.flatten(1)]
+          elsif key == "fmt_url_map" || key == "fmt_stream_map"
+            Hash[*value.collect { |v| v.split("|")}.flatten]
+        end
+      end
+			[key, value]
 		}.flatten]
 		
 		if video_info_hash["status"] == "fail"
@@ -73,9 +86,9 @@ class Youtube < PluginBase
 		#1080p = 37 <- mp4
 		#mobile = 17 <- 3gp
 		# --> 37 > 22 > 35 > 18 > 34 > 17
-		formats = video_info_hash["fmt_map"].split(",").map{|item| item.split("/").first}
+		formats = video_info_hash["fmt_map"].keys
 		
-		format_ext = Hash.new
+		format_ext = {}
 		format_ext["37"] = ["mp4", "MP4 Highest Quality 1920x1080"]
 		format_ext["22"] = ["mp4", "MP4 1280x720"]
 		format_ext["35"] = ["flv", "FLV 854x480"]
@@ -91,7 +104,7 @@ class Youtube < PluginBase
 		puts "[YOUTUBE] formats available: #{formats} (downloading ##{formats.first} -> #{format_ext[formats.first].last})"
 
 
-		download_url = "http://www.youtube.com/get_video?video_id=#{video_id}&t=#{token}%3D&fmt=#{formats.first}"
+    download_url = video_info_hash["fmt_url_map"][formats.first]
 		file_name = title.delete("\"'").gsub(/[^0-9A-Za-z]/, '_') + "." + format_ext[formats.first].first
 		puts "downloading to " + file_name
 		save_file(download_url, file_name)
