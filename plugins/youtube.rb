@@ -50,7 +50,7 @@ class Youtube < PluginBase
 			puts "[YOUTUBE] ID FOUND: #{video_id}"
 		end
 		#let's get some infos about the video. data is urlencoded
-		video_info = open("http://youtube.com/get_video_info?video_id=#{video_id}").read
+		video_info = open("http://www.youtube.com/get_video_info?video_id=#{video_id}").read
 
 		#converting the huge infostring into a hash. simply by splitting it at the & and then splitting it into key and value arround the =
 		#[...]blabla=blubb&narf=poit&marc=awesome[...]
