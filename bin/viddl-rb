@@ -15,7 +15,7 @@ Dir[File.join(File.dirname(__FILE__),"../plugins/*.rb")].each do |plugin|
 	load plugin
 end
 
-puts "Plugins loaded: #{PluginBase.registered_plugins}"
+puts "Plugins loaded: #{PluginBase.registered_plugins.inspect}"
 
 
 url = ARGV.first
@@ -23,11 +23,24 @@ puts "Analyzing URL: #{url}"
 PluginBase.registered_plugins.each do |plugin|
 	if plugin.matches_provider?(url)
 		puts "#{plugin}: true"
-		plugin.download(url)
+		begin
+			download_queue = plugin.get_urls_and_filenames(url)
+		rescue StandardError => e
+			puts "Error while running the #{plugin.name.inspect} plugin. Maybe it has to be updated?"	
+			exit
+		end
+		download_queue.each do |url_name|
+			result = DownloadHelper.save_file(url_name[:url], url_name[:name])
+			if result
+				puts "Download for #{url_name[:name]} successful."
+			else
+				puts "Download for #{url_name[:name]} failed."
+			end
+		end
 		exit
 	else
 		puts "#{plugin}: false"
 	end
 end
 
-puts "No hit!"
+puts "No plugin seems to feel responsible for this URL."

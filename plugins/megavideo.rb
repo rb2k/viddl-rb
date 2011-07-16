@@ -66,7 +66,7 @@ class Megavideo < PluginBase
 	end
 	
 	
-	def self.download(url)
+	def self.get_urls_and_filenames(url)
 		#the megavideo video ID looks like this: http://www.megavideo.com/?v=ABCDEF72 , we only want the ID (the \w in the brackets)
 		video_id = url[/v[\/=](\w*)&?/, 1]
 		puts "[MEGAVIDEO] ID FOUND: " + video_id
@@ -94,9 +94,7 @@ class Megavideo < PluginBase
 		puts "done decrypting" 
 		file_name = title + ".flv"
 		puts "downloading to " + file_name
-		save_file(download_url, file_name)
-
-
+		[{:url => download_url, :name => file_name}]
 	end
 	
 end

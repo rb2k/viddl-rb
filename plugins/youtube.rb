@@ -26,27 +26,33 @@ class Youtube < PluginBase
 	end
 	
 	
-	def self.download(url)
+	def self.get_urls_and_filenames(url)
+		return_values = []
 		if url.include?("view_play_list")
 			puts "[YOUTUBE] playlist found! analyzing..."
 			files = self.parse_playlist(url)
 			puts "[YOUTUBE] Starting playlist download"
 			files.each do |file|
 				puts "[YOUTUBE] Downloading next movie on the playlist (#{file})"
-				self.download_movie(file)
+				return_values << self.grab_single_url_filename(url)
 			end	
 		else
-			self.download_movie(url)
+				return_values << self.grab_single_url_filename(url)
 		end
+		return_values
 	end
 	
-	def self.download_movie(url)
+	def self.grab_single_url_filename(url)
 		#the youtube video ID looks like this: [...]v=abc5a5_afe5agae6g&[...], we only want the ID (the \w in the brackets)
 		#addition: might also look like this /v/abc5-a5afe5agae6g
 		# alternative:	video_id = url[/v[\/=]([\w-]*)&?/, 1]
-		video_id = url[/v[\/=](.*)/,1]
-		puts "[YOUTUBE] ID FOUND: " + video_id
-		
+		video_id = url[/(v|embed)[\/=]([^\/\?\&]*)/,2]
+		if video_id.nil?
+			puts "no video id found."
+			exit
+		else
+			puts "[YOUTUBE] ID FOUND: #{video_id}"
+		end
 		#let's get some infos about the video. data is urlencoded
 		video_info = open("http://youtube.com/get_video_info?video_id=#{video_id}").read
 
@@ -104,9 +110,9 @@ class Youtube < PluginBase
 		puts "[YOUTUBE] formats available: #{formats} (downloading ##{formats.first} -> #{format_ext[formats.first].last})"
 
 
-    download_url = video_info_hash["fmt_url_map"][formats.first]
+    	download_url = video_info_hash["fmt_url_map"][formats.first]
 		file_name = title.delete("\"'").gsub(/[^0-9A-Za-z]/, '_') + "." + format_ext[formats.first].first
 		puts "downloading to " + file_name
-		save_file(download_url, file_name)
+		{:url => download_url, :name => file_name}
 	end
 end
