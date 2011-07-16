@@ -73,7 +73,7 @@ class Youtube < PluginBase
 		
 		if video_info_hash["status"] == "fail"
 			puts "Error: embedding disabled, no video info found"
-			return false
+			exit
 		end
 		
 		title = video_info_hash["title"]
