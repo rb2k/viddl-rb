@@ -1,9 +1,12 @@
 #!/usr/bin/env ruby
 $LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'helper')
 
+require "rubygems"
+require "nokogiri"
+require "cgi"
+require "open-uri"
 require "download-helper.rb"
 require "plugin-helper.rb"
-
 
 if ARGV.first.nil?
 	puts "Usage: viddl-rb [URL]!"

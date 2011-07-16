@@ -1,4 +1,4 @@
-=== 0.4
+=== 0.4.x
 * New Features
   * Use wget or curl (if present)
 

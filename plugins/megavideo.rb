@@ -1,8 +1,4 @@
 class Megavideo < PluginBase
-	require "cgi"
-	require "open-uri"
-	require "nokogiri"
-
 	#this will be called by the main app to check weather this plugin is responsible for the url passed
 	def self.matches_provider?(url)
 		url.include?("megavideo.com")

@@ -25,14 +25,12 @@ def self.save_file(file_uri, file_name)
   unescaped_uri = CGI::unescape(file_uri)
   result = false
   if `which wget`.include?("wget")
-	puts "using wget"
-  	IO.popen("wget \"#{unescaped_uri}\" -O #{file_name}", "r") { |pipe| pipe.each {|line| print line}}
-  	result = ($?.exitstatus == 0)
+	  puts "using wget"
+  	result = system("wget \"#{unescaped_uri}\" -O #{file_name}")
   elsif `which curl`.include?("curl")
     puts "using curl"  
     #-L means: follow redirects, We set an agent because Vimeo seems to want one
-    IO.popen("curl -A 'Mozilla/2.02 (OS/2; U)' -L \"#{unescaped_uri}\" -o #{file_name}", "r") { |pipe| pipe.each {|line| print line }}
-  	result = ($?.exitstatus == 0)
+  	result = system("curl -A 'Mozilla/2.02 (OS/2; U)' -L \"#{unescaped_uri}\" -o #{file_name}")
   else
     open(file_name, 'wb') { |file|   	
       file.write(fetch_file(unescaped_uri)); puts
