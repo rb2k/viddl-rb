@@ -81,33 +81,35 @@ class Youtube < PluginBase
 		token = video_info_hash["token"]
 
 		
-		#Standard = 34 <- flv
-		#Medium = 18 <- mp4
-		#High = 35 <- flv
-		#720p = 22 <- mp4
-		#1080p = 37 <- mp4
-		#mobile = 17 <- 3gp
-		# --> 37 > 22 > 35 > 18 > 34 > 17
-		formats = video_info_hash["fmt_map"].keys
+		#for the formats, see: http://en.wikipedia.org/wiki/YouTube#Quality_and_codecs
+		available_formats = video_info_hash["fmt_map"].keys
 		
 		format_ext = {}
-		format_ext["37"] = ["mp4", "MP4 Highest Quality 1920x1080"]
-		format_ext["22"] = ["mp4", "MP4 1280x720"]
-		format_ext["35"] = ["flv", "FLV 854x480"]
-		format_ext["34"] = ["flv", "FLV 640x360"]
-		format_ext["18"] = ["mp4", "MP4 480x270"]
-		format_ext["17"] = ["3gp", "3gp"]
-		format_ext["5"] = ["flv", "old default?"]
+		format_ext["38"] = {:extension => "mp4", :name => "MP4 Highest Quality 4096x3027 (H.264, AAC)"}						
+		format_ext["37"] = {:extension => "mp4", :name => "MP4 Highest Quality 1920x1080 (H.264, AAC)"}
+		format_ext["22"] = {:extension => "mp4", :name => "MP4 1280x720 (H.264, AAC)"}
+		format_ext["45"] = {:extension => "webm", :name => "WebM 1280x720 (VP8, Vorbis)"}
+		format_ext["44"] = {:extension => "webm", :name => "WebM 854x480 (VP8, Vorbis)"}		
+		format_ext["18"] = {:extension => "mp4", :name => "MP4 640x360 (H.264, AAC)"}
+		format_ext["35"] = {:extension => "flv", :name => "FLV 854x480 (H.264, AAC)"}
+		format_ext["34"] = {:extension => "flv", :name => "FLV 640x360 (H.264, AAC)"}
+		format_ext["5"] = {:extension => "flv", :name => "FLV 400x240 (Soerenson H.263)"}
+		format_ext["17"] = {:extension => "3gp", :name => "3gp"}		
+		
+		#since 1.8 doesn't do ordered hashes
+		prefered_order = ["38","37","22","45","44","18","35","34","5","17"]
+		
+		selected_format = prefered_order.select{|possible_format| available_formats.include?(possible_format)}.first
 		
 		puts "[YOUTUBE] Title: #{title}"
 		puts "[YOUTUBE] Length: #{length_s} s"
 		puts "[YOUTUBE] t-parameter: #{token}"
 		#best quality seems always to be firsts
-		puts "[YOUTUBE] formats available: #{formats} (downloading ##{formats.first} -> #{format_ext[formats.first].last})"
+		puts "[YOUTUBE] formats available: #{available_formats.inspect} (downloading format #{selected_format} -> #{format_ext[selected_format][:name]})"
 
 
-    	download_url = video_info_hash["fmt_url_map"][formats.first]
-		file_name = title.delete("\"'").gsub(/[^0-9A-Za-z]/, '_') + "." + format_ext[formats.first].first
+    	download_url = video_info_hash["fmt_url_map"][selected_format]
+		file_name = title.delete("\"'").gsub(/[^0-9A-Za-z]/, '_') + "." + format_ext[selected_format][:extension]
 		puts "downloading to " + file_name
 		{:url => download_url, :name => file_name}
 	end
