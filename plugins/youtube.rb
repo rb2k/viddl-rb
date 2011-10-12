@@ -50,17 +50,37 @@ class Youtube < PluginBase
 			puts "[YOUTUBE] ID FOUND: #{video_id}"
 		end
 		#let's get some infos about the video. data is urlencoded
-		video_info = open("http://www.youtube.com/get_video_info?video_id=#{video_id}").read
-
+		yt_url = "http://www.youtube.com/get_video_info?video_id=#{video_id}"
+		video_info = open(yt_url).read
 		#converting the huge infostring into a hash. simply by splitting it at the & and then splitting it into key and value arround the =
 		#[...]blabla=blubb&narf=poit&marc=awesome[...]
 		video_info_hash = Hash[*video_info.split("&").collect { |v| 
-      key, value = v.split "="
-      value = CGI::unescape(value) if value
+      key, encoded_value = v.split("=")
+      if encoded_value.to_s.empty?
+		value = ""
+      else
+      #decode until everything is "normal"
+      	while (encoded_value != CGI::unescape(encoded_value)) do
+      		#"decoding"
+	      	encoded_value = CGI::unescape(encoded_value)
+      	end
+      	value = encoded_value
+      end
+
       if key =~ /_map/
+      	orig_value = value
         value = value.split(",")
-        value = if key == "fmt_map"
-            Hash[*value.collect{ |v| 
+        if key == "url_encoded_fmt_stream_map"
+	        url_array = orig_value.split("url=").map{|url_string| url_string.chomp(",")}
+    	    result_hash = {}
+    	    url_array.each do |url|
+        		next if url.to_s.empty?
+		        format_id = url.match(/\&itag=(\d+)/)[1]
+				result_hash[format_id] = url
+	        end
+	        value = result_hash
+        elsif key == "fmt_map"
+          value = Hash[*value.collect{ |v| 
               k2, *v2 = v.split("/")
               [k2, v2]
             }.flatten(1)]
@@ -82,7 +102,8 @@ class Youtube < PluginBase
 
 		
 		#for the formats, see: http://en.wikipedia.org/wiki/YouTube#Quality_and_codecs
-		available_formats = video_info_hash["fmt_map"].keys
+		fmt_list = video_info_hash["fmt_list"]
+		available_formats = fmt_list.map{|format| format.split("/").first}
 		
 		format_ext = {}
 		format_ext["38"] = {:extension => "mp4", :name => "MP4 Highest Quality 4096x3027 (H.264, AAC)"}						
@@ -107,8 +128,8 @@ class Youtube < PluginBase
 		#best quality seems always to be firsts
 		puts "[YOUTUBE] formats available: #{available_formats.inspect} (downloading format #{selected_format} -> #{format_ext[selected_format][:name]})"
 
-
-    	download_url = video_info_hash["fmt_url_map"][selected_format]
+		#video_info_hash.keys.sort.each{|key| puts "#{key} : #{video_info_hash[key]}" }
+    	download_url = video_info_hash["url_encoded_fmt_stream_map"][selected_format]
 		file_name = title.delete("\"'").gsub(/[^0-9A-Za-z]/, '_') + "." + format_ext[selected_format][:extension]
 		puts "downloading to " + file_name
 		{:url => download_url, :name => file_name}

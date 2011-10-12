@@ -29,7 +29,7 @@ PluginBase.registered_plugins.each do |plugin|
 		begin
 			download_queue = plugin.get_urls_and_filenames(url)
 		rescue StandardError => e
-			puts "Error while running the #{plugin.name.inspect} plugin. Maybe it has to be updated?"	
+			puts "Error while running the #{plugin.name.inspect} plugin. Maybe it has to be updated?: #{e.message}\n#{e.backtrace}"	
 			exit
 		end
 		download_queue.each do |url_name|
