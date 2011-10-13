@@ -102,7 +102,7 @@ class Youtube < PluginBase
 
 		
 		#for the formats, see: http://en.wikipedia.org/wiki/YouTube#Quality_and_codecs
-		fmt_list = video_info_hash["fmt_list"]
+		fmt_list = video_info_hash["fmt_list"].split(",")
 		available_formats = fmt_list.map{|format| format.split("/").first}
 		
 		format_ext = {}
