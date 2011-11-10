@@ -2,6 +2,10 @@
 
 * http://github.com/rb2k/viddl-rb
 
+== Installation:  
+  gem install viddl-rb
+
+
 == Gems needed so far:  
 
 Progressbar
