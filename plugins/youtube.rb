@@ -129,7 +129,9 @@ class Youtube < PluginBase
 		puts "[YOUTUBE] formats available: #{available_formats.inspect} (downloading format #{selected_format} -> #{format_ext[selected_format][:name]})"
 
 		#video_info_hash.keys.sort.each{|key| puts "#{key} : #{video_info_hash[key]}" }
-    	download_url = video_info_hash["url_encoded_fmt_stream_map"][selected_format]
+    download_url = video_info_hash["url_encoded_fmt_stream_map"][selected_format]
+    #if download url ends with a ';' followed by a codec string remove that part because stops URI.parse from working
+    download_url = $1 if download_url =~ /(.*?);\scodecs=/
 		file_name = title.delete("\"'").gsub(/[^0-9A-Za-z]/, '_') + "." + format_ext[selected_format][:extension]
 		puts "downloading to " + file_name
 		{:url => download_url, :name => file_name}
