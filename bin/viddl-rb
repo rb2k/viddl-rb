@@ -51,12 +51,14 @@ PluginBase.registered_plugins.each do |plugin|
 					if DownloadHelper.os_has?('ffmpeg')
 						no_ext_filename = url_name[:name].split('.')[0..-1][0]
 						#capture stderr because ffmpeg expects an output param and will error out
+						puts "Gathering information about the downloaded file."
 						file_info = Open3.popen3("ffmpeg -i #{url_name[:name]}") {|stdin, stdout, stderr, wait_thr| stderr.read }
-
+						puts "Done gathering information about the downloaded file."
 						if !file_info.to_s.empty?
 						  audio_format_matches = file_info.match(/Audio: (\w*)/)
 						  if audio_format_matches
 						  	audio_format = audio_format_matches[1]
+						  	puts "detected audio format: #{audio_format}"
 						  else
 						  	puts "Couldn't find any audio:\n#{file_info.inspect}"
 						  	next
@@ -76,6 +78,10 @@ PluginBase.registered_plugins.each do |plugin|
 							output_extension = audio_format
 						  end
 						  output_filename = "#{no_ext_filename}.#{output_extension}"
+						  if File.exist?(output_filename)
+						  	puts "Audio file seems to exist already, removing it before extraction."
+						    File.delete(output_filename)
+						  end
 						  Open3.popen3("ffmpeg -i #{url_name[:name]} -vn -acodec copy #{output_filename}") {|stdin, stdout, stderr, wait_thr| stdout.read }
 						  puts "Done extracting audio to #{output_filename}"
 						else
