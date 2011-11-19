@@ -22,15 +22,22 @@ puts "Plugins loaded: #{PluginBase.registered_plugins.inspect}"
 
 
 url = ARGV.first
+unless url.match(/^http/)
+	puts "Please include 'http' with your URL e.g. http://www.youtube.com/watch?v=QH2-TGUlwu4"
+	exit(1)
+end
+
 puts "Analyzing URL: #{url}"
+#Check all plugins for a match
 PluginBase.registered_plugins.each do |plugin|
 	if plugin.matches_provider?(url)
 		puts "#{plugin}: true"
 		begin
+			#we'll end up with an array of hashes with they keys :url and :name 
 			download_queue = plugin.get_urls_and_filenames(url)
 		rescue StandardError => e
 			puts "Error while running the #{plugin.name.inspect} plugin. Maybe it has to be updated? Error: #{e.message}."	
-			exit
+			exit(1)
 		end
 		download_queue.each do |url_name|
 			result = DownloadHelper.save_file(url_name[:url], url_name[:name])
@@ -40,6 +47,7 @@ PluginBase.registered_plugins.each do |plugin|
 				puts "Download for #{url_name[:name]} failed."
 			end
 		end
+		#plugin matched and downloaded, we're done
 		exit
 	else
 		puts "#{plugin}: false"
