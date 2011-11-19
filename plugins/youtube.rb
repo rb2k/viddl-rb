@@ -42,6 +42,10 @@ class Youtube < PluginBase
 		#the youtube video ID looks like this: [...]v=abc5a5_afe5agae6g&[...], we only want the ID (the \w in the brackets)
 		#addition: might also look like this /v/abc5-a5afe5agae6g
 		# alternative:	video_id = url[/v[\/=]([\w-]*)&?/, 1]
+		# First get the redirect
+                if url.include?("youtu.be")
+                  url = open(url).base_uri.to_s
+                end
 		video_id = url[/(v|embed)[\/=]([^\/\?\&]*)/,2]
 		if video_id.nil?
 			puts "no video id found."
