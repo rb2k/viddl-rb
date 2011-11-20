@@ -46,7 +46,7 @@ class DownloadHelper
       return `which #{utility}`.include?(utility)
     else
       begin 
-        `#{utility}` #if running the command does not thow an error, Windows has it
+        `#{utility}` #if running the command does not throw an error, Windows has it
         return true
       rescue Errno::ENOENT
         return false

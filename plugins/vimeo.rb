@@ -1,5 +1,5 @@
 class Vimeo < PluginBase
-	#this will be called by the main app to check weather this plugin is responsible for the url passed
+	#this will be called by the main app to check whether this plugin is responsible for the url passed
 	def self.matches_provider?(url)
 		url.include?("vimeo.com")
 	end
