@@ -7,7 +7,7 @@ class TestURLExtraction < MiniTest::Unit::TestCase
   end
 
   def http_code_grabber(url)
-    RestClient.head(url).code
+    RestClient.head(url, {:headers => {'User-Agent' => 'Mozilla/2.02 (OS/2; U)'}}).code
   end
 
   def test_youtube
