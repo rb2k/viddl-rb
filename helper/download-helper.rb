@@ -30,7 +30,7 @@ class DownloadHelper
     elsif os_has?("curl")
       puts "using curl"
       #-L means: follow redirects, We set an agent because Vimeo seems to want one
-    	result = system("curl -A 'Mozilla/2.02 (OS/2; U)' -L \"#{unescaped_uri}\" -o #{file_name}")
+    	result = system("curl -A 'Wget/1.8.1' -L \"#{unescaped_uri}\" -o #{file_name}")
     else
       open(file_name, 'wb') { |file|   	      
         file.write(fetch_file(unescaped_uri)); puts

@@ -6,8 +6,10 @@ class TestURLExtraction < MiniTest::Unit::TestCase
   def setup
   end
 
-  def http_code_grabber(url, user_agent = "Wget/1.8.1")
-    RestClient.head(url, {:headers => {'User-Agent' => user_agent}}).code
+  def http_code_grabber(url, options = {})
+    user_agent = options[:user_agent] || "Wget/1.8.1"
+    http_method = options[:method] || :head
+    RestClient.send(http_method, url, {:headers => {'User-Agent' => user_agent}}).code
   end
 
   def curl_code_grabber(url, user_agent = "Wget/1.8.1")
@@ -26,7 +28,7 @@ class TestURLExtraction < MiniTest::Unit::TestCase
   def test_veoh
    result = `bin/viddl-rb http://www.veoh.com/watch/v23858585TPfM8M8z --url-only`
    url_output = result.split("\n").last
-   http_response_code = http_code_grabber(url_output)
+   http_response_code = http_code_grabber(url_output, {:method => :get})
    #Check that we COULD download the file
    assert_includes(url_output, 'http://')
    assert_equal(200, http_response_code)
