@@ -23,6 +23,9 @@ puts "Plugins loaded: #{PluginBase.registered_plugins.inspect}"
 
 url = ARGV[0]
 extract_audio = ARGV.include?('--extract-audio')
+url_only = ARGV.include?('--url-only')
+title_only = ARGV.include?('--title-only')
+
 puts "Will try to extract audio: #{extract_audio}."
 
 unless url.match(/^http/)
@@ -42,6 +45,15 @@ PluginBase.registered_plugins.each do |plugin|
 			puts "Error while running the #{plugin.name.inspect} plugin. Maybe it has to be updated? Error: #{e.message}."	
 			exit(1)
 		end
+
+		if url_only
+			download_queue.each{|url_name| puts url_name[:url]}
+			exit
+		elsif title_only
+			download_queue.each{|url_name| puts url_name[:name]}
+			exit
+		end
+
 		download_queue.each do |url_name|
 			result = DownloadHelper.save_file(url_name[:url], url_name[:name])
 			if result
