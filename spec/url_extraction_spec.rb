@@ -6,8 +6,12 @@ class TestURLExtraction < MiniTest::Unit::TestCase
   def setup
   end
 
-  def http_code_grabber(url)
-    RestClient.head(url, {:headers => {'User-Agent' => 'Mozilla/2.02 (OS/2; U)'}}).code
+  def http_code_grabber(url, user_agent = "Wget/1.8.1")
+    RestClient.head(url, {:headers => {'User-Agent' => user_agent}}).code
+  end
+
+  def curl_code_grabber(url, user_agent = "Wget/1.8.1")
+    `curl --silent -I -L -A "Wget/1.8.1" #{url} | grep "HTTP/"`.to_s.split("\n").last.split(" ")[1].to_i
   end
 
   def test_youtube
@@ -38,9 +42,10 @@ class TestURLExtraction < MiniTest::Unit::TestCase
   end
 
   def test_vimeo
-   result = `bin/viddl-rb http://vimeo.com/32612483 --url-only`
+   result = `bin/viddl-rb http://vimeo.com/31744552 --url-only`
    url_output = result.split("\n").last
-   http_response_code = http_code_grabber(url_output)
+   #http_response_code = http_code_grabber(url_output)
+   http_response_code = curl_code_grabber(url_output)
    #Check that we COULD download the file
    assert_includes(url_output, 'http://')
    assert_equal(200, http_response_code)
