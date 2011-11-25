@@ -28,7 +28,7 @@ __Requirements:__
 
 __Contributors:__
 
-* [kl](https://github.com/kl): Windows support (who knew!), bug fixes, veoh plugin   
+* [kl](https://github.com/kl): Windows support (who knew!), bug fixes, veoh plugin, metacafe plugin   
 * [divout](https://github.com/divout) aka Ivan K: blip.tv plugin, bugfixes
 * Sniper: bugfixes
 * [Serabe](https://github.com/Serabe) aka Sergio Arbeo: packaging viddl as a binary
