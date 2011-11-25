@@ -26,6 +26,8 @@ class Veoh < PluginBase
 			return(download_attr.content) unless download_attr.nil? || download_attr.content.empty?
 		end
 	end
+	
+	private
 
 	#the file name string is a combination of the video name and the extension
 	def self.get_file_name(info_doc, download_url)
