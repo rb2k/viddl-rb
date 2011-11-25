@@ -32,6 +32,7 @@ class DownloadHelper
       #-L means: follow redirects, We set an agent because Vimeo seems to want one
     	result = system("curl -A 'Wget/1.8.1' -L \"#{unescaped_uri}\" -o #{file_name}")
     else
+    	puts "using net/http"
       open(file_name, 'wb') { |file|   	      
         file.write(fetch_file(unescaped_uri)); puts
       }
@@ -41,12 +42,13 @@ class DownloadHelper
   end
   
   #checks to see whether the os has a certain utility like wget or curl
-  def self.os_has?(utility, windows = (ENV['OS'] =~ /windows/i))
+  def self.os_has?(utility)
+  	windows = ENV['OS'] =~ /windows/i
     unless windows # if os is something else than Windows
       return `which #{utility}`.include?(utility)
-    else
+    else # OS is Windows
       begin 
-        `#{utility}` #if running the command does not throw an error, Windows has it
+        `#{utility} --version` #if running the command does not throw an error, Windows has it. --version is for prettier console output.
         return true
       rescue Errno::ENOENT
         return false
