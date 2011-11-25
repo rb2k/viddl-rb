@@ -1,3 +1,7 @@
+# Note: unfortunaley, only videos that are hosted on Metacafe.com's content server can be downloaded.
+# They have an URL that looks somehting like this: http://www.metacafe.com/watch/7731483/
+# Vidoes that have URLs that look like this: http://www.metacafe.com/watch/cb-q78rA_lp9s1_9EJsqKJ5BdIHdDNuHa1l/ cannot be downloaded.
+
 class Metacafe < PluginBase
 	BASE_FILE_URL = "http://v.mccont.com/ItemFiles/%5BFrom%20www.metacafe.com%5D%20"
 	API_BASE = "http://www.metacafe.com/api/"
