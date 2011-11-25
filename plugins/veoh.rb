@@ -27,8 +27,6 @@ class Veoh < PluginBase
 		end
 	end
 	
-	private
-
 	#the file name string is a combination of the video name and the extension
 	def self.get_file_name(info_doc, download_url)
 		name = info_doc.xpath('//rsp/videoList/video').first.attributes['title'].content
