@@ -43,7 +43,7 @@ class DownloadHelper
   
   #checks to see whether the os has a certain utility like wget or curl
   def self.os_has?(utility)
-  	windows = ENV['OS'] =~ /windows/i
+    windows = ENV['OS'] =~ /windows/i
     unless windows # if os is something else than Windows
       return `which #{utility}`.include?(utility)
     else # OS is Windows
