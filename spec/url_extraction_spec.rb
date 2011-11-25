@@ -63,5 +63,12 @@ class TestURLExtraction < MiniTest::Unit::TestCase
   end
 
 
-
+  def test_metacafe  
+   result = `bin/viddl-rb http://www.metacafe.com/watch/7731483/video_preview_final_fantasy_xiii_2/ --url-only`
+   url_output = result.split("\n").last
+   http_response_code = http_code_grabber(CGI::unescape(url_output))
+   #Check that we COULD download the file
+   assert_includes(url_output, 'http')
+   assert_equal(200, http_response_code)
+  end
 end
