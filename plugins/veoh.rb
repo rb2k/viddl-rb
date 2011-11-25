@@ -26,7 +26,7 @@ class Veoh < PluginBase
 			return(download_attr.content) unless download_attr.nil? || download_attr.content.empty?
 		end
 	end
-
+	
 	#the file name string is a combination of the video name and the extension
 	def self.get_file_name(info_doc, download_url)
 		name = info_doc.xpath('//rsp/videoList/video').first.attributes['title'].content
