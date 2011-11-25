@@ -33,8 +33,8 @@ class Metacafe < PluginBase
 	def self.get_video_id(url)
 		id = url[/watch\/(\d+)/, 1]
 		unless id
-	  	puts "ERROR: Can only download videos that has the ID in the URL."
-	  	exit
+			puts "ERROR: Can only download videos that has the ID in the URL."
+			exit
 		end
 		id
 	end
