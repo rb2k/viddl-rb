@@ -50,12 +50,11 @@ class TestURLExtraction < MiniTest::Unit::TestCase
   
   def can_download_test(result, &grabber)
     code_grabber = grabber || proc { |url_output| http_code_grabber(url_output) }
-    result = `ruby bin/viddl-rb http://www.youtube.com/watch?v=CFw6s0TN3hY --url-only`
     url_output = result.split("\n").last
     http_response_code = code_grabber.call(url_output)
     
     #Check that we COULD download the file
-    assert_includes(url_output, 'http://')
+    assert_includes(CGI.unescape(url_output), 'http://')
     assert_equal(200, http_response_code)
   end
 end
