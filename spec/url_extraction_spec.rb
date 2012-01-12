@@ -33,7 +33,7 @@ class TestURLExtraction < MiniTest::Unit::TestCase
   
   def test_vimeo
     result = `ruby bin/viddl-rb http://vimeo.com/31744552 --url-only`
-    can_download_test(result)
+    can_download_test(result) {|url_output| curl_code_grabber(url_output) }
   end
 
   def test_blip_tv
