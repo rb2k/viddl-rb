@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
   s.rubyforge_project = s.name
   s.required_rubygems_version = ">= 1.3.4"
 
+  s.add_dependency "jruby-openssl" if RUBY_PLATFORM == "java"
   s.add_dependency('nokogiri')
   s.add_development_dependency('rake')
   s.add_development_dependency('minitest')
