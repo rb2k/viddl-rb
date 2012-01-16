@@ -1,5 +1,6 @@
+require 'net/http'
 class Youtube < PluginBase
-	#this will be called by the main app to check whether this plugin is responsible for the url passed
+  #this will be called by the main app to check whether this plugin is responsible for the url passed
 	def self.matches_provider?(url)
 		url.include?("youtube.com") || url.include?("youtu.be")
 	end
@@ -55,7 +56,11 @@ class Youtube < PluginBase
 		end
 		#let's get some infos about the video. data is urlencoded
 		yt_url = "http://www.youtube.com/get_video_info?video_id=#{video_id}"
-		video_info = open(yt_url).read
+		
+    uri_object = URI.parse(yt_url)
+    response =  Net::HTTP.get_response(uri_object)
+    video_info = response.body #open(yt_url).read
+
 		#converting the huge infostring into a hash. simply by splitting it at the & and then splitting it into key and value arround the =
 		#[...]blabla=blubb&narf=poit&marc=awesome[...]
 		video_info_hash = Hash[*video_info.split("&").collect { |v| 
