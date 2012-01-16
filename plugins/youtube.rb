@@ -1,14 +1,6 @@
 require 'net/http'
-class Youtube
-#some static stuff
-  class << self; attr_reader :registered_plugins end
-    @registered_plugins = []
-
-#if you inherit from this class, the child gets added to the "registered plugins" array
-  def self.inherited(child)
-    PluginBase.registered_plugins << child
-  end	
-#this will be called by the main app to check whether this plugin is responsible for the url passed
+class Youtube < PluginBase
+  #this will be called by the main app to check whether this plugin is responsible for the url passed
 	def self.matches_provider?(url)
 		url.include?("youtube.com") || url.include?("youtu.be")
 	end
