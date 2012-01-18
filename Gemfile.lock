@@ -1,0 +1,24 @@
+PATH
+  remote: .
+  specs:
+    viddl-rb (0.5.5)
+      nokogiri
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    mime-types (1.17.2)
+    minitest (2.10.1)
+    nokogiri (1.5.0)
+    rake (0.9.2.2)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  minitest
+  rake
+  rest-client
+  viddl-rb!
