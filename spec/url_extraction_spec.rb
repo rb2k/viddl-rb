@@ -25,11 +25,6 @@ class TestURLExtraction < MiniTest::Unit::TestCase
     result = `ruby bin/viddl-rb http://www.veoh.com/watch/v23858585TPfM8M8z --url-only`
     can_download_test(result) { |url_output| http_code_grabber(url_output, {:method => :get}) }
   end
-
-  def test_megavideo
-    result = `ruby bin/viddl-rb http://www.megavideo.com/?v=U0YPI0SO --url-only`
-    can_download_test(result)
-  end
   
   def test_vimeo
     result = `ruby bin/viddl-rb http://vimeo.com/31744552 --url-only`
