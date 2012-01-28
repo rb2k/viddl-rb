@@ -1,3 +1,6 @@
+#Well... Megavideo is dead now... sooooo...
+=begin
+
 class Megavideo < PluginBase
 	#this will be called by the main app to check whether this plugin is responsible for the url passed
 	def self.matches_provider?(url)
@@ -94,3 +97,4 @@ class Megavideo < PluginBase
 	end
 	
 end
+=end
