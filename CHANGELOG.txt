@@ -1,3 +1,7 @@
+=== 0.6
+* Soundcloud support
+* Removed megavideo plugin
+
 === 0.4.x
 * New Features
   * Use wget or curl (if present)
@@ -7,6 +11,4 @@
 
 === 0.3
 * New Features
-
   * added megavideo plugin
-
