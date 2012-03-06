@@ -13,7 +13,9 @@ class TestURLExtraction < MiniTest::Unit::TestCase
   end
 
   def curl_code_grabber(url, user_agent = "Wget/1.8.1")
-    `curl --silent -I -L -A "Wget/1.8.1" #{url} | grep "HTTP/"`.to_s.split("\n").last.split(" ")[1].to_i
+    curl_command = "curl --silent -I -L -A \"#{user_agent}\" \"#{url}\" | grep \"HTTP/\""
+    result = `#{curl_command}`.to_s
+    result.split("\n").last.split(" ")[1].to_i
   end
     
   def test_youtube
