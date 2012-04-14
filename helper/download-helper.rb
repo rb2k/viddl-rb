@@ -44,15 +44,24 @@ class DownloadHelper
   #checks to see whether the os has a certain utility like wget or curl
   def self.os_has?(utility)
     windows = ENV['OS'] =~ /windows/i
-    unless windows # if os is something else than Windows
-      return `which #{utility}`.include?(utility)
-    else # OS is Windows
-      begin 
-        `#{utility} --version` #if running the command does not throw an error, Windows has it. --version is for prettier console output.
-        return true
-      rescue Errno::ENOENT
-        return false
-      end
+    return `which #{utility}`.include?(utility) unless windows # if not Windows
+
+    #use where (simliar to which) if present to reduce console clutter
+    begin
+      has_where? ? `where #{utility}` : `#{utility}`
+      return true
+    rescue Errno::ENOENT
+      return false
+    end
+  end
+
+  #checks if Windows has the where utility (Server 2003 and later)
+  def self.has_where?
+    begin
+      `where`
+      true
+    rescue Errno::ENOENT
+      false
     end
   end
 end
