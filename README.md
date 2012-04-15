@@ -1,7 +1,7 @@
 __viddl-rb:__  
 Created by Marc Seeger (@rb2k)  
 Repo: http://github.com/rb2k/viddl-rb  
-[![Build Status](https://secure.travis-ci.org/rb2k/viddl-rb.png)](http://travis-ci.org/rb2k/viddl-rb)
+[![Build Status](https://secure.travis-ci.org/rb2k/viddl-rb.png)](http://travis-ci.org/rb2k/viddl-rb) [![Dependency Status](https://gemnasium.com/rb2k/viddl-rb.png)](https://gemnasium.com/rb2k/viddl-rb)
 
 
 
