@@ -1,3 +1,4 @@
+
 class Youtube < PluginBase
 	#this will be called by the main app to check whether this plugin is responsible for the url passed
 	def self.matches_provider?(url)
@@ -9,7 +10,7 @@ class Youtube < PluginBase
 		#http://www.youtube.com/watch?v=9WEP5nCxkEY&videos=jKY836_WMhE&playnext_from=TL&playnext=1
 		#http://www.youtube.com/watch?v=Tk78sr5JMIU&videos=jKY836_WMhE
 
-		playlist_ID = url[/p=(\w{16})&?/,1]
+		playlist_ID = url[/(?:list=PL|p=)(\w{16})&?/,1]
 		puts "[YOUTUBE] Playlist ID: #{playlist_ID}"
 		url_array = Array.new
 		video_info = Nokogiri::HTML(open("http://gdata.youtube.com/feeds/api/playlists/#{playlist_ID}?v=2"))
@@ -24,16 +25,16 @@ class Youtube < PluginBase
 	
 	def self.get_urls_and_filenames(url)
 		return_values = []
-		if url.include?("view_play_list")
+		if url.include?("view_play_list") || url.include?("playlist?list=")
 			puts "[YOUTUBE] playlist found! analyzing..."
 			files = self.parse_playlist(url)
 			puts "[YOUTUBE] Starting playlist download"
 			files.each do |file|
 				puts "[YOUTUBE] Downloading next movie on the playlist (#{file})"
-				return_values << self.grab_single_url_filename(url)
+				return_values << self.grab_single_url_filename(file)
 			end	
 		else
-				return_values << self.grab_single_url_filename(url)
+			  return_values << self.grab_single_url_filename(url)
 		end
 		return_values
 	end
