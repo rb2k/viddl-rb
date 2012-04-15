@@ -15,7 +15,7 @@ class TestURLExtraction < MiniTest::Unit::TestCase
   def curl_code_grabber(url, user_agent = "Wget/1.8.1")
     curl_command = "curl --silent -I -L -A \"#{user_agent}\" \"#{url}\" | grep \"HTTP/\""
     result = `#{curl_command}`.to_s
-    result.split("\n").last.split(" ")[1].to_i
+    result.split("\n").last.split(" ")[1].to_i rescue 0
   end
     
   def test_youtube
@@ -53,7 +53,15 @@ class TestURLExtraction < MiniTest::Unit::TestCase
   def can_download_test(result, &grabber)
     code_grabber = grabber || proc { |url_output| http_code_grabber(url_output) }
     url_output = result.split("\n").last
-    http_response_code = code_grabber.call(url_output)
+    
+    tries = 0
+    http_response_code = 0
+    loop do
+	    http_response_code = code_grabber.call(url_output)
+    	break if ( http_response_code.to_i == 200 || (tries +=1) > 6 )
+    	puts "Retrying HTTP Call"
+    	sleep 4
+    end
     
     #Check that we COULD download the file
     assert_includes(CGI.unescape(url_output), 'http://')
