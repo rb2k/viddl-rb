@@ -32,3 +32,4 @@ __Contributors:__
 * [divout](https://github.com/divout) aka Ivan K: blip.tv plugin, bugfixes
 * Sniper: bugfixes
 * [Serabe](https://github.com/Serabe) aka Sergio Arbeo: packaging viddl as a binary
+* [laserlemon](https://github.com/laserlemon): Adding gemnasium images to readme
