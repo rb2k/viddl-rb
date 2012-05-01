@@ -5,8 +5,24 @@ class Youtube < PluginBase
     url.include?("youtube.com") || url.include?("youtu.be")
   end
   
-  def self.get_video_urls(feed)
-    #get all videos and return their urls in an array
+  #get all videos and return their urls in an array
+  def self.get_video_urls(feed_url)
+    urls = []
+    result_feed = Nokogiri::HTML(open(feed_url))
+    urls << grab_urls(result_feed) 
+
+    #as long as the feed has a next link we follow it and add the resulting video urls
+    loop do   
+      next_link = result_feed.search("//feed/link[@rel='next']").first
+      break if next_link.nil?
+      result_feed = Nokogiri::HTML(open(next_link["href"]))
+      urls << grab_urls(result_feed)
+    end
+    urls.flatten 
+  end
+
+  #extract all video urls form a feed an return in an array
+  def self.grab_urls(feed)
     feed.search("//entry/link[@rel='alternate']").map { |link| link["href"] }
   end
 
@@ -17,17 +33,16 @@ class Youtube < PluginBase
 
     playlist_ID = url[/(?:list=PL|p=)(\w{16})&?/,1]
     puts "[YOUTUBE] Playlist ID: #{playlist_ID}"
-    url_array = Array.new
-    video_info = Nokogiri::HTML(open("http://gdata.youtube.com/feeds/api/playlists/#{playlist_ID}?v=2"))
-    url_array = self.get_video_urls(video_info)
+    feed_url = "http://gdata.youtube.com/feeds/api/playlists/#{playlist_ID}?&max-results=50&v=2"
+    url_array = self.get_video_urls(feed_url)
     puts "[YOUTUBE] #{url_array.size} links found!"
     url_array
   end
 
   def self.parse_user(username)
     puts "[YOUTUBE] User: #{username}"
-    user_video_feed = Nokogiri::HTML(open("http://gdata.youtube.com/feeds/api/users/#{username}/uploads?v=2"))
-    url_array = get_video_urls(user_video_feed)
+    feed_url = "http://gdata.youtube.com/feeds/api/users/#{username}/uploads?&max-results=50&v=2"
+    url_array = get_video_urls(feed_url)
     puts "[YOUTUBE] #{url_array.size} links found!"
     url_array
   end
