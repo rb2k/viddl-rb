@@ -18,6 +18,11 @@ Download a video and extract the audio:
 
 In both cases we'll name the output file according to the video title.
 
+Download all videos on a Youtube playlist:
+    viddl-rb http://www.youtube.com/playlist?list=PL7E8DA0A515924126
+
+Download all videos from a Youtube user:
+    viddl-rb http://www.youtube.com/user/tedtalksdirector
 
 __Requirements:__
 
