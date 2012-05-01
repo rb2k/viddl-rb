@@ -5,6 +5,11 @@ class Youtube < PluginBase
     url.include?("youtube.com") || url.include?("youtu.be")
   end
   
+  def self.get_video_urls(feed)
+    #get all videos and return their urls in an array
+    feed.search("//entry/link[@rel='alternate']").map { |link| link["href"] }
+  end
+
   def self.parse_playlist(url)
     #http://www.youtube.com/view_play_list?p=F96B063007B44E1E&search_query=welt+auf+schwäbisch
     #http://www.youtube.com/watch?v=9WEP5nCxkEY&videos=jKY836_WMhE&playnext_from=TL&playnext=1
@@ -14,17 +19,22 @@ class Youtube < PluginBase
     puts "[YOUTUBE] Playlist ID: #{playlist_ID}"
     url_array = Array.new
     video_info = Nokogiri::HTML(open("http://gdata.youtube.com/feeds/api/playlists/#{playlist_ID}?v=2"))
-    video_info.search("//content").each do |video|
-      url_array << video["url"] if video["url"].include?("http://www.youtube.com/v/") #filters out rtsp links
-    end
-
+    url_array = self.get_video_urls(video_info)
     puts "[YOUTUBE] #{url_array.size} links found!"
     url_array
   end
-  
+
+  def self.parse_user(username)
+    puts "[YOUTUBE] User: #{username}"
+    user_video_feed = Nokogiri::HTML(open("http://gdata.youtube.com/feeds/api/users/#{username}/uploads?v=2"))
+    url_array = get_video_urls(user_video_feed)
+    puts "[YOUTUBE] #{url_array.size} links found!"
+    url_array
+  end
+
   def self.get_urls_and_filenames(url)
     return_values = []
-    if url.include?("view_play_list") || url.include?("playlist?list=")
+    if url.include?("view_play_list") || url.include?("playlist?list=")    #if playlist
       puts "[YOUTUBE] playlist found! analyzing..."
       files = self.parse_playlist(url)
       puts "[YOUTUBE] Starting playlist download"
@@ -32,12 +42,20 @@ class Youtube < PluginBase
         puts "[YOUTUBE] Downloading next movie on the playlist (#{file})"
         return_values << self.grab_single_url_filename(file)
       end  
-    else
+    elsif match = url.match(/\/user\/([\w\d]+)$/)                          #if user url, e.g. youtube.com/user/woot
+      username = match[1]
+      video_urls = self.parse_user(username)
+      puts "[YOUTUBE] Starting user videos download"
+      video_urls.each do |url|
+        puts "[YOUTUBE] Downloading next user video (#{url})"
+        return_values << self.grab_single_url_filename(url)
+      end
+    else                                                                   #if single video
       return_values << self.grab_single_url_filename(url)
     end
-    return_values
+   return_values
   end
-  
+ 
   def self.grab_single_url_filename(url)
     #the youtube video ID looks like this: [...]v=abc5a5_afe5agae6g&[...], we only want the ID (the \w in the brackets)
     #addition: might also look like this /v/abc5-a5afe5agae6g
