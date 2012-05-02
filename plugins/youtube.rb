@@ -7,23 +7,43 @@ class Youtube < PluginBase
   
   #get all videos and return their urls in an array
   def self.get_video_urls(feed_url)
-    urls = []
+    puts "[YOUTUBE] Retrieving videos..."
+    urls_titles = Hash.new
     result_feed = Nokogiri::HTML(open(feed_url))
-    urls << grab_urls(result_feed) 
+    urls_titles.merge!(grab_ut(result_feed))
 
     #as long as the feed has a next link we follow it and add the resulting video urls
     loop do   
       next_link = result_feed.search("//feed/link[@rel='next']").first
       break if next_link.nil?
       result_feed = Nokogiri::HTML(open(next_link["href"]))
-      urls << grab_urls(result_feed)
+      urls_titles.merge!(grab_ut(result_feed))
     end
-    urls.flatten 
+
+    self.filter_urls(urls_titles)
   end
 
-  #extract all video urls form a feed an return in an array
-  def self.grab_urls(feed)
-    feed.search("//entry/link[@rel='alternate']").map { |link| link["href"] }
+  #returns only the urls that match the --filter argument regex (if present)
+  def self.filter_urls(url_hash)
+    #get the --filter arg or "" if it is not present (because nil would break the next line)
+    filter = ARGV.find( proc {""} ) { |arg| arg =~ /--filter=/ }
+    regex = filter[/--filter=(.+?)(?:\/|$)/, 1]
+    if regex
+      puts "[YOUTUBE] Using filter: #{regex}"
+      ignore_case = filter.include?("/i")
+      filtered = url_hash.select { |url, title| title =~ Regexp.new(regex, ignore_case) }
+      filtered.keys
+    else
+      url_hash.keys
+    end
+  end
+
+  #extract all video urls and their titles from a feed and return in a hash
+  def self.grab_ut(feed)
+    feed.remove_namespaces!  #so that we can get to the titles easily
+    urls   = feed.search("//entry/link[@rel='alternate']").map { |link| link["href"] }
+    titles = feed.search("//entry/group/title").map { |title| title.text } 
+    Hash[urls.zip(titles)]    #hash like this: url => title
   end
 
   def self.parse_playlist(url)
