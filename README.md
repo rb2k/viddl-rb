@@ -18,17 +18,19 @@ Download a video and extract the audio:
 
 In both cases we'll name the output file according to the video title.
 
-Download all videos on a Youtube playlist:  
+__Youtube plugin specifics:__  
+
+Download all videos on a playlist:  
     viddl-rb http://www.youtube.com/playlist?list=PL7E8DA0A515924126
 
-Download all videos from a Youtube user:  
+Download all videos from a user:  
     viddl-rb http://www.youtube.com/user/tedtalksdirector
 
-Filter videos to download from a Youtube user/playlist:  
+Filter videos to download from a user/playlist:  
     viddl-rb http://www.youtube.com/user/tedtalksdirector --filter=internet/i
 
-The --filter argument accepts a regular expression and will only download  
-videos whose titles match the regex. The /i option does a case-insensitive search.
+The --filter argument accepts a regular expression and will only download videos where the title matches the regex.
+The /i option does a case-insensitive search.
 
 __Requirements:__
 
