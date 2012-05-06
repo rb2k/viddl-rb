@@ -3,6 +3,7 @@ $LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'helper')
 
 require "rubygems"
 require "nokogiri"
+require "mechanize"
 require "cgi"
 require "open-uri"
 require "open3"
