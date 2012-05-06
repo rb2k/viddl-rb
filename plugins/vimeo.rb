@@ -26,12 +26,8 @@ class Vimeo < PluginBase
 
     #the download url is the value of the location (redirect) header
     download_url = agent.get(redirect_url).header["location"]
-    file_name = make_filename(title)
+    file_name = PluginBase.make_filename_safe(title) + ".mp4"
 
     [{:url => download_url, :name => file_name}]
-  end
-
-  def self.make_filename(title)
-    title.delete("\"'").gsub(/[^\d\w]/, '_') + ".mp4"
   end
 end
