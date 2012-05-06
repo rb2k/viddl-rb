@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency "jruby-openssl" if RUBY_PLATFORM == "java"
   s.add_dependency('nokogiri')
+  s.add_dependency('mechanize')
   s.add_development_dependency('rake')
   s.add_development_dependency('minitest')
   s.add_development_dependency('rest-client')
