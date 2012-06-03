@@ -33,6 +33,11 @@ class TestURLExtraction < MiniTest::Unit::TestCase
     can_download_test(result) {|url_output| curl_code_grabber(url_output) }
   end
 
+  def test_vimeo_sd_video
+    result = `ruby bin/viddl-rb http://vimeo.com/38372260 --url-only`
+    can_download_test(result) {|url_output| curl_code_grabber(url_output) }
+  end  
+
   def test_soundcloud
     result = `ruby bin/viddl-rb http://soundcloud.com/dubstep/the-fresh-prince-theme-by --url-only`
     can_download_test(result) {|url_output| curl_code_grabber(url_output) }
