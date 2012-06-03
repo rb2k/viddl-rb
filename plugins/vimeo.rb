@@ -22,12 +22,14 @@ class Vimeo < PluginBase
     timestamp = page_html[/"timestamp":(\d+),/, 1]
     signature = page_html[/"signature":"([\d\w]+)",/, 1]
 
-    redirect_url = "http://player.vimeo.com/play_redirect?clip_id=#{vimeo_id}&sig=#{signature}&time=#{timestamp}&quality=hd&codecs=H264"
+    # The quality and codecs are listed in order of preference in the url. If HD is not availabe SD will be download for example.
+    redirect_url = "http://player.vimeo.com/play_redirect?clip_id=#{vimeo_id}&sig=#{signature}&time=#{timestamp}&quality=hd,sd&codecs=H264,VP8,VP6"
 
     #the download url is the value of the location (redirect) header
     download_url = agent.get(redirect_url).header["location"]
-    file_name = make_filename(title)
 
+    file_name = make_filename(title)
+    
     [{:url => download_url, :name => file_name}]
   end
 
