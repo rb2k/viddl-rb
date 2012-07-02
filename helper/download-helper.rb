@@ -14,6 +14,7 @@ class DownloadHelper
       :content_length_proc => lambda { |length|
         if length && 0 < length
           progress_bar = ProgressBar.new(uri.to_s, length)
+          progress_bar.file_transfer_mode   #to show download speed and file size
         end 
       },
       :progress_proc => lambda { |progress|
