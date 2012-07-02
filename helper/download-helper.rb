@@ -4,10 +4,10 @@ class DownloadHelper
   def self.fetch_file(uri)
 
   begin
-  	require "progressbar" #http://github.com/nex3/ruby-progressbar
+    require "progressbar" #http://github.com/nex3/ruby-progressbar
   rescue LoadError
-  	puts "ERROR: You don't seem to have curl or wget on your system. In this case you'll need to install the 'progressbar' gem."
-  	exit
+    puts "ERROR: You don't seem to have curl or wget on your system. In this case you'll need to install the 'progressbar' gem."
+    exit
   end
     progress_bar = nil 
     open(uri, :proxy => nil,
@@ -33,10 +33,10 @@ class DownloadHelper
       elsif os_has?("curl")
         puts "using curl"
         #-L means: follow redirects, We set an agent because Vimeo seems to want one
-      	`curl -A 'Wget/1.8.1' -L \"#{unescaped_uri}\" -o #{file_name}`
+        `curl -A 'Wget/1.8.1' -L \"#{unescaped_uri}\" -o #{file_name}`
       else
-    	 puts "using net/http"
-        open(file_name, 'wb') { |file|   	      
+       puts "using net/http"
+        open(file_name, 'wb') { |file|          
           file.write(fetch_file(unescaped_uri)); puts
         }
       end  
@@ -52,26 +52,29 @@ class DownloadHelper
   end
   
   #checks to see whether the os has a certain utility like wget or curl
+  #`` returns the standard output of the process
+  #system returns the exit code of the process
   def self.os_has?(utility)
     windows = ENV['OS'] =~ /windows/i
-    return `which #{utility}`.include?(utility) unless windows # if not Windows
 
-    #use where (simliar to which) if present to reduce console clutter
-    begin
-      has_where? ? `where #{utility}` : `#{utility}`
-      return true
-    rescue Errno::ENOENT
-      return false
+    unless windows # if os is not Windows
+      `which #{utility}`.include?(utility)
+    else
+      if has_where?
+        system("where /q #{utility}")   #/q is the quiet mode flag
+      else
+        begin   #as a fallback we just run the utility itself
+          system(utility)
+        rescue Errno::ENOENT
+          false
+        end
+      end
     end
   end
 
   #checks if Windows has the where utility (Server 2003 and later)
+  #system only return nil if the command is not found
   def self.has_where?
-    begin
-      `where`
-      true
-    rescue Errno::ENOENT
-      false
-    end
+    !system("where /q where").nil?
   end
 end
