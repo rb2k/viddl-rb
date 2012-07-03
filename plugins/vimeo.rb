@@ -1,4 +1,5 @@
 
+
 class Vimeo < PluginBase
   #this will be called by the main app to check whether this plugin is responsible for the url passed
   def self.matches_provider?(url)
@@ -22,7 +23,7 @@ class Vimeo < PluginBase
     timestamp = page_html[/"timestamp":(\d+),/, 1]
     signature = page_html[/"signature":"([\d\w]+)",/, 1]
 
-    redirect_url = "http://player.vimeo.com/play_redirect?clip_id=#{vimeo_id}&sig=#{signature}&time=#{timestamp}&quality=hd&codecs=H264"
+    redirect_url = redirect_url = "http://player.vimeo.com/play_redirect?clip_id=#{vimeo_id}&sig=#{signature}&time=#{timestamp}&quality=hd,sd&codecs=H264,VP8,VP6"
 
     #the download url is the value of the location (redirect) header
     download_url = agent.get(redirect_url).header["location"]
