@@ -30,9 +30,8 @@ class Veoh < PluginBase
 	#the file name string is a combination of the video name and the extension
 	def self.get_file_name(info_doc, download_url)
 		name = info_doc.xpath('//rsp/videoList/video').first.attributes['title'].content
-		name.gsub!(" ", "_") # replace spaces with underscores
 		extension = download_url[/\/[\w\d]+(\.[\w\d]+)\?ct/, 1]
-		name + extension
+		PluginBase.make_filename_safe(name) + extension
 	end
 
 	def self.get_attribute(format)

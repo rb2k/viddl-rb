@@ -1,3 +1,4 @@
+
 class Blip < PluginBase
   # this will be called by the main app to check whether this plugin is responsible for the url passed
   def self.matches_provider?(url)
@@ -10,7 +11,7 @@ class Blip < PluginBase
     xml_url      = "http://blip.tv/rss/#{id}"
     doc          = Nokogiri::XML(open(xml_url))
     user         = doc.at("//channel/item/blip:user").inner_text
-    title        = doc.at("//channel/item/title").inner_text.gsub(" ", "_")
+    title        = PluginBase.make_filename_safe(doc.at("//channel/item/title").inner_text)
     download_url = doc.at("//channel/item/media:group/media:content").attributes["url"].value
     extention    = download_url.split(".").last
     file_name    = "#{id}-#{user}-#{title}.#{extention}"
