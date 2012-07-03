@@ -56,6 +56,7 @@ class Metacafe < PluginBase
 	end
 	
 	def self.get_video_name(url)
-		url[/fplayer\/\d+\/([\d\w]+)\.swf/, 1]
+	  name =	url[/fplayer\/\d+\/([\d\w]+)\.swf/, 1]
+    PluginBase.make_filename_safe(name)
 	end
 end

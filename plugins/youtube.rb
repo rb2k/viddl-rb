@@ -190,7 +190,7 @@ class Youtube < PluginBase
     download_url = video_info_hash["url_encoded_fmt_stream_map"][selected_format]
     #if download url ends with a ';' followed by a codec string remove that part because it stops URI.parse from working
     download_url = $1 if download_url =~ /(.*?);\scodecs=/
-    file_name = title.delete("\"'").gsub(/[^0-9A-Za-z]/, '_') + "." + format_ext[selected_format][:extension]
+    file_name = PluginBase.make_filename_safe(title) + "." + format_ext[selected_format][:extension]
     puts "downloading to " + file_name
     {:url => download_url, :name => file_name}
   end
