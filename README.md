@@ -18,7 +18,7 @@ Download a video and extract the audio:
 
 In both cases we'll name the output file according to the video title.
 
-__Youtube plugin specifics:__  
+__Youtube plugin specifics:__ 
 
 Download all videos on a playlist:  
     viddl-rb http://www.youtube.com/playlist?list=PL7E8DA0A515924126
