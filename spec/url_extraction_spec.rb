@@ -52,6 +52,16 @@ class TestURLExtraction < MiniTest::Unit::TestCase
     result = `ruby bin/viddl-rb http://www.metacafe.com/watch/7731483/video_preview_final_fantasy_xiii_2/ --url-only`
     can_download_test(result) { |url_output| http_code_grabber(CGI::unescape(url_output)) }
   end
+
+  def test_dailymotion_hd
+    result = `ruby bin/viddl-rb http://www.dailymotion.com/video/xskcnf_make-kanye-famous-kony-2012-parody_fun --url-only`
+    can_download_test(result) { |url_output| http_code_grabber(CGI::unescape(url_output)) }
+  end
+
+  def test_dailymotion_hq
+    result = `ruby bin/viddl-rb http://www.dailymotion.com/video/xswn4i_pussy-riot-supporters-await-verdict-outside-court_news --url-only`
+    can_download_test(result) { |url_output| http_code_grabber(CGI::unescape(url_output)) }
+  end
   
   private
   
