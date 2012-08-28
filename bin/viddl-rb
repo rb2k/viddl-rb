@@ -7,112 +7,27 @@ require "mechanize"
 require "cgi"
 require "open-uri"
 require "open3"
+
+require "driver.rb"
+require "downloader.rb"
 require "download-helper.rb"
+require "application-helper.rb"
 require "plugin-helper.rb"
+require "audio-helper.rb"
 
-if ARGV[0].nil?
-	puts "Usage: viddl-rb URL [--extract-audio]"
-	exit
+begin
+  params = ApplicationHelper.parse_app_parameters
+
+  puts "Loading Plugins"
+  ApplicationHelper.load_plugins
+  "Plugins loaded: #{PluginBase.registered_plugins.inspect}"
+
+  puts "Will try to extract audio: #{!!params[:extract_audio]}."
+  puts "Analyzing URL: #{params[:url]}"
+
+  app = Driver.new(params)   
+  app.start                  # starts the download process
+
+rescue StandardError => e
+  puts "#{e.message}"
 end
-
-puts "Loading Plugins"
-Dir[File.join(File.dirname(__FILE__),"../plugins/*.rb")].each do |plugin|
-	load plugin
-end
-
-puts "Plugins loaded: #{PluginBase.registered_plugins.inspect}"
-
-url = ARGV[0]
-extract_audio = ARGV.include?('--extract-audio')
-url_only = ARGV.include?('--url-only')
-title_only = ARGV.include?('--title-only')
-
-puts "Will try to extract audio: #{extract_audio}."
-
-unless url.match(/^http/)
-	puts "Please include 'http' with your URL e.g. http://www.youtube.com/watch?v=QH2-TGUlwu4"
-	exit(1)
-end
-
-puts "Analyzing URL: #{url}"
-#Check all plugins for a match
-PluginBase.registered_plugins.each do |plugin|
-	if plugin.matches_provider?(url)
-		puts "#{plugin}: true"
-		begin
-			#we'll end up with an array of hashes with they keys :url and :name 
-			download_queue = plugin.get_urls_and_filenames(url)
-		rescue StandardError => e
-			puts "Error while running the #{plugin.name.inspect} plugin. Maybe it has to be updated? Error: #{e.message}."	
-			exit(1)
-		end
-
-		if url_only
-			download_queue.each{|url_name| puts url_name[:url]}
-			exit
-		elsif title_only
-			download_queue.each{|url_name| puts url_name[:name]}
-			exit
-		end
-
-		download_queue.each do |url_name|
-			result = DownloadHelper.save_file(url_name[:url], url_name[:name])
-			if result
-				puts "Download for #{url_name[:name]} successful."
-				if extract_audio
-					puts "Extracting audio for #{url_name[:name]}"
-					if DownloadHelper.os_has?('ffmpeg')
-						no_ext_filename = url_name[:name].split('.')[0..-1][0]
-						#capture stderr because ffmpeg expects an output param and will error out
-						puts "Gathering information about the downloaded file."
-						file_info = Open3.popen3("ffmpeg -i #{url_name[:name]}") {|stdin, stdout, stderr, wait_thr| stderr.read }
-						puts "Done gathering information about the downloaded file."
-						if !file_info.to_s.empty?
-						  audio_format_matches = file_info.match(/Audio: (\w*)/)
-						  if audio_format_matches
-						  	audio_format = audio_format_matches[1]
-						  	puts "detected audio format: #{audio_format}"
-						  else
-						  	puts "Couldn't find any audio:\n#{file_info.inspect}"
-						  	next
-						  end
-						  
-						  extension_mapper = {
-							'aac' => 'm4a',
-							'mp3' => 'mp3',
-							'vorbis' => 'ogg'
-						  }
-
-						  if extension_mapper.key?(audio_format)
-						  	output_extension = extension_mapper[audio_format]
-						  else
-							#lame fallback
-							puts "Unknown audio format: #{audio_format}, using name as extension: '.#{audio_format}'."
-							output_extension = audio_format
-						  end
-						  output_filename = "#{no_ext_filename}.#{output_extension}"
-						  if File.exist?(output_filename)
-						  	puts "Audio file seems to exist already, removing it before extraction."
-						    File.delete(output_filename)
-						  end
-						  Open3.popen3("ffmpeg -i #{url_name[:name]} -vn -acodec copy #{output_filename}") {|stdin, stdout, stderr, wait_thr| stdout.read }
-						  puts "Done extracting audio to #{output_filename}"
-						else
-						  puts "Error while checking audio track of #{url_name[:name]}"
-						end
-					else
-						puts "Didn't detect ffmpeg on your system, can't extract audio."
-					end
-				end
-			else
-				puts "Download for #{url_name[:name]} failed."
-			end
-		end
-		#plugin matched and downloaded, we're done
-		exit
-	else
-		puts "#{plugin}: false"
-	end
-end
-
-puts "No plugin seems to feel responsible for this URL."
