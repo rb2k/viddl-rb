@@ -11,8 +11,6 @@ require "stringio"
 require "download-helper.rb"
 require "plugin-helper.rb"
 
-require "pry"
-
 #require all plugins
 Dir[File.join(File.dirname(__FILE__),"../plugins/*.rb")].each { |p| require p }
 
