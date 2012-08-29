@@ -22,7 +22,7 @@ begin
   ApplicationHelper.load_plugins
   "Plugins loaded: #{PluginBase.registered_plugins.inspect}"
 
-  puts "Will try to extract audio: #{!!params[:extract_audio]}."
+  puts "Will try to extract audio: #{params[:extract_audio] == true}."
   puts "Analyzing URL: #{params[:url]}"
 
   app = Driver.new(params)   
