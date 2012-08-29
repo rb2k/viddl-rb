@@ -5,8 +5,6 @@ require 'rubygems'
 require 'minitest/autorun'
 require 'viddl-rb.rb'
 
-require 'pry'
-
 class TestURLExtraction < MiniTest::Unit::TestCase
 
   # Acceptance tests
