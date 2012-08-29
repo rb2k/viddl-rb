@@ -3,8 +3,15 @@ Created by Marc Seeger (@rb2k)
 Repo: http://github.com/rb2k/viddl-rb  
 LIB BRANCH STATUS: [![Build Status](https://secure.travis-ci.org/kl/viddl-rb.png)](http://travis-ci.org/kl/viddl-rb) [![Dependency Status](https://gemnasium.com/rb2k/viddl-rb.png)](https://gemnasium.com/rb2k/viddl-rb)
 
-__Installation:__  
-gem install viddl-rb
+__Installation:__
+If you want to try the library functionality (note that it's still very much a work in progress) do the following steps:
+
+```
+git clone https://github.com/kl/viddl-rb.git --branch="lib"
+cd viddl-rb
+gem build viddl-rb.gemspec
+gem install viddl-rb-0.68.gem
+```
 
 __Usage:__  
 
