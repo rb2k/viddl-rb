@@ -17,6 +17,11 @@ class TestURLExtraction < MiniTest::Unit::TestCase
 
     assert_match(/^http/, url)                            # check that the string start with http
     assert_match(/c.youtube.com\/videoplayback/, url)     # check that we have the video playback string
+
+    Net::HTTP.get_response(URI(url)) do |res|             # check that the location header is empty
+      assert_nil(res["location"])
+      break # break here because otherwise it will read the body for some reason (I think this is bug in Ruby)
+    end
   end
 
   # Unit tests
