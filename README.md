@@ -75,10 +75,6 @@ require 'viddl-rb'
 ViddlRb.io = $stdout 	# plugins will now write their output to $stdout
 ```
 
-__Knows Bugs:__
-
-* Metacafe plugin fails with "Errno::ECONNREFUSED - No connection could be made because the target machine actively refused it." (note: only on library use)
-
 __TODO:__
 
 * Change explicit exit calls that are present in several plugins to raise exceptions instead.
