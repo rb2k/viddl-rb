@@ -23,7 +23,7 @@ module ViddlRb
 
   #set the default PluginBase io object to a StringIO instance.
   #this will suppress any standard output from the plugins.
-  #self.io = StringIO.new
+  self.io = StringIO.new
   
   #returns an array of hashes containing the download url(s) and filenames(s) 
   #for the specified video url.
