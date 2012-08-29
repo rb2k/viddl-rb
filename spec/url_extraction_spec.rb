@@ -50,7 +50,7 @@ class TestURLExtraction < MiniTest::Unit::TestCase
 
   def test_metacafe  
     result = `ruby bin/viddl-rb http://www.metacafe.com/watch/7731483/video_preview_final_fantasy_xiii_2/ --url-only`
-    can_download_test(result) { |url_output| http_code_grabber(CGI::unescape(url_output)) }
+    can_download_test(result) { |url_output| http_code_grabber(url_output) }
   end
 
   def test_dailymotion_hd
