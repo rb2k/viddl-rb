@@ -39,7 +39,7 @@ module ViddlRb
         #we'll end up with an array of hashes with they keys :url and :name
         urls_filenames = plugin.get_urls_and_filenames(url)
       rescue StandardError => e
-        message = plugin_error_message(plugin, e.message)
+        message = plugin_error_message(plugin, e)
         raise PluginError, message
       end
       follow_all_redirects(urls_filenames)
