@@ -4,7 +4,7 @@ Repo: http://github.com/rb2k/viddl-rb
 LIB BRANCH STATUS: [![Build Status](https://secure.travis-ci.org/kl/viddl-rb.png)](http://travis-ci.org/kl/viddl-rb) [![Dependency Status](https://gemnasium.com/rb2k/viddl-rb.png)](https://gemnasium.com/rb2k/viddl-rb)
 
 __Installation:__
-If you want to try the library functionality (note that it's still very much a work in progress) do the following steps:
+If you want to try the library functionality do the following steps:
 
 ```
 git clone https://github.com/kl/viddl-rb.git --branch="lib"
@@ -52,17 +52,20 @@ The ViddlRb module has the following module public methods:
 -- Returns an array of one or more hashes that has the keys :url which
 points to the download url and :name which points to the filename.
 Returns nil if the url is not recognized by any plugins.
-Throws ViddlRb::PluginError if the plugin fails to extract the download url.
+Throws ViddlRb::PluginError if the plugin fails in some unexpected way.
+Throws ViddlRb::DownloadError if the video could not be downloaded.
 
 * __get_urls(url)__
 -- Returns an array of download urls for the specified video url.
 Returns nil if the url is not recognized by any plugins.
-Throws ViddlRb::PluginError if the plugin fails to extract the download url.
+Throws ViddlRb::PluginError if the plugin fails in some unexpected way.
+Throws ViddlRb::DownloadError if the video could not be downloaded.
 
 * __get_filenames(url)__
 -- Returns an array of filenames for the specified video url.
 Returns nil if the url is not recognized by any plugins.
-Throws ViddlRb::PluginError if the plugin fails to extract the download url.
+Throws ViddlRb::PluginError if the plugin fails in some unexpected way.
+Throws ViddlRb::DownloadError if the video could not be downloaded.
 
 * __io=(io_object)__
 -- By default all plugin output to stdout will be suppressed when the library is used.
@@ -74,10 +77,6 @@ require 'viddl-rb'
 
 ViddlRb.io = $stdout 	# plugins will now write their output to $stdout
 ```
-
-__TODO:__
-
-* Change explicit exit calls that are present in several plugins to raise exceptions instead.
 
 __Requirements:__
 
