@@ -80,7 +80,7 @@ An example of that is if a Youtube video is not embeddable - then it can't be do
 begin
   ViddlRb.get_urls(video_url)
 rescue ViddlRb::DownloadError => e
-  puts "Could not download video: #{e.message}"
+  puts "Could not get download url: #{e.message}"
 rescue ViddlRb::PluginError => e
   puts "Plugin blew up! #{e.message}\n" +
          "Backtrace:\n#{e.backtrace.join("\n")}"
