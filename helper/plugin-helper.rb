@@ -1,4 +1,9 @@
 class PluginBase
+
+  #this exception is raised by the plugins when it was not 
+  #possible to donwload the video for some reason.
+  class CouldNotDownloadVideoError < StandardError; end
+
   #some static stuff
   class << self
     attr_accessor :io
