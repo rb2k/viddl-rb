@@ -43,7 +43,7 @@ __Library Usage:__
 require 'viddl-rb'
 
 download_urls = ViddlRb.get_urls("http://www.youtube.com/watch?v=QH2-TGUlwu4")
-download_urls.first 	# => "http://o-o.preferred.arn06s04.v3.lscac ..."
+download_urls.first     # => "http://o-o.preferred.arn06s04.v3.lscac ..."
 ```
 
 The ViddlRb module has the following module public methods:
@@ -52,30 +52,33 @@ The ViddlRb module has the following module public methods:
 -- Returns an array of one or more hashes that has the keys :url which
 points to the download url and :name which points to the filename.
 Returns nil if the url is not recognized by any plugins.
-Throws ViddlRb::PluginError if the plugin fails in some unexpected way.
-Throws ViddlRb::DownloadError if the video could not be downloaded.
 
 * __get_urls(url)__
 -- Returns an array of download urls for the specified video url.
 Returns nil if the url is not recognized by any plugins.
-Throws ViddlRb::PluginError if the plugin fails in some unexpected way.
-Throws ViddlRb::DownloadError if the video could not be downloaded.
 
 * __get_filenames(url)__
 -- Returns an array of filenames for the specified video url.
 Returns nil if the url is not recognized by any plugins.
-Throws ViddlRb::PluginError if the plugin fails in some unexpected way.
-Throws ViddlRb::DownloadError if the video could not be downloaded.
 
 * __io=(io_object)__
 -- By default all plugin output to stdout will be suppressed when the library is used.
 If you are interested in the output of a plugin, you can set an IO object that
 will receive all plugin output using this method. For example:
 
-```ruby
-require 'viddl-rb'
+__On library error handling:__
 
-ViddlRb.io = $stdout 	# plugins will now write their output to $stdout
+All the __get__ methods in the ViddlRb module will raise either a ViddlRb::PluginError or a ViddlRb::DownloadError if the plugin fails. A ViddlRb::PluginError is raised if the plugin fails in an unexpected way, and a ViddlRb::DownloadError is raised if the video could not be downloaded for some reason. An example of that is if a Youtube video embeddable - then it can't be downloaded.
+
+```ruby
+begin
+  ViddlRb.get_urls(video_url)
+rescue ViddlRb::DownloadError => e
+  puts "Could not download video: #{e.message}"
+rescue ViddlRb::PluginError => e
+  puts "Plugin blew up! #{e.message}\n" +
+         "Backtrace:\n#{e.backtrace.join("\n")}"
+end
 ```
 
 __Requirements:__
