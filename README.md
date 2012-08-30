@@ -83,7 +83,7 @@ rescue ViddlRb::DownloadError => e
   puts "Could not get download url: #{e.message}"
 rescue ViddlRb::PluginError => e
   puts "Plugin blew up! #{e.message}\n" +
-         "Backtrace:\n#{e.backtrace.join("\n")}"
+       "Backtrace:\n#{e.backtrace.join("\n")}"
 end
 ```
 
