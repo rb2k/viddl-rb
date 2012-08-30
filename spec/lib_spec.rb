@@ -48,6 +48,7 @@ class TestURLExtraction < MiniTest::Unit::TestCase
   end
 
   def test_returns_nil_when_url_is_not_recognized
+    assert_nil(ViddlRb.get_urls("12345"))
     assert_nil(ViddlRb.get_urls("http://www.google.com"))
   end
 end
