@@ -46,4 +46,8 @@ class TestURLExtraction < MiniTest::Unit::TestCase
       ViddlRb.get_urls("http://www.dailymotion.com/***/") # bogus url
     end
   end
+
+  def test_returns_nil_when_url_is_not_recognized
+    assert_nil(ViddlRb.get_urls("http://www.google.com"))
+  end
 end
