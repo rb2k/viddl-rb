@@ -25,20 +25,20 @@ class DownloadHelper
   #simple helper that will save a file from the web and save it with a progress bar
   def self.save_file(file_uri, file_name, amount_of_retries = 6)
     trap("SIGINT") { puts "goodbye"; exit }
-    unescaped_uri = CGI::unescape(file_uri)
+
     #Some providers seem to flake out every now end then
     amount_of_retries.times do |i|
       if os_has?("wget")
         puts "using wget"
-        `wget \"#{unescaped_uri}\" -O #{file_name}`
+        `wget \"#{file_uri}\" -O #{file_name}`
       elsif os_has?("curl")
         puts "using curl"
         #-L means: follow redirects, We set an agent because Vimeo seems to want one
-        `curl -A 'Wget/1.8.1' -L \"#{unescaped_uri}\" -o #{file_name}`
+        `curl -A 'Wget/1.8.1' -L \"#{file_uri}\" -o #{file_name}`
       else
        puts "using net/http"
         open(file_name, 'wb') { |file|          
-          file.write(fetch_file(unescaped_uri)); puts
+          file.write(fetch_file(file_uri)); puts
         }
       end  
       #we were successful, we're outta here
