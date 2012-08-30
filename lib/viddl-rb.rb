@@ -16,6 +16,7 @@ Dir[File.join(File.dirname(__FILE__),"../plugins/*.rb")].each { |p| require p }
 
 module ViddlRb
   class PluginError < StandardError; end
+  class DownloadError < StandardError; end
 
   def self.io=(io_object)
     PluginBase.io = io_object
@@ -38,9 +39,10 @@ module ViddlRb
       begin
         #we'll end up with an array of hashes with they keys :url and :name
         urls_filenames = plugin.get_urls_and_filenames(url)
+      rescue PluginBase::CouldNotDownloadVideoError => e
+        raise DownloadError, download_error_message(e)
       rescue StandardError => e
-        message = plugin_error_message(plugin, e)
-        raise PluginError, message
+        raise PluginError, plugin_error_message(plugin, e)
       end
       follow_all_redirects(urls_filenames)
     else
@@ -60,20 +62,22 @@ module ViddlRb
     urls_filenames.nil? ? nil : urls_filenames.map { |uf| uf[:name] }
   end
 
-  #saves a video using DownloadHelper. returns true if no errors occured or false otherwise.
-  def self.save_file(file_uri, file_name, path = Dir.getwd, amount_of_tries = 1)
-    DownloadHelper.save_file(file_uri, file_name, path, amount_of_retries)
-  end
-
   #<<< helper methods >>>
 
-  #the default error message when a plugin fails to download a video.
+  #the default error message when a plugin fails in some unexpected way.
   def self.plugin_error_message(plugin, error)
-    "Error while running the #{plugin.name.inspect} plugin. Maybe it has to be updated?\n"
-    "Error: #{error.message}.\n"
-    "Backtrace: #{error.backtrace}"
+    "Error while running the #{plugin.name.inspect} plugin. Maybe it has to be updated?\n" +
+    "Error: #{error.message}.\n" +
+    "Backtrace:\n#{error.backtrace.join("\n")}" 
   end
   private_class_method :plugin_error_message
+
+  #the default error message when a plugin fails to download a video for a known reason.
+  def self.download_error_message(error)
+    "ERROR: The video could not be downloaded.\n" +
+    "Reason: #{error.message}.\n"
+  end
+  private_class_method :download_error_message
 
   #takes a url-filenames array and returns a new array where the
   #"location" header has been followed all the way to the end for all urls.
