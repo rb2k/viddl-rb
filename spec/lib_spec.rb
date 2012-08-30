@@ -34,5 +34,16 @@ class TestURLExtraction < MiniTest::Unit::TestCase
 
   # Unit tests
   #_________________
-  
+
+  def test_raises_download_error_when_video_cannot_be_downloaded
+    assert_raises(ViddlRb::DownloadError) do
+      ViddlRb.get_urls("http://www.youtube.com/watch?v=6TT19cB0NTM") # embedding is disabled for this video
+    end
+  end
+
+  def test_raises_plugin_error_when_plugin_fails
+    assert_raises(ViddlRb::PluginError) do
+      ViddlRb.get_urls("http://www.dailymotion.com/***/") # bogus url
+    end
+  end
 end
