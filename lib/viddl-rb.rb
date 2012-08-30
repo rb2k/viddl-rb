@@ -40,9 +40,9 @@ module ViddlRb
         #we'll end up with an array of hashes with they keys :url and :name
         urls_filenames = plugin.get_urls_and_filenames(url)
       rescue PluginBase::CouldNotDownloadVideoError => e
-        raise DownloadError, download_error_message(e)
+        raise_download_error(e)
       rescue StandardError => e
-        raise PluginError, plugin_error_message(plugin, e)
+        raise_plugin_error(e, plugin)
       end
       follow_all_redirects(urls_filenames)
     else
@@ -65,19 +65,20 @@ module ViddlRb
   #<<< helper methods >>>
 
   #the default error message when a plugin fails in some unexpected way.
-  def self.plugin_error_message(plugin, error)
-    "Error while running the #{plugin.name.inspect} plugin. Maybe it has to be updated?\n" +
-    "Error: #{error.message}.\n" +
-    "Backtrace:\n#{error.backtrace.join("\n")}" 
+  def self.raise_plugin_error(e, plugin)
+    error = PluginError.new(e.message + " [Plugin: #{plugin.name}]")
+    error.set_backtrace(e.backtrace)
+    raise error
   end
-  private_class_method :plugin_error_message
+  private_class_method :raise_plugin_error
 
   #the default error message when a plugin fails to download a video for a known reason.
-  def self.download_error_message(error)
-    "ERROR: The video could not be downloaded.\n" +
-    "Reason: #{error.message}.\n"
+  def self.raise_download_error(e)
+    error = DownloadError.new(e.message)
+    error.set_backtrace(e.backtrace)
+    raise error
   end
-  private_class_method :download_error_message
+  private_class_method :raise_download_error
 
   #takes a url-filenames array and returns a new array where the
   #"location" header has been followed all the way to the end for all urls.
