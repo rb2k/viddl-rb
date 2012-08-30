@@ -66,9 +66,9 @@ Returns nil if the url is not recognized by any plugins.
 If you are interested in the output of a plugin, you can set an IO object that
 will receive all plugin output using this method. For example:
 
-__On library error handling:__
-
-All the __get__ methods in the ViddlRb module will raise either a ViddlRb::PluginError or a ViddlRb::DownloadError if the plugin fails. A ViddlRb::PluginError is raised if the plugin fails in an unexpected way, and a ViddlRb::DownloadError is raised if the video could not be downloaded for some reason. An example of that is if a Youtube video embeddable - then it can't be downloaded.
+All the __get__ methods in the ViddlRb module will raise either a ViddlRb::PluginError or a ViddlRb::DownloadError if the plugin fails. 
+A ViddlRb::PluginError is raised if the plugin fails in an unexpected way, and a ViddlRb::DownloadError is raised if the video could not be downloaded for some reason. 
+An example of that is if a Youtube video is not embeddable - then it can't be downloaded.
 
 ```ruby
 begin
