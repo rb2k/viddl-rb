@@ -133,7 +133,7 @@ class Youtube < PluginBase
           url_array = orig_value.split("url=").map{|url_string| url_string.chomp(",")}
           result_hash = {}
           url_array.each do |url|
-            next if url.to_s.empty?
+            next if url.to_s.empty? || url.to_s.match(/^itag/)
             format_id = url.match(/\&itag=(\d+)/)[1]
             result_hash[format_id] = url
           end
