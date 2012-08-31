@@ -32,7 +32,7 @@ module ViddlRb
   #throws an error, throw PluginError.
   #the reason for returning an array is because some urls will give multiple
   #download urls (for example a Youtube playlist url).
-  def self.get_urls_and_filenames(url)
+  def self.get_urls_names(url)
     plugin = PluginBase.registered_plugins.find { |p| p.matches_provider?(url) }
 
     if plugin 
@@ -52,14 +52,23 @@ module ViddlRb
 
   #returns an array of download urls for the given video url.
   def self.get_urls(url)
-    urls_filenames = get_urls_and_filenames(url)
+    urls_filenames = get_urls_names(url)
     urls_filenames.nil? ? nil : urls_filenames.map { |uf| uf[:url] }
   end
 
   #returns an array of filenames for the given video url.
-  def self.get_filenames(url)
-    urls_filenames = get_urls_and_filenames(url)
+  def self.get_names(url)
+    urls_filenames = get_urls_names(url)
     urls_filenames.nil? ? nil : urls_filenames.map { |uf| uf[:name] }
+  end
+
+  #same as get_urls_and_filenames but with the extensions only.
+  def self.get_urls_exts(url)
+    urls_filenames = get_urls_names(url)
+    urls_filenames.map do |uf|
+      ext = uf[:name][/(\.[\d\w]+)$/, 1]
+      {:url => uf[:url], :ext => ext}
+    end
   end
 
   #<<< helper methods >>>

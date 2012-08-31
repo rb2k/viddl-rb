@@ -48,16 +48,22 @@ download_urls.first     # => "http://o-o.preferred.arn06s04.v3.lscac ..."
 
 The ViddlRb module has the following module public methods:
 
-* __get_urls_and_filenames(url)__
+* __get_urls_names(url)__
 -- Returns an array of one or more hashes that has the keys :url which
-points to the download url and :name which points to the filename.
+points to the download url and :name which points to the name 
+(which is a filename safe version of the video title with a file extension).
+Returns nil if the url is not recognized by any plugins.
+
+* __get_urls_exts(url)__
+-- Same as get_urls_names but with just the file extension (for example ".mp4")
+instead of the full filename, and the :name key is replaced with :ext.
 Returns nil if the url is not recognized by any plugins.
 
 * __get_urls(url)__
 -- Returns an array of download urls for the specified video url.
 Returns nil if the url is not recognized by any plugins.
 
-* __get_filenames(url)__
+* __get_names(url)__
 -- Returns an array of filenames for the specified video url.
 Returns nil if the url is not recognized by any plugins.
 

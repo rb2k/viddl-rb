@@ -8,11 +8,8 @@ require 'viddl-rb.rb'
 
 class TestURLExtraction < MiniTest::Unit::TestCase
 
-  # Acceptance tests
-  #_________________
-
   def test_can_get_single_youtube_url_and_filename
-    download_urls = ViddlRb.get_urls_and_filenames("http://www.youtube.com/watch?v=gZ8w4vVaOL8")
+    download_urls = ViddlRb.get_urls_names("http://www.youtube.com/watch?v=gZ8w4vVaOL8")
     
     url = download_urls.first[:url]
     name = download_urls.first[:name]
@@ -28,12 +25,14 @@ class TestURLExtraction < MiniTest::Unit::TestCase
   end
 
   def test_can_get_youtube_playlist
-    download_urls = ViddlRb.get_urls_and_filenames("http://www.youtube.com/playlist?list=PL41AAC84379472529")
+    download_urls = ViddlRb.get_urls_names("http://www.youtube.com/playlist?list=PL41AAC84379472529")
     assert(download_urls.size == 3)
   end
 
-  # Unit tests
-  #_________________
+  def test_can_extract_extensions_from_url_names
+    download_urls = ViddlRb.get_urls_exts("http://www.dailymotion.com/video/x5ppy6_foot-2008-remi-gaillard_fun")
+    assert_equal(".mp4", download_urls.first[:ext])
+  end
 
   def test_raises_download_error_when_video_cannot_be_downloaded
     assert_raises(ViddlRb::DownloadError) do
@@ -50,5 +49,5 @@ class TestURLExtraction < MiniTest::Unit::TestCase
   def test_returns_nil_when_url_is_not_recognized
     assert_nil(ViddlRb.get_urls("12345"))
     assert_nil(ViddlRb.get_urls("http://www.google.com"))
-  end
+  end  
 end
