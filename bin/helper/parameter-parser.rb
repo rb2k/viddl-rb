@@ -1,18 +1,17 @@
 
-# ApplicationHelper loads plugins and parses the program parameters.
+# ParameterParser parses the program parameters.
 # If the parameters are not valid in some way an exception is raised.
-class ApplicationHelper
+class ParameterParser
 
   DEFAULT_SAVE_DIR = "."
 
-  #loads all plugins in the plugin directory.
-  def self.load_plugins
-    Dir[File.join(File.dirname(__FILE__),"../plugins/*.rb")].each do |plugin|
-      load plugin
-    end
-  end
-
-  #returns a hash with the parameters in it.
+  #returns a hash with the parameters in it:
+  # :url            => the video url
+  # :extract_audio  => should attempt to extract audio? (true/false)
+  # :url_only       => do not download, only print the urls to stdout
+  # :title_only     => do not download, only print the titles to stdout
+  # :youtube_filer  => a regular expression used ot fileter youtube playlists
+  # :save_dir       => the directory where the videos are saved
   def self.parse_app_parameters
     check_valid_parameters!
 
