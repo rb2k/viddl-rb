@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-$LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'helper')
+$LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'helper')  # general helpers
+$LOAD_PATH << File.join(File.dirname(__FILE__), 'helper')  	     # bin-specific helpers
 
 require "rubygems"
 require "nokogiri"
@@ -11,15 +12,18 @@ require "open3"
 require "driver.rb"
 require "downloader.rb"
 require "download-helper.rb"
-require "application-helper.rb"
+require "parameter-parser.rb"
 require "plugin-helper.rb"
 require "audio-helper.rb"
+require "utility-helper.rb"
 
 begin
-  params = ApplicationHelper.parse_app_parameters
+  # params is a hash with keys for each of the parameters passed in.
+  # see helper/parameter-parser.rb for what those keys are.
+  params = ParameterParser.parse_app_parameters
 
   puts "Loading Plugins"
-  ApplicationHelper.load_plugins
+  UtilityHelper.load_plugins
   "Plugins loaded: #{PluginBase.registered_plugins.inspect}"
 
   puts "Will try to extract audio: #{params[:extract_audio] == true}."
@@ -30,4 +34,5 @@ begin
 
 rescue StandardError => e
   puts "#{e.message}"
+  exit(1)
 end

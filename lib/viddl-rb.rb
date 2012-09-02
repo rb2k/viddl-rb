@@ -10,9 +10,10 @@ require "open-uri"
 require "stringio"
 require "download-helper.rb"
 require "plugin-helper.rb"
+require "utility-helper.rb"
 
-#require all plugins
-Dir[File.join(File.dirname(__FILE__),"../plugins/*.rb")].each { |p| require p }
+#load all plugins
+UtilityHelper.load_plugins
 
 module ViddlRb
   class PluginError < StandardError; end
