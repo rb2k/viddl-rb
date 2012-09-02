@@ -87,10 +87,14 @@ class Youtube < PluginBase
       end
     else                                                                   #if single video
       return_values << self.grab_single_url_filename(url)
-    end
-   
+    end 
     return_values.reject! { |value| value == :no_embed }   #remove results that can not be downloaded
-    return_values.empty? ? exit : return_values            #if no videos could be downloaded exit 
+
+    if return_values.empty?
+      raise CouldNotDownloadVideoError, "No videos could be downloaded - embedding disabled."
+    else
+      return_values
+    end
   end
  
   def self.grab_single_url_filename(url)
@@ -103,8 +107,7 @@ class Youtube < PluginBase
     end
     video_id = url[/(v|embed)[\/=]([^\/\?\&]*)/,2]
     if video_id.nil?
-      puts "no video id found."
-      exit
+      raise CouldNotDownloadVideoError, "No video id found."
     else
       puts "[YOUTUBE] ID FOUND: #{video_id}"
     end
@@ -151,7 +154,6 @@ class Youtube < PluginBase
     }.flatten]
     
     if video_info_hash["status"] == "fail"
-      puts "Error: embedding disabled, no video info found"
       return :no_embed
     end
     
