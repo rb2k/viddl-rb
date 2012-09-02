@@ -13,10 +13,10 @@ class Dailymotion < PluginBase
   def self.get_urls_and_filenames(url)
     doc = Nokogiri::HTML(open(url))
 
-    #check to see that the video is hosted on dailymotion.com - if not exit
+    #check to see that the video is hosted on dailymotion.com - if not raise exception
     unless doc.xpath("//div[@class='dmco_html dmpi_video_partnerplayer']").empty?
-      puts "ERROR: This video is not hosted on dailymotion's own content servers. It can't be downloaded."
-      exit
+      raise CouldNotDownloadVideoError,
+            "This video is not hosted on dailymotion's own content servers. It can't be downloaded."
     end
 
     title     = doc.xpath("//meta[@property='og:title']").attribute("content").value 
