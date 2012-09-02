@@ -1,6 +1,5 @@
-
 __viddl-rb:__  
-Created by Marc Seeger (@rb2k)  
+Initially created by Marc Seeger (@rb2k)  
 Repo: http://github.com/rb2k/viddl-rb  
 [![Build Status](https://secure.travis-ci.org/rb2k/viddl-rb.png)](http://travis-ci.org/rb2k/viddl-rb) [![Dependency Status](https://gemnasium.com/rb2k/viddl-rb.png)](https://gemnasium.com/rb2k/viddl-rb)
 
@@ -95,9 +94,11 @@ __Requirements:__
 * [Mechanize](http://mechanize.rubyforge.org/)
 * ffmpeg if you want to extract audio tracks from the videos
 
-__Contributors:__
+__Co Maintainer:__
+* [kl](https://github.com/kl): Windows support (who knew!), bug fixes, veoh plugin, metacafe plugin, refactoring it into a library, ...
 
-* [kl](https://github.com/kl): Windows support (who knew!), bug fixes, veoh plugin, metacafe plugin   
+
+__Contributors:__  
 * [divout](https://github.com/divout) aka Ivan K: blip.tv plugin, bugfixes
 * Sniper: bugfixes
 * [Serabe](https://github.com/Serabe) aka Sergio Arbeo: packaging viddl as a binary
