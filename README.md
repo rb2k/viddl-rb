@@ -6,9 +6,7 @@ Repo: http://github.com/rb2k/viddl-rb
 
 __Installation:__
 
-```
 gem install viddl-rb
-```
 
 __Usage:__  
 
