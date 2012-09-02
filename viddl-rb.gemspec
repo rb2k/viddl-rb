@@ -6,9 +6,9 @@ Gem::Specification.new do |s|
   s.homepage    = "https://github.com/rb2k/viddl-rb"
   s.summary     = "An extendable commandline video downloader for flash video sites."
   s.description = "An extendable commandline video downloader for flash video sites. Includes plugins for vimeo, youtube and megavideo"
-  s.has_rdoc = false
-  s.files       = Dir["{bin,helper,plugins}/**/*"] + Dir["[A-Z]*"] + ["README.md"]
-  s.require_paths = ['.']
+  s.has_rdoc    = false
+  s.files       = Dir["{bin,lib,helper,plugins}/**/*"] + Dir["[A-Z]*"] + ["README.md"]
+  s.require_paths = ['lib']
   s.executables = ['viddl-rb']
   
   s.rubyforge_project = s.name

@@ -25,16 +25,14 @@ class Metacafe < PluginBase
     file_info = get_file_info(redirect_url, video_id)
     key_string = get_file_key(redirect_url)
     file_url_with_key = file_info[:file_url] + "?__gda__=#{key_string}"
-    escaped_url = CGI::escape(file_url_with_key)
-    
-    [{:url => escaped_url, :name => get_video_name(video_swf_url) + file_info[:extension]}]
+        
+    [{:url => file_url_with_key, :name => get_video_name(video_swf_url) + file_info[:extension]}]
   end
   
   def self.get_video_id(url)
     id = url[/watch\/(\d+)/, 1]
     unless id
-      puts "ERROR: Can only download videos that has the ID in the URL."
-      exit
+      raise CouldNotDownloadVideoError, "Can only download videos that has the ID in the URL."
     end
     id
   end

@@ -34,9 +34,14 @@ class Driver
     begin
       #we'll end up with an array of hashes with they keys :url and :name 
       plugin.get_urls_and_filenames(url)
+
+    rescue PluginBase::CouldNotDownloadVideoError => e
+      raise "ERROR: The video could not be downloaded.\n" +
+            "Reason: #{e.message}"
     rescue StandardError => e
-      raise "Error while running the #{plugin.name.inspect} plugin. Maybe it has to be updated? Error: #{e.message}.\n"
-            "Backtrace: #{e.backtrace}"  
+      raise "Error while running the #{plugin.name.inspect} plugin. Maybe it has to be updated?\n" +
+            "Error: #{e.message}.\n" +
+            "Backtrace:\n#{e.backtrace.join("\n")}"  
     end
   end
 end
