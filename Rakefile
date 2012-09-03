@@ -2,10 +2,11 @@ require 'rubygems'
 require 'bundler/setup'
 require 'rake/testtask'
 
-task :default => [:test_lib]
+task :default => [:test]
 
-Rake::TestTask.new do |t|
-  t.pattern = "spec/*_spec.rb"
+Rake::TestTask.new(:test) do |t|
+  #t.pattern = "spec/*_spec.rb"
+  t.test_files = ["spec/lib_spec.rb", "spec/url_extraction_spec.rb"]
 end
 
 Rake::TestTask.new(:test_lib) do |t|
