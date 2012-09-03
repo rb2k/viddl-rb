@@ -9,7 +9,7 @@ class Youtube < PluginBase
   def self.get_video_urls(feed_url)
     puts "[YOUTUBE] Retrieving videos..."
     urls_titles = Hash.new
-    result_feed = Nokogiri::HTML(open(feed_url))
+    result_feed = Nokogiri::XML(open(feed_url))
     urls_titles.merge!(grab_ut(result_feed))
 
     #as long as the feed has a next link we follow it and add the resulting video urls
