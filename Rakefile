@@ -1,4 +1,5 @@
 require 'rubygems'
+require 'bundler/setup'
 require 'rake/testtask'
 
 task :default => [:test]
