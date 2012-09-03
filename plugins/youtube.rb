@@ -105,7 +105,7 @@ class Youtube < PluginBase
     if url.include?("youtu.be")
       url = open(url).base_uri.to_s
     end
-    video_id = url[/(v|embed)[\/=]([^\/\?\&]*)/,2]
+    video_id = url[/(v|embed)[=\/]([^\/\?\&]*)/,2]
     if video_id.nil?
       raise CouldNotDownloadVideoError, "No video id found."
     else
@@ -113,7 +113,7 @@ class Youtube < PluginBase
     end
     #let's get some infos about the video. data is urlencoded
     yt_url = "http://www.youtube.com/get_video_info?video_id=#{video_id}"
-    video_info = open(yt_url).read
+    video_info = RestClient.get(yt_url).body
     #converting the huge infostring into a hash. simply by splitting it at the & and then splitting it into key and value arround the =
     #[...]blabla=blubb&narf=poit&marc=awesome[...]
     video_info_hash = Hash[*video_info.split("&").collect { |v| 
@@ -137,7 +137,7 @@ class Youtube < PluginBase
           result_hash = {}
           url_array.each do |url|
             next if url.to_s.empty? || url.to_s.match(/^itag/)
-            format_id = url.match(/\&itag=(\d+)/)[1]
+            format_id = url[/\&itag=(\d+)/, 1]
             result_hash[format_id] = url
           end
           value = result_hash
