@@ -71,11 +71,18 @@ class TestURLExtraction < MiniTest::Unit::TestCase
     
     tries = 0
     http_response_code = 0
-    loop do
-	    http_response_code = code_grabber.call(url_output)
-    	break if ( http_response_code.to_i == 200 || (tries +=1) > 6 )
-    	puts "Retrying HTTP Call"
-    	sleep 4
+
+    begin
+      http_response_code = code_grabber.call(url_output)
+    rescue StandardError => e
+      if ( http_response_code.to_i == 200 || (tries +=1) > 6 )
+        puts "Can't download #{url_output.inspect}. Received: #{http_response_code}"
+        raise e
+      else
+        puts "Retrying HTTP Call because of: #{e.message}"
+        sleep 5
+        retry  
+      end
     end
     
     #Check that we COULD download the file
