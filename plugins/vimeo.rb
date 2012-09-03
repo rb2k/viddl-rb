@@ -1,5 +1,3 @@
-
-
 class Vimeo < PluginBase
   #this will be called by the main app to check whether this plugin is responsible for the url passed
   def self.matches_provider?(url)
@@ -17,7 +15,7 @@ class Vimeo < PluginBase
     page_html = video_page.root.inner_html
 
     title = page_html[/<meta\s+property="og:title"\s+content="(.+?)"/, 1]
-    puts "[VIMEO] Title: #{title}"
+    puts "[VIMEO] Title: #{title.inspect}"
 
     #the timestamp and sig info is in the embedded player javascript in the video page
     timestamp = page_html[/"timestamp":(\d+),/, 1]

@@ -20,55 +20,65 @@ class TestURLExtraction < MiniTest::Unit::TestCase
     
   def test_youtube
     result = `ruby bin/viddl-rb http://www.youtube.com/watch?v=CFw6s0TN3hY --url-only`
+    assert_equal $?, 0
     can_download_test(result)
   end
   
   def test_veoh
     result = `ruby bin/viddl-rb http://www.veoh.com/watch/v23858585TPfM8M8z --url-only`
+    assert_equal $?, 0
     can_download_test(result) { |url_output| http_code_grabber(url_output, {:method => :get}) }
   end
   
   def test_vimeo
     result = `ruby bin/viddl-rb http://vimeo.com/31744552 --url-only`
+    assert_equal $?, 0
     can_download_test(result) {|url_output| curl_code_grabber(url_output) }
   end
 
   def test_vimeo_sd_video
     result = `ruby bin/viddl-rb http://vimeo.com/38372260 --url-only`
+    assert_equal $?, 0
     can_download_test(result) {|url_output| curl_code_grabber(url_output) }
   end  
 
   def test_soundcloud
     result = `ruby bin/viddl-rb http://soundcloud.com/dubstep/the-fresh-prince-theme-by --url-only`
+    assert_equal $?, 0
     can_download_test(result) {|url_output| curl_code_grabber(url_output) }
   end
 
   def test_blip_tv
     result = `ruby bin/viddl-rb http://blip.tv/red-vs-blue/red-vs-blue-episode-11-5526271 --url-only`
+    assert_equal $?, 0
     can_download_test(result)
   end
 
   def test_metacafe  
     result = `ruby bin/viddl-rb http://www.metacafe.com/watch/7731483/video_preview_final_fantasy_xiii_2/ --url-only`
+    assert_equal $?, 0
     can_download_test(result) { |url_output| http_code_grabber(url_output) }
   end
 
   def test_dailymotion_hd
     result = `ruby bin/viddl-rb http://www.dailymotion.com/video/xskcnf_make-kanye-famous-kony-2012-parody_fun --url-only`
+    assert_equal $?, 0
     can_download_test(result) { |url_output| http_code_grabber(CGI::unescape(url_output)) }
   end
 
   def test_dailymotion_hq
     result = `ruby bin/viddl-rb http://www.dailymotion.com/video/xswn4i_pussy-riot-supporters-await-verdict-outside-court_news --url-only`
+    assert_equal $?, 0
     can_download_test(result) { |url_output| http_code_grabber(CGI::unescape(url_output)) }
   end
   
   private
   
   def can_download_test(result, &grabber)
-    code_grabber = grabber || proc { |url_output| http_code_grabber(url_output) }
     url_output = result.split("\n").last
-    
+    assert_includes(CGI.unescape(url_output), 'http://')
+
+    code_grabber = grabber || proc { |url_output| http_code_grabber(url_output) }    
     tries = 0
     http_response_code = 0
 
@@ -85,8 +95,6 @@ class TestURLExtraction < MiniTest::Unit::TestCase
       end
     end
     
-    #Check that we COULD download the file
-    assert_includes(CGI.unescape(url_output), 'http://')
     assert_equal(200, http_response_code)
   end
 end

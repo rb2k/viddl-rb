@@ -34,7 +34,7 @@ class DownloadHelper
       elsif os_has?("curl")
         puts "using curl"
         #-L means: follow redirects, We set an agent because Vimeo seems to want one
-        `curl -A 'Wget/1.8.1' -L \"#{file_uri}\" -o #{file_name}`
+        `curl -A 'Wget/1.8.1' --retry 10 --retry-delay 5 --retry-max-time 4  -L \"#{file_uri}\" -o #{file_name}`
       else
        puts "using net/http"
         open(file_name, 'wb') { |file|          
