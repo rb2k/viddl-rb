@@ -13,8 +13,8 @@ class Vimeo < PluginBase
 
     video_page = agent.get("http://vimeo.com/#{vimeo_id}")
     page_html = video_page.root.inner_html
-
-    title = page_html[/<meta\s+property="og:title"\s+content="(.+?)"/, 1]
+    doc = Nokogiri::HTML(page_html)
+    title = doc.at('meta[property="og:title"]').attributes['content'].value
     puts "[VIMEO] Title: #{title.inspect}"
 
     #the timestamp and sig info is in the embedded player javascript in the video page
