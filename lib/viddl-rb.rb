@@ -67,7 +67,7 @@ module ViddlRb
   def self.get_urls_exts(url)
     urls_filenames = get_urls_names(url)
     urls_filenames.map do |uf|
-      ext = uf[:name][/(\.[\d\w]+)$/, 1]
+      ext = File.extname(uf[:name])
       {:url => uf[:url], :ext => ext}
     end
   end
