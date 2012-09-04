@@ -17,7 +17,7 @@ Download a video and extract the audio:
 
 In both cases we'll name the output file according to the video title.
 
-Setting the video save directory:
+Setting the video save directory:  
     viddl-rb http://vimeo.com/38372260 --save-dir=C:/myvideos
 
 The --save-dir option works with both absolute and relative paths (relative based on the directory viddl-rb is run from).
