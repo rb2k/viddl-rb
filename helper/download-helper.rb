@@ -1,14 +1,13 @@
 class DownloadHelper
 
-#usually not called directly
+  #usually not called directly
   def self.fetch_file(uri)
-
-  begin
-    require "progressbar" #http://github.com/nex3/ruby-progressbar
-  rescue LoadError
-    puts "ERROR: You don't seem to have curl or wget on your system. In this case you'll need to install the 'progressbar' gem."
-    exit
-  end
+    begin
+      require "progressbar" #http://github.com/nex3/ruby-progressbar
+    rescue LoadError
+      puts "ERROR: You don't seem to have curl or wget on your system. In this case you'll need to install the 'progressbar' gem."
+      exit
+    end
     progress_bar = nil 
     open(uri, :proxy => nil,
       :content_length_proc => lambda { |length|
@@ -23,21 +22,23 @@ class DownloadHelper
   end
   
   #simple helper that will save a file from the web and save it with a progress bar
-  def self.save_file(file_uri, file_name, amount_of_retries = 6)
+  def self.save_file(file_uri, file_name, save_dir = ".", amount_of_retries = 6)
     trap("SIGINT") { puts "goodbye"; exit }
 
+    file_path = File.absolute_path(File.join(save_dir, file_name))
     #Some providers seem to flake out every now end then
     amount_of_retries.times do |i|
       if os_has?("wget")
         puts "using wget"
-        `wget \"#{file_uri}\" -O #{file_name}`
+        `wget \"#{file_uri}\" -O #{file_path.inspect}`
       elsif os_has?("curl")
         puts "using curl"
+        #require "pry"; binding.pry; exit
         #-L means: follow redirects, We set an agent because Vimeo seems to want one
-        `curl -A 'Wget/1.8.1' --retry 10 --retry-delay 5 --retry-max-time 4  -L \"#{file_uri}\" -o #{file_name}`
+        `curl -A 'Wget/1.8.1' --retry 10 --retry-delay 5 --retry-max-time 4  -L \"#{file_uri}\" -o #{file_path.inspect}`
       else
        puts "using net/http"
-        open(file_name, 'wb') { |file|          
+        open(file_path, 'wb') { |file|          
           file.write(fetch_file(file_uri)); puts
         }
       end  
@@ -51,7 +52,7 @@ class DownloadHelper
     end    
     $? == 0
   end
-  
+
   #checks to see whether the os has a certain utility like wget or curl
   #`` returns the standard output of the process
   #system returns the exit code of the process
