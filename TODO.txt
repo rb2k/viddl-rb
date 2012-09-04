@@ -1,4 +1,3 @@
-* enable save_dir option
 * make the youtube plugin use the regex from ParameterParser
 * add save_file method to library
 
