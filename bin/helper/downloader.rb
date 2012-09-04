@@ -20,6 +20,6 @@ class Downloader
 
   # TODO save_dir is not used yet
   def save_file(url, name, save_dir)
-    DownloadHelper.save_file(url, name)
+    DownloadHelper.save_file(url, name, save_dir)
   end
 end
