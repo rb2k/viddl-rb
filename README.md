@@ -17,6 +17,12 @@ Download a video and extract the audio:
 
 In both cases we'll name the output file according to the video title.
 
+Setting the video save directory:  
+    viddl-rb http://vimeo.com/38372260 --save-dir=C:/myvideos
+
+The --save-dir option works with both absolute and relative paths (relative based on the directory viddl-rb is run from).
+If you want to save to a folder with spaces in it, you have to quote the path like this: --save-dir="C:/my videos"
+
 __Youtube plugin specifics:__  
 
 Download all videos on a playlist:  
@@ -96,7 +102,6 @@ __Requirements:__
 
 __Co Maintainer:__
 * [kl](https://github.com/kl): Windows support (who knew!), bug fixes, veoh plugin, metacafe plugin, refactoring it into a library, ...
-
 
 __Contributors:__  
 * [divout](https://github.com/divout) aka Ivan K: blip.tv plugin, bugfixes

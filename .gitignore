@@ -2,3 +2,4 @@
 *.swp
 *.gem
 test.rb
+Gemfile.lock
