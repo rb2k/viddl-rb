@@ -33,7 +33,12 @@ class Driver
 
     begin
       #we'll end up with an array of hashes with they keys :url and :name 
-      plugin.get_urls_and_filenames(url)
+      case plugin.to_s
+      when "Youtube"
+        plugin.get_urls_and_filenames(url, @params[:youtube_filter])
+      else
+        plugin.get_urls_and_filenames(url)
+      end
 
     rescue PluginBase::CouldNotDownloadVideoError => e
       raise "ERROR: The video could not be downloaded.\n" +
