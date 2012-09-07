@@ -23,8 +23,8 @@ begin
   params = ParameterParser.parse_app_parameters
 
   puts "Loading Plugins"
-  UtilityHelper.load_plugins
-  "Plugins loaded: #{PluginBase.registered_plugins.inspect}"
+  ViddlRb::UtilityHelper.load_plugins
+  "Plugins loaded: #{ViddlRb::PluginBase.registered_plugins.inspect}"
 
   puts "Will try to extract audio: #{params[:extract_audio] == true}."
   puts "Analyzing URL: #{params[:url]}"
@@ -36,3 +36,4 @@ rescue StandardError => e
   puts "#{e.message}"
   exit(1)
 end
+

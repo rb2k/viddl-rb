@@ -27,7 +27,7 @@ class Driver
   #finds the right plugins and returns the download queue.
   def get_download_queue
     url = @params[:url]
-    plugin = PluginBase.registered_plugins.find { |p| p.matches_provider?(url) }
+    plugin = ViddlRb::PluginBase.registered_plugins.find { |p| p.matches_provider?(url) }
     raise "ERROR: No plugin seems to feel responsible for this URL." unless plugin
     puts "Using plugin: #{plugin}"
 
@@ -35,7 +35,7 @@ class Driver
       #we'll end up with an array of hashes with they keys :url and :name 
       plugin.get_urls_and_filenames(url, @params)
       
-    rescue PluginBase::CouldNotDownloadVideoError => e
+    rescue ViddlRb::PluginBase::CouldNotDownloadVideoError => e
       raise "ERROR: The video could not be downloaded.\n" +
             "Reason: #{e.message}"
     rescue StandardError => e
