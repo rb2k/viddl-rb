@@ -33,8 +33,8 @@ class Driver
 
     begin
       #we'll end up with an array of hashes with they keys :url and :name 
-      plugin.get_urls_and_filenames(url)
-
+      plugin.get_urls_and_filenames(url, @params)
+      
     rescue PluginBase::CouldNotDownloadVideoError => e
       raise "ERROR: The video could not be downloaded.\n" +
             "Reason: #{e.message}"

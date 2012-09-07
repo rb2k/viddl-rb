@@ -11,7 +11,7 @@ class Metacafe < PluginBase
     url.include?("metacafe.com")
   end
   
-  def self.get_urls_and_filenames(url)
+  def self.get_urls_and_filenames(url, options = {})
     video_id = get_video_id(url)
     info_url = API_BASE + "item/#{video_id}" #use the API to get the full video url
     info_doc = Nokogiri::XML(open(info_url))

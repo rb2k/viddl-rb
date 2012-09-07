@@ -10,7 +10,7 @@ class Dailymotion < PluginBase
   end
 
   # return the url for original video file and title
-  def self.get_urls_and_filenames(url)
+  def self.get_urls_and_filenames(url, options = {})
     doc = Nokogiri::HTML(open(url))
 
     #check to see that the video is hosted on dailymotion.com - if not raise exception

@@ -4,7 +4,7 @@ class Vimeo < PluginBase
     url.include?("vimeo.com")
   end
   
-  def self.get_urls_and_filenames(url)
+  def self.get_urls_and_filenames(url, options = {})
     #the vimeo ID consists of 7 decimal numbers in the URL
     vimeo_id = url[/\d{7,8}/]
 
