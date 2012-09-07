@@ -6,7 +6,7 @@ class Blip < PluginBase
   end
 
   # return the url for original video file and title
-  def self.get_urls_and_filenames(url)
+  def self.get_urls_and_filenames(url, options = {})
     id           = self.to_id(url)
     xml_url      = "http://blip.tv/rss/#{id}"
     doc          = Nokogiri::XML(open(xml_url))

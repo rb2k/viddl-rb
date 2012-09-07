@@ -7,7 +7,7 @@ class Veoh < PluginBase
     url.include?("veoh.com")
   end
 
-  def self.get_urls_and_filenames(url)
+  def self.get_urls_and_filenames(url, options = {})
     veoh_id = url[/\/watch\/([\w\d]+)/, 1]
     info_url = "#{VEOH_API_BASE}findByPermalink?permalink=#{veoh_id}"
     info_doc = Nokogiri::XML(open(info_url))

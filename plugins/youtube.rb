@@ -25,13 +25,9 @@ class Youtube < PluginBase
 
   #returns only the urls that match the --filter argument regex (if present)
   def self.filter_urls(url_hash)
-    #get the --filter arg or "" if it is not present (because nil would break the next line)
-    filter = ARGV.find( proc {""} ) { |arg| arg =~ /--filter=/ }
-    regex = filter[/--filter=(.+?)(?:\/|$)/, 1]
-    if regex
-      puts "[YOUTUBE] Using filter: #{regex}"
-      ignore_case = filter.include?("/i")
-      filtered = url_hash.select { |url, title| title =~ Regexp.new(regex, ignore_case) }
+    if @filter
+      puts "[YOUTUBE] Using filter: #{@filter}"
+      filtered = url_hash.select { |url, title| title =~ @filter }
       filtered.keys
     else
       url_hash.keys
@@ -67,7 +63,8 @@ class Youtube < PluginBase
     url_array
   end
 
-  def self.get_urls_and_filenames(url)
+  def self.get_urls_and_filenames(url, options = {})
+    @filter = options[:playlist_filter]                                    #used to filter a playlist in self.filter_urls
     return_values = []
     if url.include?("view_play_list") || url.include?("playlist?list=")    #if playlist
       puts "[YOUTUBE] playlist found! analyzing..."
