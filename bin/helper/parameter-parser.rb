@@ -20,7 +20,7 @@ class ParameterParser
     params[:extract_audio] = ARGV.include?("--extract-audio")
     params[:url_only] = ARGV.include?("--url-only")
     params[:title_only] = ARGV.include?("--title-only")
-    params[:youtube_filter] = get_youtube_filter
+    params[:playlist_filter] = get_youtube_filter
     params[:save_dir] = get_save_dir  
     params
   end

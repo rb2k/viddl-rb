@@ -6,7 +6,7 @@ class Soundcloud < PluginBase
   end
 
   # return the url for original video file and title
-  def self.get_urls_and_filenames(url)
+  def self.get_urls_and_filenames(url, options = {})
     doc          = Nokogiri::HTML(RestClient.get(url).body)
     download_filename = doc.at("#main-content-inner img[class=waveform]").attributes["src"].value.to_s.match(/\.com\/(.+)\_/)[1]
     download_url = "http://media.soundcloud.com/stream/#{download_filename}"
