@@ -13,7 +13,7 @@ require "plugin-helper.rb"
 require "utility-helper.rb"
 
 #load all plugins
-UtilityHelper.load_plugins
+ViddlRb::UtilityHelper.load_plugins
 
 module ViddlRb
   class PluginError < StandardError; end
