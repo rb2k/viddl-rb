@@ -26,7 +26,7 @@ module ViddlRb
     def self.save_file(file_uri, file_name, save_dir = ".", amount_of_retries = 6)
       trap("SIGINT") { puts "goodbye"; exit }
 
-      file_path = File.absolute_path(File.join(save_dir, file_name))
+      file_path = File.expand_path(File.join(save_dir, file_name))
       #Some providers seem to flake out every now end then
       amount_of_retries.times do |i|
         if os_has?("wget")
