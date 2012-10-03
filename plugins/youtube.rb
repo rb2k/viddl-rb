@@ -187,8 +187,18 @@ class Youtube < PluginBase
 
     #video_info_hash.keys.sort.each{|key| puts "#{key} : #{video_info_hash[key]}" }
     download_url = video_info_hash["url_encoded_fmt_stream_map"][selected_format]
+
     #if download url ends with a ';' followed by a codec string remove that part because it stops URI.parse from working
-    download_url = $1 if download_url =~ /(.*?);\scodecs=/
+    
+    if codec_part = download_url[/;\s*codec.+/m]    #if we have the ; codec substring  
+      sig = codec_part[/&sig=(.+?)&/, 1]            #extract the signature
+
+      download_url.sub!(codec_part, "")             #remove the ; codec substring from the download url
+      download_url.concat("&signature=#{sig}")      #concatenate the correct signature attribute
+    else
+      download_url.sub!("&sig=", "&signature=")     #else we just have to change sig to signature
+    end
+
     file_name = PluginBase.make_filename_safe(title) + "." + format_ext[selected_format][:extension]
     puts "downloading to " + file_name
     {:url => download_url, :name => file_name}
