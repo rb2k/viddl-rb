@@ -43,7 +43,7 @@ class TestURLExtraction < MiniTest::Unit::TestCase
   end  
 
   def test_soundcloud
-    result = `ruby bin/viddl-rb http://soundcloud.com/dubstep/the-fresh-prince-theme-by --url-only`
+    result = `ruby bin/viddl-rb http://soundcloud.com/rjchevalier/remembering-mavi-koy-wip --url-only`
     assert_equal $?, 0
     can_download_test(result) {|url_output| curl_code_grabber(url_output) }
   end
