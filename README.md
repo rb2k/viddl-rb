@@ -7,10 +7,20 @@ __Installation:__
 
 gem install viddl-rb
 
-__Usage:__  
+__Usage:__
 
 Download a video:  
     viddl-rb http://www.youtube.com/watch?v=QH2-TGUlwu4
+
+Viddl-rb supports the following command line options:
+```
+-e, --extract-audio              Save video audio to file
+-u, --url-only                   Prints url without downloading
+-t, --title-only                 Prints title without downloading
+-f, --filter REGEX               Filters a video playlist according to the regex (Youtube only right now)
+-s, --save-dir DIRECTORY         Specifies the directory where videos should be saved
+-h, --help                       Displays the help screen
+```
 
 Download a video and extract the audio:  
     viddl-rb http://www.youtube.com/watch?v=QH2-TGUlwu4 --extract-audio 
@@ -18,10 +28,10 @@ Download a video and extract the audio:
 In both cases we'll name the output file according to the video title.
 
 Setting the video save directory:  
-    viddl-rb http://vimeo.com/38372260 --save-dir=C:/myvideos
+    viddl-rb http://vimeo.com/38372260 --save-dir C:/myvideos
 
 The --save-dir option works with both absolute and relative paths (relative based on the directory viddl-rb is run from).
-If you want to save to a folder with spaces in it, you have to quote the path like this: --save-dir="C:/my videos"
+If you want to save to a folder with spaces in it, you have to quote the path like this: --save-dir "C:/my videos"
 
 __Youtube plugin specifics:__  
 
@@ -32,10 +42,10 @@ Download all videos from a user:
     viddl-rb http://www.youtube.com/user/tedtalksdirector
 
 Filter videos to download from a user/playlist:  
-    viddl-rb http://www.youtube.com/user/tedtalksdirector --filter=internet/i
+    viddl-rb http://www.youtube.com/user/tedtalksdirector --filter /internet/i
 
 The --filter argument accepts a regular expression and will only download videos where the title matches the regex.
-The /i option does a case-insensitive search.
+It uses the same syntax as Ruby regular expression literals do.
 
 __Library Usage:__
 
