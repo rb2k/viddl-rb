@@ -29,12 +29,11 @@ module ViddlRb
       file_path = File.expand_path(File.join(save_dir, file_name))
       #Some providers seem to flake out every now end then
       amount_of_retries.times do |i|
-        if os_has?("wget")
+        if UtilityHelper.os_has?("wget")
           puts "using wget"
           `wget \"#{file_uri}\" -O #{file_path.inspect}`
-        elsif os_has?("curl")
+        elsif UtilityHelper.os_has?("curl")
           puts "using curl"
-          #require "pry"; binding.pry; exit
           #-L means: follow redirects, We set an agent because Vimeo seems to want one
           `curl -A 'Wget/1.8.1' --retry 10 --retry-delay 5 --retry-max-time 4  -L \"#{file_uri}\" -o #{file_path.inspect}`
         else
@@ -54,33 +53,5 @@ module ViddlRb
       $? == 0
     end
 
-    #checks to see whether the os has a certain utility like wget or curl
-    #`` returns the standard output of the process
-    #system returns the exit code of the process
-    def self.os_has?(utility)
-      windows = ENV['OS'] =~ /windows/i
-
-      unless windows # if os is not Windows
-        `which #{utility}`.include?(utility)
-      else
-        if has_where?
-          system("where /q #{utility}")   #/q is the quiet mode flag
-        else
-          begin   #as a fallback we just run the utility itself
-            system(utility)
-          rescue Errno::ENOENT
-            false
-          end
-        end
-      end
-    end
-
-    #checks if Windows has the where utility (Server 2003 and later)
-    #system only return nil if the command is not found
-    def self.has_where?
-      !system("where /q where").nil?
-    end
   end
-
 end
-

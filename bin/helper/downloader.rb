@@ -13,7 +13,7 @@ class Downloader
         raise DownloadFailedError, "Download for #{name} failed."
       else
         puts "Download for #{name} successful."
-        AudioHelper.extract(name) if params[:extract_audio]
+        ViddlRb::AudioHelper.extract(name, params[:save_dir]) if params[:extract_audio]
       end
     end
   end
