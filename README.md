@@ -10,7 +10,7 @@ gem install viddl-rb
 __Usage:__
 
 Download a video:  
-    viddl-rb http://www.youtube.com/watch?v=QH2-TGUlwu4
+    ```viddl-rb http://www.youtube.com/watch?v=QH2-TGUlwu4```
 
 Viddl-rb supports the following command line options:
 ```
@@ -23,12 +23,12 @@ Viddl-rb supports the following command line options:
 ```
 
 Download a video and extract the audio:  
-    viddl-rb http://www.youtube.com/watch?v=QH2-TGUlwu4 --extract-audio 
+    ```viddl-rb http://www.youtube.com/watch?v=QH2-TGUlwu4 --extract-audio```
 
 In both cases we'll name the output file according to the video title.
 
 Setting the video save directory:  
-    viddl-rb http://vimeo.com/38372260 --save-dir C:/myvideos
+    ```viddl-rb http://vimeo.com/38372260 --save-dir C:/myvideos```
 
 The --save-dir option works with both absolute and relative paths (relative based on the directory viddl-rb is run from).
 If you want to save to a folder with spaces in it, you have to quote the path like this: --save-dir "C:/my videos"
@@ -36,13 +36,13 @@ If you want to save to a folder with spaces in it, you have to quote the path li
 __Youtube plugin specifics:__  
 
 Download all videos on a playlist:  
-    viddl-rb http://www.youtube.com/playlist?list=PL7E8DA0A515924126
+    ```viddl-rb http://www.youtube.com/playlist?list=PL7E8DA0A515924126```
 
 Download all videos from a user:  
-    viddl-rb http://www.youtube.com/user/tedtalksdirector
+    ```viddl-rb http://www.youtube.com/user/tedtalksdirector```
 
 Filter videos to download from a user/playlist:  
-    viddl-rb http://www.youtube.com/user/tedtalksdirector --filter /internet/i
+    ```viddl-rb http://www.youtube.com/user/tedtalksdirector --filter /internet/i```
 
 The --filter argument accepts a regular expression and will only download videos where the title matches the regex.
 It uses the same syntax as Ruby regular expression literals do.
