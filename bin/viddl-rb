@@ -8,6 +8,7 @@ require "mechanize"
 require "cgi"
 require "open-uri"
 require "open3"
+require "optparse"
 
 require "driver.rb"
 require "downloader.rb"
@@ -20,7 +21,7 @@ require "utility-helper.rb"
 begin
   # params is a hash with keys for each of the parameters passed in.
   # see helper/parameter-parser.rb for what those keys are.
-  params = ParameterParser.parse_app_parameters
+  params = ParameterParser.parse_app_parameters(ARGV)
 
   puts "Loading Plugins"
   ViddlRb::UtilityHelper.load_plugins
@@ -32,8 +33,13 @@ begin
   app = Driver.new(params)   
   app.start                  # starts the download process
 
+rescue OptionParser::ParseError => e
+  puts "Error: #{e.message}"
+  exit(1)
+
 rescue StandardError => e
-  puts "#{e.message}"
+  puts "Error: #{e.message}"
+  puts "\nBacktrace:"
+  puts e.backtrace
   exit(1)
 end
-
