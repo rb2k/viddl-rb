@@ -1,7 +1,7 @@
 # This class contains utility methods that are used by both the bin utility and the library.
 
 module ViddlRb
-
+  
   class UtilityHelper
     #loads all plugins in the plugin directory.
     #the plugin classes are dynamically added to the ViddlRb module.
@@ -31,6 +31,15 @@ module ViddlRb
         end
       end
     end
-    
+
+    #recursively get the final location (after following all redirects) for an url.
+    def self.get_final_location(url)
+      Net::HTTP.get_response(URI(url)) do |res|
+        location = res["location"]
+        return url if location.nil?
+        return get_final_location(location)
+      end
+    end
+
   end
 end
