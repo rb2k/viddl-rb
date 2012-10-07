@@ -95,19 +95,9 @@ module ViddlRb
   def self.follow_all_redirects(urls_filenames)
     urls_filenames.map do |uf|
       url = uf[:url]
-      final_location = get_final_location(url)
+      final_location = UtilityHelper.get_final_location(url)
       {:url => final_location, :name => uf[:name]}
     end
   end
   private_class_method :follow_all_redirects
-
-  #recursively get the final location (after following all redirects) for an url.
-  def self.get_final_location(url)
-    Net::HTTP.get_response(URI(url)) do |res|
-      location = res["location"]
-      return url if location.nil?
-      return get_final_location(location)
-    end
-  end
-  private_class_method :get_final_location
 end
