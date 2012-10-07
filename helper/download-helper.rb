@@ -1,6 +1,6 @@
 module ViddlRb
 
-  class RequirementsNotMet < StandardError; end
+  class RequirementError < StandardError; end
 
   class DownloadHelper
 

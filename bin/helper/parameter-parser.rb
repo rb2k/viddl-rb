@@ -22,7 +22,8 @@ class ParameterParser
       :url_only         => false,
       :title_only       => false,
       :playlist_filter  => nil,
-      :save_dir         => DEFAULT_SAVE_DIR
+      :save_dir         => DEFAULT_SAVE_DIR,
+      :tool             => nil
     }
 
     optparse = OptionParser.new do |opts|
@@ -56,6 +57,14 @@ class ParameterParser
         end
       end
 
+      opts.on("-d", "--downloader TOOL", "Specifies the tool to download with. Supports 'wget', 'curl' and 'net-http'") do |tool|
+        if tool =~ /(^wget$)|(^curl$)|(^net-http$)/
+          options[:tool] = tool
+        else
+          raise OptionParser::InvalidArgument.new("'#{tool}' is not a valid tool.")
+        end
+      end
+
       opts.on_tail('-h', '--help', 'Display this screen') do
         print_help_and_exit(opts)
       end
@@ -63,7 +72,8 @@ class ParameterParser
 
     optparse.parse!(args)                           # removes all options from args
     print_help_and_exit(optparse) if args.empty?    # exit if no video url
-    url = validate_url(args.first)                  # the url is the only element left
+    url = args.first                                # the url is the only element left
+    validate_url!(url)                              # raise exception if invalid url
     options[:url] = url                     
     options
   end
@@ -73,10 +83,8 @@ class ParameterParser
     exit(0)
   end
 
-  def self.validate_url(url)
-    if url =~ /^http/
-      url
-    else
+  def self.validate_url!(url)
+    unless url =~ /^http/
       raise OptionParser::InvalidArgument.new(
         "please include 'http' with your URL e.g. http://www.youtube.com/watch?v=QH2-TGUlwu4")
     end
