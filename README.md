@@ -19,6 +19,7 @@ Viddl-rb supports the following command line options:
 -t, --title-only                 Prints title without downloading
 -f, --filter REGEX               Filters a video playlist according to the regex (Youtube only right now)
 -s, --save-dir DIRECTORY         Specifies the directory where videos should be saved
+-d, --downloader TOOL            Specifies the tool to download with. Supports 'wget', 'curl' and 'net-http'
 -h, --help                       Displays the help screen
 ```
 
