@@ -18,7 +18,7 @@ module ViddlRb
       windows = ENV['OS'] =~ /windows/i
 
       unless windows
-        `which #{utility}`.include?(utility)
+        `which #{utility}`.include?(utility.to_s)
       else
         if !system("where /q where").nil?   #if Windows has the where utility
           system("where /q #{utility}")     #/q is the quiet mode flag
@@ -31,6 +31,15 @@ module ViddlRb
         end
       end
     end
-    
+
+    #recursively get the final location (after following all redirects) for an url.
+    def self.get_final_location(url)
+      Net::HTTP.get_response(URI(url)) do |res|
+        location = res["location"]
+        return url if location.nil?
+        return get_final_location(location)
+      end
+    end
+
   end
 end

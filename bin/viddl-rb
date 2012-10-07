@@ -25,7 +25,7 @@ begin
 
   puts "Loading Plugins"
   ViddlRb::UtilityHelper.load_plugins
-  "Plugins loaded: #{ViddlRb::PluginBase.registered_plugins.inspect}"
+  puts "Plugins loaded: #{ViddlRb::PluginBase.registered_plugins.inspect}"
 
   puts "Will try to extract audio: #{params[:extract_audio] == true}."
   puts "Analyzing URL: #{params[:url]}"
@@ -33,7 +33,7 @@ begin
   app = Driver.new(params)   
   app.start                  # starts the download process
 
-rescue OptionParser::ParseError => e
+rescue OptionParser::ParseError, ViddlRb::RequirementError => e
   puts "Error: #{e.message}"
   exit(1)
 
