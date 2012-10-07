@@ -8,7 +8,7 @@ class Downloader
       url = url_name[:url]
       name = url_name[:name]
 
-      result = save_file(url, name, params[:save_dir])
+      result = ViddlRb::DownloadHelper.save_file(url, name, :save_dir => params[:save_dir], :tool => params[:tool])
       unless result
         raise DownloadFailedError, "Download for #{name} failed."
       else
@@ -16,10 +16,5 @@ class Downloader
         ViddlRb::AudioHelper.extract(name, params[:save_dir]) if params[:extract_audio]
       end
     end
-  end
-
-  # TODO save_dir is not used yet
-  def save_file(url, name, save_dir)
-    ViddlRb::DownloadHelper.save_file(url, name, save_dir)
   end
 end
