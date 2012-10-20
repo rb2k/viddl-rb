@@ -1,4 +1,4 @@
-require 'rest_client'
+require 'open-uri'
 class Soundcloud < PluginBase
   # this will be called by the main app to check whether this plugin is responsible for the url passed
   def self.matches_provider?(url)
@@ -7,7 +7,7 @@ class Soundcloud < PluginBase
 
   # return the url for original video file and title
   def self.get_urls_and_filenames(url, options = {})
-    doc          = Nokogiri::HTML(RestClient.get(url).body)
+    doc          = Nokogiri::HTML(open(url))
     download_filename = doc.at("#main-content-inner img[class=waveform]").attributes["src"].value.to_s.match(/\.com\/(.+)\_/)[1]
     download_url = "http://media.soundcloud.com/stream/#{download_filename}"
     file_name    = transliterate("#{doc.at('//h1/em').text.chomp}") + ".mp3"

@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = "viddl-rb"
-  s.version     = "0.75"
+  s.version     = "0.76"
   s.author      = "Marc Seeger"
   s.email       = "mail@marc-seeger.de"
   s.homepage    = "https://github.com/rb2k/viddl-rb"
@@ -17,9 +17,9 @@ Gem::Specification.new do |s|
   s.add_dependency "jruby-openssl" if RUBY_PLATFORM == "java"
   s.add_dependency('nokogiri')
   s.add_dependency('mechanize')
-  s.add_dependency('rest-client')
   s.add_dependency('progressbar')
   s.add_development_dependency('rake')
+  s.add_development_dependency('rest-client')
   s.add_development_dependency('minitest')
   
 end

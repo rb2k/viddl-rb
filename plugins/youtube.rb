@@ -1,3 +1,4 @@
+require 'open-uri'
 
 class Youtube < PluginBase
   #this will be called by the main app to check whether this plugin is responsible for the url passed
@@ -10,14 +11,14 @@ class Youtube < PluginBase
     puts "[YOUTUBE] Retrieving videos..."
     urls_titles = Hash.new
     result_feed = Nokogiri::XML(open(feed_url))
-    urls_titles.merge!(grab_ut(result_feed))
+    urls_titles.merge!(grab_urls_and_titles(result_feed))
 
     #as long as the feed has a next link we follow it and add the resulting video urls
     loop do   
       next_link = result_feed.search("//feed/link[@rel='next']").first
       break if next_link.nil?
       result_feed = Nokogiri::HTML(open(next_link["href"]))
-      urls_titles.merge!(grab_ut(result_feed))
+      urls_titles.merge!(grab_urls_and_titles(result_feed))
     end
 
     self.filter_urls(urls_titles)
@@ -35,7 +36,7 @@ class Youtube < PluginBase
   end
 
   #extract all video urls and their titles from a feed and return in a hash
-  def self.grab_ut(feed)
+  def self.grab_urls_and_titles(feed)
     feed.remove_namespaces!  #so that we can get to the titles easily
     urls   = feed.search("//entry/link[@rel='alternate']").map { |link| link["href"] }
     titles = feed.search("//entry/group/title").map { |title| title.text } 
@@ -110,7 +111,7 @@ class Youtube < PluginBase
     end
     #let's get some infos about the video. data is urlencoded
     yt_url = "http://www.youtube.com/get_video_info?video_id=#{video_id}"
-    video_info = RestClient.get(yt_url).body
+    video_info = open(yt_url).read
     #converting the huge infostring into a hash. simply by splitting it at the & and then splitting it into key and value arround the =
     #[...]blabla=blubb&narf=poit&marc=awesome[...]
     video_info_hash = Hash[*video_info.split("&").collect { |v| 
