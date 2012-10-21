@@ -109,7 +109,6 @@ __Requirements:__
 * curl/wget or the [progress bar](http://github.com/nex3/ruby-progressbar/) gem  
 * [Nokogiri](http://nokogiri.org/)
 * [Mechanize](http://mechanize.rubyforge.org/)
-* [Rest-Client](https://github.com/archiloque/rest-client)
 * ffmpeg if you want to extract audio tracks from the videos
 
 __Co Maintainer:__
