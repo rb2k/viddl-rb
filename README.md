@@ -20,6 +20,7 @@ Viddl-rb supports the following command line options:
 -f, --filter REGEX               Filters a video playlist according to the regex (Youtube only right now)
 -s, --save-dir DIRECTORY         Specifies the directory where videos should be saved
 -d, --downloader TOOL            Specifies the tool to download with. Supports 'wget', 'curl' and 'net-http'
+-q, --quality QUALITY            Specifies the video format and resolution in the following way => resolution:extension (e.g. 720:mp4). Currently only supported by the Youtube plugin.
 -h, --help                       Displays the help screen
 ```
 

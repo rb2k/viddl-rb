@@ -23,6 +23,18 @@ class TestURLExtraction < MiniTest::Unit::TestCase
     assert_equal $?, 0
     can_download_test(result)
   end
+
+  def test_youtube_different_formats
+    result = `ruby bin/viddl-rb http://www.youtube.com/watch?v=Zj3tYO9co44 --url-only --quality 720:webm`
+    assert_equal $?, 0
+    can_download_test(result)
+    assert result.include?("format 45 -> WebM 1280x720")
+
+    result2 = `ruby bin/viddl-rb http://www.youtube.com/watch?v=Zj3tYO9co44 --url-only --quality 720` 
+    assert_equal $?, 0
+    can_download_test(result2)
+    assert result2.include?("format 22 -> MP4 1280x720")
+  end
   
   def test_veoh
     result = `ruby bin/viddl-rb http://www.veoh.com/watch/v23858585TPfM8M8z --url-only`
