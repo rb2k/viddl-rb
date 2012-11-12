@@ -14,6 +14,8 @@ class ParameterParser
   # :title_only       => do not download, only print the titles to stdout
   # :playlist_filter  => a regular expression used to filter playlists
   # :save_dir         => the directory where the videos are saved
+  # :tool             => the download tool (wget, curl, net/http) to use
+  # :quality          => the resolution and format to download
   def self.parse_app_parameters(args)
 
     # Default option values are set here
@@ -23,7 +25,8 @@ class ParameterParser
       :title_only       => false,
       :playlist_filter  => nil,
       :save_dir         => DEFAULT_SAVE_DIR,
-      :tool             => nil
+      :tool             => nil,
+      :quality          => nil
     }
 
     optparse = OptionParser.new do |opts|
@@ -63,6 +66,20 @@ class ParameterParser
         else
           raise OptionParser::InvalidArgument.new("'#{tool}' is not a valid tool.")
         end
+      end
+
+      opts.on("-q", "--quality QUALITY", 
+          "Specifies the video format and resolution in the following way => resolution:extension (e.g. 720:mp4)") do |quality|
+        if match = quality.match(/(\d+):(.*)/)
+          res = match[1]
+          ext = match[2]
+        elsif match = quality.match(/\d+/)
+          res = match[0]
+          ext = nil
+        else
+          raise OptionParse.InvalidArgument.new("#{quality} is not a valid argument.")
+        end
+        options[:quality] = {:extension => ext, :resolution => res}
       end
 
       opts.on_tail('-h', '--help', 'Display this screen') do
