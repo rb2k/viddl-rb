@@ -6,15 +6,15 @@ module ViddlRb
 
     #viddl will use the first of these tools it finds on the system to download the video.
     #if the system does not have any of these tools, net/http is used instead.
-    TOOLS_PRIORITY_LIST = [:wget, :curl] 
-    
+    TOOLS_PRIORITY_LIST = [:wget, :curl]
+
     #simple helper that will save a file from the web and save it with a progress bar
     def self.save_file(file_url, file_name, opts = {})
       trap("SIGINT") { puts "goodbye"; exit }
 
       #default options
-      options = {:save_dir => ".", 
-                 :amount_of_retries => 6, 
+      options = {:save_dir => ".",
+                 :amount_of_retries => 6,
                  :tool => get_tool}
 
       opts[:tool] = options[:tool] if opts[:tool].nil?
@@ -37,15 +37,15 @@ module ViddlRb
           require_progressbar
           puts "Using net/http"
           success = download_and_save_file(file_url, file_path)
-        end  
+        end
         #we were successful, we're outta here
         if success
           break
         else
-          puts "Download seems to have failed (retrying, attempt #{i+1}/#{amount_of_retries})"
+          puts "Download seems to have failed (retrying, attempt #{i+1}/#{options[:amount_of_retries]})"
           sleep 2
         end
-      end    
+      end
       success
     end
 
@@ -73,7 +73,7 @@ module ViddlRb
 
       Net::HTTP.start(uri.host, uri.port) do |http|
         http.request_get(uri.request_uri) do |res|
-          file_size = res.read_header["content-length"].to_i 
+          file_size = res.read_header["content-length"].to_i
           bar = ProgressBar.new(File.basename(full_path), file_size)
           bar.file_transfer_mode
           res.read_body do |segment|
