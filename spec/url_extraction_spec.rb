@@ -24,16 +24,17 @@ class TestURLExtraction < MiniTest::Unit::TestCase
     can_download_test(result)
   end
 
+  # see http://en.wikipedia.org/wiki/YouTube#Quality_and_codecs for format codes
   def test_youtube_different_formats
     result = `ruby bin/viddl-rb http://www.youtube.com/watch?v=Zj3tYO9co44 --url-only --quality 720:webm`
     assert_equal $?, 0
     can_download_test(result)
-    assert result.include?("format 45 -> WebM 1280x720")
+    assert result.include?("itag=45")
 
     result2 = `ruby bin/viddl-rb http://www.youtube.com/watch?v=Zj3tYO9co44 --url-only --quality 720` 
     assert_equal $?, 0
     can_download_test(result2)
-    assert result2.include?("format 22 -> MP4 1280x720")
+    assert result2.include?("itag=22")
   end
   
   def test_veoh
