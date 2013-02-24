@@ -1,217 +1,139 @@
-require 'open-uri'
 
 class Youtube < PluginBase
 
-  VIDEO_INFO_URL = "http://www.youtube.com/get_video_info?video_id="
-
+  # see http://en.wikipedia.org/wiki/YouTube#Quality_and_codecs
+  # TODO: we don't have all the formats from the wiki article here
   VIDEO_FORMATS = {
-    "38" => {:extension => "mp4", :name => "MP4 Highest Quality 4096x3027 (H.264, AAC)"},            
-    "37" => {:extension => "mp4", :name => "MP4 Highest Quality 1920x1080 (H.264, AAC)"},
-    "22" => {:extension => "mp4", :name => "MP4 1280x720 (H.264, AAC)"},
+    "38" => {:extension => "mp4",  :name => "MP4 Highest Quality 4096x3027 (H.264, AAC)"},            
+    "37" => {:extension => "mp4",  :name => "MP4 Highest Quality 1920x1080 (H.264, AAC)"},
+    "22" => {:extension => "mp4",  :name => "MP4 1280x720 (H.264, AAC)"},
+    "46" => {:extension => "webm", :name => "WebM 1920x1080 (VP8, Vorbis)"},
     "45" => {:extension => "webm", :name => "WebM 1280x720 (VP8, Vorbis)"},
     "44" => {:extension => "webm", :name => "WebM 854x480 (VP8, Vorbis)"},
-    "18" => {:extension => "mp4", :name => "MP4 640x360 (H.264, AAC)"},
-    "35" => {:extension => "flv", :name => "FLV 854x480 (H.264, AAC)"},
-    "34" => {:extension => "flv", :name => "FLV 640x360 (H.264, AAC)"},
-    "5"  => {:extension => "flv", :name => "FLV 400x240 (Soerenson H.263)"},
-    "17" => {:extension => "3gp", :name => "3gp"}    
+    "43" => {:extension => "webm", :name => "WebM 480×360 (VP8, Vorbis)"},
+    "18" => {:extension => "mp4",  :name => "MP4 640x360 (H.264, AAC)"},
+    "35" => {:extension => "flv",  :name => "FLV 854x480 (H.264, AAC)"},
+    "34" => {:extension => "flv",  :name => "FLV 640x360 (H.264, AAC)"},
+    "5"  => {:extension => "flv",  :name => "FLV 400x240 (Soerenson H.263)"},
+    "17" => {:extension => "3gp",  :name => "3gp"}    
   }
 
   DEFAULT_FORMAT_ORDER = %w[38 37 22 45 44 18 35 34 5 7]
+  VIDEO_INFO_URL       = "http://www.youtube.com/get_video_info?video_id="
+  VIDEO_INFO_PARMS     = "&ps=default&eurl=&gl=US&hl=en"
 
-  #this will be called by the main app to check whether this plugin is responsible for the url passed
+  # this will be called by the main app to check whether this plugin is responsible for the url passed
   def self.matches_provider?(url)
     url.include?("youtube.com") || url.include?("youtu.be")
   end
-  
-  #get all videos and return their urls in an array
-  def self.get_video_urls(feed_url)
-    notify "Retrieving videos..."
-    urls_titles = Hash.new
-    result_feed = Nokogiri::XML(open(feed_url))
-    urls_titles.merge!(grab_urls_and_titles(result_feed))
-
-    #as long as the feed has a next link we follow it and add the resulting video urls
-    loop do   
-      next_link = result_feed.search("//feed/link[@rel='next']").first
-      break if next_link.nil?
-      result_feed = Nokogiri::HTML(open(next_link["href"]))
-      urls_titles.merge!(grab_urls_and_titles(result_feed))
-    end
-
-    self.filter_urls(urls_titles)
-  end
-
-  #returns only the urls that match the --filter argument regex (if present)
-  def self.filter_urls(url_hash)
-    if @filter
-      notify "Using filter: #{@filter}"
-      filtered = url_hash.select { |url, title| title =~ @filter }
-      filtered.keys
-    else
-      url_hash.keys
-    end
-  end
-
-  #extract all video urls and their titles from a feed and return in a hash
-  def self.grab_urls_and_titles(feed)
-    feed.remove_namespaces!  #so that we can get to the titles easily
-    urls   = feed.search("//entry/link[@rel='alternate']").map { |link| link["href"] }
-    titles = feed.search("//entry/group/title").map { |title| title.text } 
-    Hash[urls.zip(titles)]    #hash like this: url => title
-  end
-
-  def self.parse_playlist(url)
-    #http://www.youtube.com/view_play_list?p=F96B063007B44E1E&search_query=welt+auf+schwäbisch
-    #http://www.youtube.com/watch?v=9WEP5nCxkEY&videos=jKY836_WMhE&playnext_from=TL&playnext=1
-    #http://www.youtube.com/watch?v=Tk78sr5JMIU&videos=jKY836_WMhE
-
-    playlist_ID = url[/(?:list=PL|p=)(\w{16})&?/,1]
-    notify "Playlist ID: #{playlist_ID}"
-    feed_url = "http://gdata.youtube.com/feeds/api/playlists/#{playlist_ID}?&max-results=50&v=2"
-    url_array = self.get_video_urls(feed_url)
-    notify "#{url_array.size} links found!"
-    url_array
-  end
-
-  def self.parse_user(username)
-    notify "User: #{username}"
-    feed_url = "http://gdata.youtube.com/feeds/api/users/#{username}/uploads?&max-results=50&v=2"
-    url_array = get_video_urls(feed_url)
-    notify "#{url_array.size} links found!"
-    url_array
-  end
 
   def self.get_urls_and_filenames(url, options = {})
-    @filter = options[:playlist_filter]                                    #used to filter a playlist in self.filter_urls
-    @quality = options[:quality]
+    @quality    = options[:quality]
+    filter      = options[:playlist_filter]
+    parser      = PlaylistParser.new
+    return_vals = []
 
-    return_values = []
-
-    if url.include?("view_play_list") || url.include?("playlist?list=")    #if playlist
-      notify "playlist found! analyzing..."
-      files = parse_playlist(url)
-      notify "Starting playlist download"
-      files.each do |file|
-        notify "Downloading next movie on the playlist (#{file})"
-        return_values << grab_single_url_filename(file)
-      end  
-    elsif match = url.match(/\/user\/([\w\d]+)$/)                          #if user url, e.g. youtube.com/user/woot
-      username = match[1]
-      video_urls = parse_user(username)
-      notify "Starting user videos download"
-      video_urls.each do |url|
-        notify "Downloading next user video (#{url})"
-        return_values << grab_single_url_filename(url)
-      end
-    else                                                                   #if single video
-      return_values << grab_single_url_filename(url)
-    end 
-
-    return_values.reject! { |value| value == :no_embed }                   #remove results that can not be downloaded
-
-    if return_values.empty?
-      raise CouldNotDownloadVideoError, "No videos could be downloaded - embedding disabled."
+    if playlist_urls = parser.get_playlist_urls(url, filter)
+      playlist_urls.each { |url| return_vals << grab_single_url_filename(url) }
     else
-      return_values
+      return_vals << grab_single_url_filename(url)
+    end
+
+    clean_return_values(return_vals)
+  end
+
+  def self.clean_return_values(return_values)
+    cleaned = return_values.reject { |val| val == :no_embed }
+
+    if cleaned.empty?
+      download_error("No videos could be downloaded.")
+    else
+      cleaned
     end
   end
- 
+
   def self.grab_single_url_filename(url)
-    #the youtube video ID looks like this: [...]v=abc5a5_afe5agae6g&[...], we only want the ID (the \w in the brackets)
-    #addition: might also look like this /v/abc5-a5afe5agae6g
-    # alternative:  video_id = url[/v[\/=]([\w-]*)&?/, 1]
-    # First get the redirect
+    video_info   = get_video_info(url)
+    video_params = extract_video_parameters(video_info)
 
-    url = open(url).base_uri.to_s if url.include?("youtu.be")
-    video_id = url[/(v|embed)[=\/]([^\/\?\&]*)/,2]
-    video_id ? notify("ID FOUND: #{video_id}") : download_error("No video id found.")
+    if video_params[:embeddable]
+      urls_formats    = extract_urls_formats(video_info)
+      selected_format = choose_format(urls_formats)
+      title           = video_params[:title]
+      file_name       = PluginBase.make_filename_safe(title) + "." + VIDEO_FORMATS[selected_format][:extension]
 
-    #let's get some infos about the video. data is urlencoded
-    video_info = open(VIDEO_INFO_URL + video_id).read
-
-    #converting the huge infostring into a hash. simply by splitting it at the & and then splitting it into key and value arround the =
-    #[...]blabla=blubb&narf=poit&marc=awesome[...]
-    video_info_hash = Hash[*video_info.split("&").collect { |v| 
-      key, encoded_value = v.split("=")
-      if encoded_value.to_s.empty?
-        value = ""
-      else
-      #decode until everything is "normal"
-        while (encoded_value != CGI::unescape(encoded_value)) do
-          #"decoding"
-          encoded_value = CGI::unescape(encoded_value)
-        end
-        value = encoded_value
-      end
-
-      if key =~ /_map/
-        orig_value = value
-        value = value.split(",")
-        if key == "url_encoded_fmt_stream_map"
-          url_array = orig_value.split("url=").map{|url_string| url_string.chomp(",")}
-          result_hash = {}
-          url_array.each do |url|
-            next if url.to_s.empty? || url.to_s.match(/^itag/)
-            format_id = url[/\&itag=(\d+)/, 1]
-            result_hash[format_id] = url
-          end
-          value = result_hash
-        elsif key == "fmt_map"
-          value = Hash[*value.collect { |v| 
-              k2, *v2 = v.split("/")
-              [k2, v2]
-            }.flatten(1)]
-        elsif key == "fmt_url_map" || key == "fmt_stream_map"
-          Hash[*value.collect { |v| v.split("|")}.flatten]
-        end
-      end
-      [key, value]
-    }.flatten]
-    
-    return :no_embed if video_info_hash["status"] == "fail"
-      
-    title = video_info_hash["title"]
-    length_s = video_info_hash["length_seconds"]
-    token = video_info_hash["token"]
-
-    notify "Title: #{title}"
-    notify "Length: #{length_s} s"
-    notify "t-parameter: #{token}"
-
-    #for the formats, see: http://en.wikipedia.org/wiki/YouTube#Quality_and_codecs
-    fmt_list = video_info_hash["fmt_list"].split(",")
-
-    selected_format = pick_video_format(fmt_list)
-    puts "(downloading format #{selected_format} -> #{VIDEO_FORMATS[selected_format][:name]})"
-
-    download_url = video_info_hash["url_encoded_fmt_stream_map"][selected_format]
-
-    #if download url ends with a ';' followed by a codec string remove that part because it stops URI.parse from working
-    
-    if codec_part = download_url[/;\s*codec.+/m]    #if we have the ; codec substring  
-      sig = codec_part[/&sig=(.+?)&/, 1]            #extract the signature
-
-      download_url.sub!(codec_part, "")             #remove the ; codec substring from the download url
-      download_url.concat("&signature=#{sig}")      #concatenate the correct signature attribute
+      {:url => urls_formats[selected_format], :name => file_name}
     else
-      download_url.sub!("&sig=", "&signature=")     #else we just have to change sig to signature
+      notify "Video is not embeddable and can't be downloaded."
+      :no_embed
     end
-
-    file_name = PluginBase.make_filename_safe(title) + "." + VIDEO_FORMATS[selected_format][:extension]
-    puts "downloading to " + file_name + "\n\n"
-    {:url => download_url, :name => file_name}
   end
 
-  #returns the format of the video the user picked or the first default format if it does not exist
-  def self.pick_video_format(fmt_list)
-    available_formats = fmt_list.map { |format| format.split("/").first }
-    notify "formats available: #{available_formats.inspect}"
+  def self.get_video_info(url)
+    id = extract_video_id(url)
+    request_url = VIDEO_INFO_URL + id + VIDEO_INFO_PARMS
+    open(request_url).read
+  end
 
-    if @quality                         #if the user specified a format
+  def self.extract_video_id(url)
+    # the youtube video ID looks like this: [...]v=abc5a5_afe5agae6g&[...], we only want the ID (the \w in the brackets)
+    # addition: might also look like this /v/abc5-a5afe5agae6g
+    # alternative:  video_id = url[/v[\/=]([\w-]*)&?/, 1]
+    url = open(url).base_uri.to_s if url.include?("youtu.be")
+    video_id = url[/(v|embed)[=\/]([^\/\?\&]*)/, 2]
+
+    if video_id
+      notify("ID FOUND: #{video_id}")
+      video_id
+    else
+      download_error("No video id found.")
+    end
+  end
+
+  def self.extract_video_parameters(video_info)
+    decoded = url_decode(video_info)
+
+    {:title      => decoded[/title=(.+?)(?:&|$)/, 1],
+     :length_sec => decoded[/length_seconds=(.+?)(?:&|$)/, 1],
+     :author     => decoded[/author=(.+?)(?:&|$)/, 1],
+     :embeddable => !decoded.include?("status=fail")}
+  end
+
+  def self.extract_urls_formats(video_info)
+    stream_map = video_info[/url_encoded_fmt_stream_map=(.+?)(?:&|$)/, 1]
+    parse_stream_map(stream_map)
+  end
+
+  def self.parse_stream_map(stream_map)
+    urls = extract_download_urls(stream_map)
+    formats_urls = {}
+
+    urls.each do |url|
+      format = url[/itag=(\d+)/, 1]
+      formats_urls[format] = url
+    end
+
+    formats_urls
+  end
+
+  def self.extract_download_urls(stream_map)
+    entries = stream_map.split("%2C")
+    decoded = entries.map { |entry| url_decode(entry) }
+
+    decoded.map do |entry|
+      url = entry[/url=(.*?itag=.+?)(?:itag=|;|$)/, 1]
+      sig = entry[/sig=(.+?)(?:&|$)/, 1]
+
+      url + "&signature=#{sig}"
+    end
+  end
+
+  def self.choose_format(urls_formats)
+    available_formats = urls_formats.keys
+
+    if @quality                        #if the user specified a format
       ext = @quality[:extension]
       res = @quality[:resolution]
-
       #gets a nested array with all the formats of the same res as the user wanted
       requested = VIDEO_FORMATS.select { |id, format| format[:name].include?(res) }.to_a
 
@@ -219,8 +141,8 @@ class Youtube < PluginBase
         notify "Requested format \"#{res}:#{ext}\" not found. Downloading default format."
         get_default_format(available_formats)
       else
-        pick = requested.find { |format| format[1][:extension] == ext }             #get requsted extension if possible
-        pick ? pick.first : get_default_format(requested.map { |req| req.first })   #else return the default format
+        pick = requested.find { |format| format[1][:extension] == ext }             # get requsted extension if possible
+        pick ? pick.first : get_default_format(requested.map { |req| req.first })   # else return the default format
       end
     else
       get_default_format(available_formats)
@@ -231,7 +153,102 @@ class Youtube < PluginBase
     DEFAULT_FORMAT_ORDER.find { |default| available.include?(default) }
   end
 
+  def self.url_decode(text)
+    while text != (decoded = CGI::unescape(text)) do
+      text = decoded
+    end
+    text
+  end
+
   def self.notify(message)
     puts "[YOUTUBE] #{message}"
+  end
+
+  def self.download_error(message)
+    raise CouldNotDownloadVideoError, message
+  end
+
+  #
+  # class PlaylistParser
+  #_____________________
+
+  class PlaylistParser
+
+    PLAYLIST_FEED = "http://gdata.youtube.com/feeds/api/playlists/%s?&max-results=50&v=2"
+    USER_FEED     = "http://gdata.youtube.com/feeds/api/users/%s/uploads?&max-results=50&v=2"
+
+    def get_playlist_urls(url, filter = nil)
+      @filter = filter
+
+      if url.include?("view_play_list") || url.include?("playlist?list=")     # if playlist URL
+        parse_playlist(url)
+      elsif username = url[/\/user\/([\w\d]+)(?:\/|$)/, 1]                       # if user URL
+        parse_user(username)
+      else                                                                    # if neither return nil
+        nil
+      end
+    end
+
+    def parse_playlist(url)
+      #http://www.youtube.com/view_play_list?p=F96B063007B44E1E&search_query=welt+auf+schwäbisch
+      #http://www.youtube.com/watch?v=9WEP5nCxkEY&videos=jKY836_WMhE&playnext_from=TL&playnext=1
+      #http://www.youtube.com/watch?v=Tk78sr5JMIU&videos=jKY836_WMhE
+
+      playlist_ID = url[/(?:list=PL|p=)(.+?)(?:&|\/|$)/, 1]
+      notify "Playlist ID: #{playlist_ID}"
+      feed_url = PLAYLIST_FEED % playlist_ID
+      url_array = get_video_urls(feed_url)
+      notify "#{url_array.size} links found!"
+      url_array
+    end
+
+    def parse_user(username)
+      notify "User: #{username}"
+      feed_url = USER_FEED % username
+      url_array = get_video_urls(feed_url)
+      notify "#{url_array.size} links found!"
+      url_array
+    end
+
+    #get all videos and return their urls in an array
+    def get_video_urls(feed_url)
+      notify "Retrieving videos..."
+      urls_titles = {}
+      result_feed = Nokogiri::XML(open(feed_url))
+      urls_titles.merge!(grab_urls_and_titles(result_feed))
+
+      #as long as the feed has a next link we follow it and add the resulting video urls
+      loop do   
+        next_link = result_feed.search("//feed/link[@rel='next']").first
+        break if next_link.nil?
+        result_feed = Nokogiri::HTML(open(next_link["href"]))
+        urls_titles.merge!(grab_urls_and_titles(result_feed))
+      end
+
+      filter_urls(urls_titles)
+    end
+
+    #extract all video urls and their titles from a feed and return in a hash
+    def grab_urls_and_titles(feed)
+      feed.remove_namespaces!  #so that we can get to the titles easily
+      urls   = feed.search("//entry/link[@rel='alternate']").map { |link| link["href"] }
+      titles = feed.search("//entry/group/title").map { |title| title.text } 
+      Hash[urls.zip(titles)]    #hash like this: url => title
+    end
+
+    #returns only the urls that match the --filter argument regex (if present)
+    def filter_urls(url_hash)
+      if @filter
+        notify "Using filter: #{@filter}"
+        filtered = url_hash.select { |url, title| title =~ @filter }
+        filtered.keys
+      else
+        url_hash.keys
+      end
+    end
+
+    def notify(message)
+      Youtube.notify(message)
+    end
   end
 end
