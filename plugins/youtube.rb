@@ -4,7 +4,7 @@ class Youtube < PluginBase
   # see http://en.wikipedia.org/wiki/YouTube#Quality_and_codecs
   # TODO: we don't have all the formats from the wiki article here
   VIDEO_FORMATS = {
-    "38" => {:extension => "mp4",  :name => "MP4 Highest Quality 4096x3027 (H.264, AAC)"},            
+    "38" => {:extension => "mp4",  :name => "MP4 Highest Quality 4096x3027 (H.264, AAC)"},
     "37" => {:extension => "mp4",  :name => "MP4 Highest Quality 1920x1080 (H.264, AAC)"},
     "22" => {:extension => "mp4",  :name => "MP4 1280x720 (H.264, AAC)"},
     "46" => {:extension => "webm", :name => "WebM 1920x1080 (VP8, Vorbis)"},
@@ -15,10 +15,10 @@ class Youtube < PluginBase
     "35" => {:extension => "flv",  :name => "FLV 854x480 (H.264, AAC)"},
     "34" => {:extension => "flv",  :name => "FLV 640x360 (H.264, AAC)"},
     "5"  => {:extension => "flv",  :name => "FLV 400x240 (Soerenson H.263)"},
-    "17" => {:extension => "3gp",  :name => "3gp"}    
+    "17" => {:extension => "3gp",  :name => "3gp"}
   }
 
-  DEFAULT_FORMAT_ORDER = %w[38 37 22 45 44 18 35 34 5 7]
+  DEFAULT_FORMAT_ORDER = %w[38 37 22 46 45 44 43 18 35 34 5 17]
   VIDEO_INFO_URL       = "http://www.youtube.com/get_video_info?video_id="
   VIDEO_INFO_PARMS     = "&ps=default&eurl=&gl=US&hl=en"
 
@@ -53,20 +53,37 @@ class Youtube < PluginBase
   end
 
   def self.grab_single_url_filename(url)
+    grab_url_embeddable(url) || grab_url_non_embeddable(url)
+  end
+
+  def self.grab_url_embeddable(url)
     video_info   = get_video_info(url)
     video_params = extract_video_parameters(video_info)
-
-    if video_params[:embeddable]
-      urls_formats    = extract_urls_formats(video_info)
-      selected_format = choose_format(urls_formats)
-      title           = video_params[:title]
-      file_name       = PluginBase.make_filename_safe(title) + "." + VIDEO_FORMATS[selected_format][:extension]
-
-      {:url => urls_formats[selected_format], :name => file_name}
-    else
-      notify "Video is not embeddable and can't be downloaded."
-      :no_embed
+    unless video_params[:embeddable]
+      notify("VIDEO IS NOT EMBEDDABLE")
+      return false
     end
+
+    urls_formats    = extract_urls_formats(video_info)
+    selected_format = choose_format(urls_formats)
+    title           = video_params[:title]
+    file_name       = PluginBase.make_filename_safe(title) + "." + VIDEO_FORMATS[selected_format][:extension]
+
+    {:url => urls_formats[selected_format], :name => file_name}
+  end
+
+  def self.grab_url_non_embeddable(url)
+    video_info = open(url).read
+    stream_map = video_info[/url_encoded_fmt_stream_map\" *: *\"([^\"]+)\"/,1]
+    urls_formats = parse_stream_map(url_decode(stream_map))
+    selected_format = choose_format(urls_formats)
+    title = video_info[/<meta name="title" content="([^"]*)">/, 1]
+    file_name = PluginBase.make_filename_safe(title) + "." + VIDEO_FORMATS[selected_format][:extension]
+
+    # cleaning
+    clean_url = urls_formats[selected_format].gsub(/\\u0026[^&]*/, "")
+
+    {:url => clean_url, :name => file_name}
   end
 
   def self.get_video_info(url)
@@ -218,7 +235,7 @@ class Youtube < PluginBase
       urls_titles.merge!(grab_urls_and_titles(result_feed))
 
       #as long as the feed has a next link we follow it and add the resulting video urls
-      loop do   
+      loop do
         next_link = result_feed.search("//feed/link[@rel='next']").first
         break if next_link.nil?
         result_feed = Nokogiri::HTML(open(next_link["href"]))
@@ -232,7 +249,7 @@ class Youtube < PluginBase
     def grab_urls_and_titles(feed)
       feed.remove_namespaces!  #so that we can get to the titles easily
       urls   = feed.search("//entry/link[@rel='alternate']").map { |link| link["href"] }
-      titles = feed.search("//entry/group/title").map { |title| title.text } 
+      titles = feed.search("//entry/group/title").map { |title| title.text }
       Hash[urls.zip(titles)]    #hash like this: url => title
     end
 

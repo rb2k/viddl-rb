@@ -9,19 +9,11 @@ require 'viddl-rb.rb'
 class TestURLExtraction < MiniTest::Unit::TestCase
 
   def test_can_get_single_youtube_url_and_filename
-    download_urls = ViddlRb.get_urls_names("http://www.youtube.com/watch?v=gZ8w4vVaOL8")
-    
-    url = download_urls.first[:url]
-    name = download_urls.first[:name]
+    can_get_single_youtube_url_and_filename("http://www.youtube.com/watch?v=gZ8w4vVaOL8", "Nyan_Nyan_10_hours")
+  end
 
-    assert_equal("Nyan_Nyan_10_hours.mp4", name)          # check that the name is correct
-    assert_match(/^http/, url)                            # check that the string starts with http
-    assert_match(/c.youtube.com\/videoplayback/, url)     # check that we have the video playback string
-
-    Net::HTTP.get_response(URI(url)) do |res|             # check that the location header is empty
-      assert_nil(res["location"])
-      break # break here because otherwise it will read the body for some reason (I think this is bug in Ruby)
-    end
+  def test_can_get_single_youtube_url_and_filename_for_non_embeddable_videos
+    can_get_single_youtube_url_and_filename("http://www.youtube.com/watch?v=6TT19cB0NTM", "Oh__Yeah__by_Chickenfoot_from_the_Tonight_Show_w_Conan_O__39_Brien")
   end
 
   def test_can_get_youtube_playlist
@@ -34,12 +26,6 @@ class TestURLExtraction < MiniTest::Unit::TestCase
     assert_equal(".mp4", download_urls.first[:ext])
   end
 
-  def test_raises_download_error_when_video_cannot_be_downloaded
-    assert_raises(ViddlRb::DownloadError) do
-      ViddlRb.get_urls("http://www.youtube.com/watch?v=6TT19cB0NTM") # embedding is disabled for this video
-    end
-  end
-
   def test_raises_plugin_error_when_plugin_fails
     assert_raises(ViddlRb::PluginError) do
       ViddlRb.get_urls("http://www.dailymotion.com/***/") # bogus url
@@ -50,4 +36,21 @@ class TestURLExtraction < MiniTest::Unit::TestCase
     assert_nil(ViddlRb.get_urls("12345"))
     assert_nil(ViddlRb.get_urls("http://www.google.com"))
   end  
+
+  private
+  def can_get_single_youtube_url_and_filename(video_url, filename)
+    download_urls = ViddlRb.get_urls_names(video_url)
+
+    url = download_urls.first[:url]
+    name = download_urls.first[:name]
+
+    assert_match(/^#{filename}\./, name)                  # check that the name is correct
+    assert_match(/^http/, url)                            # check that the string starts with http
+    assert_match(/c.youtube.com\/videoplayback/, url)     # check that we have the video playback string
+
+    Net::HTTP.get_response(URI(url)) do |res|             # check that the location header is empty
+      assert_nil(res["location"])
+      break # break here because otherwise it will read the body for some reason (I think this is bug in Ruby)
+    end
+  end
 end
