@@ -13,9 +13,10 @@ class TestURLExtraction < MiniTest::Unit::TestCase
   end
 
   def curl_code_grabber(url, user_agent = "Wget/1.8.1")
-    curl_command = "curl --silent -I -L -A \"#{user_agent}\" \"#{url}\" | grep \"HTTP/\""
-    result = `#{curl_command}`.to_s
-    result.split("\n").last.split(" ")[1].to_i rescue 0
+    curl_command = "curl --silent -I -L -A \"#{user_agent}\" \"#{url}\""
+    result = `#{curl_command}`
+    http_code = result.scan(/HTTP\/\d\.\d\s+(\d+)/).flatten.last
+    http_code.to_i rescue 0  # if no match, return 0
   end
     
   def test_youtube
