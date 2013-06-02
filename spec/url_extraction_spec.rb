@@ -62,6 +62,12 @@ class TestURLExtraction < MiniTest::Unit::TestCase
     can_download_test(result) {|url_output| curl_code_grabber(url_output) }
   end
 
+  def test_soundcloud_https
+    result = `ruby bin/viddl-rb https://soundcloud.com/rjchevalier/remembering-mavi-koy-wip --url-only`
+    assert_equal $?, 0
+    can_download_test(result) {|url_output| curl_code_grabber(url_output) }
+  end
+
   def test_blip_tv
     result = `ruby bin/viddl-rb http://blip.tv/red-vs-blue/red-vs-blue-episode-11-5526271 --url-only`
     assert_equal $?, 0
