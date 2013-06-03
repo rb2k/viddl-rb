@@ -7,7 +7,7 @@ class Soundcloud < PluginBase
 
   # return the url for original video file and title
   def self.get_urls_and_filenames(url, options = {})
-    doc          = Nokogiri::HTML(open(url))
+    doc          = Nokogiri::HTML(open(get_http_url(url)))
     download_filename = doc.at("#main-content-inner img[class=waveform]").attributes["src"].value.to_s.match(/\.com\/(.+)\_/)[1]
     download_url = "http://media.soundcloud.com/stream/#{download_filename}"
     file_name    = transliterate("#{doc.at('//h1/em').text.chomp}") + ".mp3"
@@ -16,24 +16,27 @@ class Soundcloud < PluginBase
   end
 
   def self.transliterate(str)
-  # Based on permalink_fu by Rick Olsen
+    # Based on permalink_fu by Rick Olsen
 
-  # Downcase string
-  str.downcase!
+    # Downcase string
+    str.downcase!
 
-  # Remove apostrophes so isn't changes to isnt
-  str.gsub!(/'/, '')
+    # Remove apostrophes so isn't changes to isnt
+    str.gsub!(/'/, '')
 
-  # Replace any non-letter or non-number character with a space
-  str.gsub!(/[^A-Za-z0-9]+/, ' ')
+    # Replace any non-letter or non-number character with a space
+    str.gsub!(/[^A-Za-z0-9]+/, ' ')
 
-  # Remove spaces from beginning and end of string
-  str.strip!
+    # Remove spaces from beginning and end of string
+    str.strip!
 
-  # Replace groups of spaces with single hyphen
-  str.gsub!(/\ +/, '-')
+    # Replace groups of spaces with single hyphen
+    str.gsub!(/\ +/, '-')
 
-  str
-end
+    str
+  end
 
+  def self.get_http_url(url)
+    url.sub(/https?:\/\//, "http:\/\/")
+  end
 end
