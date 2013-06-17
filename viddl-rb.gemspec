@@ -15,7 +15,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = ">= 1.3.4"
 
   s.add_dependency "jruby-openssl" if RUBY_PLATFORM == "java"
-  s.add_dependency('nokogiri')
+  # We still want to support 1.8.7
+  s.add_dependency('nokogiri', '~> 1.5.0')
   s.add_dependency('mechanize')
   s.add_dependency('progressbar')
   s.add_development_dependency('rake')
