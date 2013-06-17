@@ -8,7 +8,7 @@ class TestURLExtraction < Minitest::Test
 
   def http_code_grabber(url, options = {})
     user_agent = options[:user_agent] || "Wget/1.8.1"
-    http_method = options[:method] || :get
+    http_method = options[:method] || :head
     RestClient.send(http_method, url, {:headers => {'User-Agent' => user_agent}}).code
   end
 
@@ -59,13 +59,13 @@ class TestURLExtraction < Minitest::Test
   def test_soundcloud
     result = `ruby bin/viddl-rb http://soundcloud.com/rjchevalier/remembering-mavi-koy-wip --url-only`
     assert_equal $?, 0
-    can_download_test(result) {|url_output| curl_code_grabber(url_output) }
+    can_download_test(result) {|url_output| curl_code_grabber(url_output, {:method => :get}) }
   end
 
   def test_soundcloud_https
     result = `ruby bin/viddl-rb https://soundcloud.com/rjchevalier/remembering-mavi-koy-wip --url-only`
     assert_equal $?, 0
-    can_download_test(result) {|url_output| curl_code_grabber(url_output) }
+    can_download_test(result) {|url_output| curl_code_grabber(url_output, {:method => :get}) }
   end
 
   def test_blip_tv
