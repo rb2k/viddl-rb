@@ -6,7 +6,7 @@ require 'minitest/autorun'
 require 'rest_client'
 require 'viddl-rb.rb'
 
-class TestURLExtraction < MiniTest::Unit::TestCase
+class TestURLExtraction < Minitest::Test
 
   def test_can_get_single_youtube_url_and_filename
     can_get_single_youtube_url_and_filename("http://www.youtube.com/watch?v=gZ8w4vVaOL8", "Nyan_Nyan_10_hours")

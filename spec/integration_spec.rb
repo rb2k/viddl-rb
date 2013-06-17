@@ -3,7 +3,7 @@ require 'minitest/autorun'
 require 'rest_client'
 require 'progressbar'
 
-class TestURLExtraction < MiniTest::Unit::TestCase
+class TestURLExtraction < Minitest::Test
   def setup
   end
 

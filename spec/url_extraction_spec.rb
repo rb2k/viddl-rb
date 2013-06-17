@@ -2,13 +2,13 @@ require 'rubygems'
 require 'minitest/autorun'
 require 'rest_client'
 
-class TestURLExtraction < MiniTest::Unit::TestCase
+class TestURLExtraction < Minitest::Test
   def setup
   end
 
   def http_code_grabber(url, options = {})
     user_agent = options[:user_agent] || "Wget/1.8.1"
-    http_method = options[:method] || :head
+    http_method = options[:method] || :get
     RestClient.send(http_method, url, {:headers => {'User-Agent' => user_agent}}).code
   end
 
