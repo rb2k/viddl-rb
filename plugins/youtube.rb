@@ -10,7 +10,7 @@ class Youtube < PluginBase
     "46" => {:extension => "webm", :name => "WebM 1920x1080 (VP8, Vorbis)"},
     "45" => {:extension => "webm", :name => "WebM 1280x720 (VP8, Vorbis)"},
     "44" => {:extension => "webm", :name => "WebM 854x480 (VP8, Vorbis)"},
-    "43" => {:extension => "webm", :name => "WebM 480×360 (VP8, Vorbis)"},
+    "43" => {:extension => "webm", :name => "WebM 480x360 (VP8, Vorbis)"},
     "18" => {:extension => "mp4",  :name => "MP4 640x360 (H.264, AAC)"},
     "35" => {:extension => "flv",  :name => "FLV 854x480 (H.264, AAC)"},
     "34" => {:extension => "flv",  :name => "FLV 640x360 (H.264, AAC)"},
