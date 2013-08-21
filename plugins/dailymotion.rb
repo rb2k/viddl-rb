@@ -1,4 +1,4 @@
-
+=begin
 class Dailymotion < PluginBase
 
   #the video quality is choosen based on the following priority list:
@@ -42,3 +42,4 @@ class Dailymotion < PluginBase
     url.gsub("\\", "")
   end
 end
+=end
