@@ -13,7 +13,7 @@ class TestURLExtraction < Minitest::Test
   end
 
   def test_can_get_single_youtube_url_and_filename_for_non_embeddable_videos
-    can_get_single_youtube_url_and_filename("http://www.youtube.com/watch?v=6TT19cB0NTM", "Oh__Yeah__by_Chickenfoot_from_the_Tonight_Show_w_Conan_O__39_Brien")
+    can_get_single_youtube_url_and_filename("http://www.youtube.com/watch?v=73rS-EnhP70", "kol")
   end
 
   def test_can_get_youtube_playlist
@@ -22,13 +22,13 @@ class TestURLExtraction < Minitest::Test
   end
 
   def test_can_extract_extensions_from_url_names
-    download_urls = ViddlRb.get_urls_exts("http://www.dailymotion.com/video/x5ppy6_foot-2008-remi-gaillard_fun")
-    assert_equal(".mp4", download_urls.first[:ext])
+    download_urls = ViddlRb.get_urls_exts("http://www.youtube.com/watch?v=73rS-EnhP70")
+    assert_equal(".webm", download_urls.first[:ext])
   end
 
   def test_raises_plugin_error_when_plugin_fails
     assert_raises(ViddlRb::PluginError) do
-      ViddlRb.get_urls("http://www.dailymotion.com/***/") # bogus url
+      ViddlRb.get_urls("http://www.vimeo.com/thisshouldnotexist991122") # bogus url
     end
   end
 
