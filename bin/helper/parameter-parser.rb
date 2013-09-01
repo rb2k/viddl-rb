@@ -10,6 +10,7 @@ class ParameterParser
   #returns a hash with the parameters in it:
   # :url              => the video url
   # :extract_audio    => should attempt to extract audio? (true/false)
+  # :skip_failed      => should skip failed downloads? (true/false)
   # :url_only         => do not download, only print the urls to stdout
   # :title_only       => do not download, only print the titles to stdout
   # :playlist_filter  => a regular expression used to filter playlists
@@ -21,6 +22,7 @@ class ParameterParser
     # Default option values are set here
     options = {
       :extract_audio    => false,
+      :skip_failed      => false,
       :url_only         => false,
       :title_only       => false,
       :playlist_filter  => nil,
@@ -38,6 +40,10 @@ class ParameterParser
         else
           raise OptionParser::ParseError.new("to extract audio you need to have ffmpeg on your PATH")
         end
+      end
+
+      opts.on("-k", "--skip-failed", "Skip failed downloads") do
+        options[:skip_failed] = true
       end
 
       opts.on("-u", "--url-only", "Prints url without downloading") do
@@ -68,8 +74,8 @@ class ParameterParser
         end
       end
 
-      opts.on("-q", "--quality QUALITY", 
-          "Specifies the video format and resolution in the following way => resolution:extension (e.g. 720:mp4)") do |quality|
+      opts.on("-q", "--quality QUALITY",
+              "Specifies the video format and resolution in the following way => resolution:extension (e.g. 720:mp4)") do |quality|
         if match = quality.match(/(\d+):(.*)/)
           res = match[1]
           ext = match[2]
@@ -91,7 +97,7 @@ class ParameterParser
     print_help_and_exit(optparse) if args.empty?    # exit if no video url
     url = args.first                                # the url is the only element left
     validate_url!(url)                              # raise exception if invalid url
-    options[:url] = url                     
+    options[:url] = url
     options
   end
 
@@ -103,7 +109,7 @@ class ParameterParser
   def self.validate_url!(url)
     unless url =~ /^http/
       raise OptionParser::InvalidArgument.new(
-        "please include 'http' with your URL e.g. http://www.youtube.com/watch?v=QH2-TGUlwu4")
+                                              "please include 'http' with your URL e.g. http://www.youtube.com/watch?v=QH2-TGUlwu4")
     end
   end
 end
