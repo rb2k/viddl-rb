@@ -15,7 +15,7 @@ Download a video:
 Viddl-rb supports the following command line options:
 ```
 -e, --extract-audio              Save video audio to file
--k  --skip-failed                Skip failed downloads
+-a, --abort-on-failure           Abort download queue if one of the videos fail to download
 -u, --url-only                   Prints url without downloading
 -t, --title-only                 Prints title without downloading
 -f, --filter REGEX               Filters a video playlist according to the regex (Youtube only right now)

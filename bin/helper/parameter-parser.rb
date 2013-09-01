@@ -22,7 +22,7 @@ class ParameterParser
     # Default option values are set here
     options = {
       :extract_audio    => false,
-      :skip_failed      => false,
+      :abort_on_failure => false,
       :url_only         => false,
       :title_only       => false,
       :playlist_filter  => nil,
@@ -42,8 +42,8 @@ class ParameterParser
         end
       end
 
-      opts.on("-k", "--skip-failed", "Skip failed downloads") do
-        options[:skip_failed] = true
+      opts.on("-a", "--abort-on-failure", "Abort download queue if one of the videos fail to download") do
+        options[:abort_on_failure] = true
       end
 
       opts.on("-u", "--url-only", "Prints url without downloading") do

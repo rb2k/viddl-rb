@@ -10,10 +10,10 @@ class Downloader
 
       result = ViddlRb::DownloadHelper.save_file(url, name, :save_dir => params[:save_dir], :tool => params[:tool])
       unless result
-        if params[:skip_failed]
-          puts "Download for #{name} failed. Moving onto next file."
-        else
+        if params[:abort_on_failure]
           raise DownloadFailedError, "Download for #{name} failed."
+        else
+          puts "Download for #{name} failed. Moving onto next file."
         end
       else
         puts "Download for #{name} successful."
