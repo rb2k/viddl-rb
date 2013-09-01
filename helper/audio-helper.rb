@@ -7,7 +7,7 @@ module ViddlRb
       no_ext_filename = file_path.split('.')[0..-1][0]
       #capture stderr because ffmpeg expects an output param and will error out
       puts "Gathering information about the downloaded file."
-      file_info = Open3.popen3("ffmpeg -i #{file_path}") {|stdin, stdout, stderr, wait_thr| stderr.read }
+      file_info = Open3.popen3("ffmpeg -i #{File.join(save_dir, file_path)}") {|stdin, stdout, stderr, wait_thr| stderr.read }
       puts "Done gathering information about the downloaded file."
 
       if !file_info.to_s.empty?
@@ -18,11 +18,11 @@ module ViddlRb
         else
           raise "ERROR: Couldn't find any audio:\n#{file_info.inspect}"
         end
-        
+
         extension_mapper = {
-        'aac' => 'm4a',
-        'mp3' => 'mp3',
-        'vorbis' => 'ogg'
+          'aac' => 'm4a',
+          'mp3' => 'mp3',
+          'vorbis' => 'ogg'
         }
 
         if extension_mapper.key?(audio_format)
