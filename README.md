@@ -1,6 +1,6 @@
-__viddl-rb:__ 
-Initially created by Marc Seeger (@rb2k)  
-Repo: http://github.com/rb2k/viddl-rb  
+__viddl-rb:__
+Initially created by Marc Seeger (@rb2k)
+Repo: http://github.com/rb2k/viddl-rb
 [![Gem Version](https://badge.fury.io/rb/viddl-rb.png)](http://badge.fury.io/rb/viddl-rb)[![Build Status](https://secure.travis-ci.org/rb2k/viddl-rb.png)](http://travis-ci.org/rb2k/viddl-rb) [![Dependency Status](https://gemnasium.com/rb2k/viddl-rb.png)](https://gemnasium.com/rb2k/viddl-rb)
 
 __Installation:__
@@ -9,12 +9,13 @@ __Installation:__
 
 __Usage:__
 
-Download a video:  
+Download a video:
     ```viddl-rb http://www.youtube.com/watch?v=QH2-TGUlwu4```
 
 Viddl-rb supports the following command line options:
 ```
 -e, --extract-audio              Save video audio to file
+-k  --skip-failed                Skip failed downloads
 -u, --url-only                   Prints url without downloading
 -t, --title-only                 Prints title without downloading
 -f, --filter REGEX               Filters a video playlist according to the regex (Youtube only right now)
@@ -24,26 +25,26 @@ Viddl-rb supports the following command line options:
 -h, --help                       Displays the help screen
 ```
 
-Download a video and extract the audio:  
+Download a video and extract the audio:
     ```viddl-rb http://www.youtube.com/watch?v=QH2-TGUlwu4 --extract-audio```
 
 In both cases we'll name the output file according to the video title.
 
-Setting the video save directory:  
+Setting the video save directory:
     ```viddl-rb http://vimeo.com/38372260 --save-dir C:/myvideos```
 
 The --save-dir option works with both absolute and relative paths (relative based on the directory viddl-rb is run from).
 If you want to save to a folder with spaces in it, you have to quote the path like this: --save-dir "C:/my videos"
 
-__Youtube plugin specifics:__  
+__Youtube plugin specifics:__
 
-Download all videos on a playlist:  
+Download all videos on a playlist:
     ```viddl-rb http://www.youtube.com/playlist?list=PL7E8DA0A515924126```
 
-Download all videos from a user:  
+Download all videos from a user:
     ```viddl-rb http://www.youtube.com/user/tedtalksdirector```
 
-Filter videos to download from a user/playlist:  
+Filter videos to download from a user/playlist:
     ```viddl-rb http://www.youtube.com/user/tedtalksdirector --filter /internet/i```
 
 The --filter argument accepts a regular expression and will only download videos where the title matches the regex.
@@ -62,7 +63,7 @@ The ViddlRb module has the following module public methods:
 
 * __get_urls_names(url)__
 -- Returns an array of one or more hashes that has the keys :url which
-points to the download url and :name which points to the name 
+points to the download url and :name which points to the name
 (which is a filename safe version of the video title with a file extension).
 Returns nil if the url is not recognized by any plugins.
 
@@ -90,8 +91,8 @@ require 'viddl-rb'
 ViddlRb.io = $stdout     # plugins will now write their output to $stdout
 ```
 
-All the __get__ methods in the ViddlRb module will raise either a ViddlRb::PluginError or a ViddlRb::DownloadError if the plugin fails. 
-A ViddlRb::PluginError is raised if the plugin fails in an unexpected way, and a ViddlRb::DownloadError is raised if the video could not be downloaded for some reason. 
+All the __get__ methods in the ViddlRb module will raise either a ViddlRb::PluginError or a ViddlRb::DownloadError if the plugin fails.
+A ViddlRb::PluginError is raised if the plugin fails in an unexpected way, and a ViddlRb::DownloadError is raised if the video could not be downloaded for some reason.
 An example of that is if a Youtube video is not embeddable - then it can't be downloaded.
 
 ```ruby
@@ -107,7 +108,7 @@ end
 
 __Requirements:__
 
-* curl/wget or the [progress bar](http://github.com/nex3/ruby-progressbar/) gem  
+* curl/wget or the [progress bar](http://github.com/nex3/ruby-progressbar/) gem
 * [Nokogiri](http://nokogiri.org/)
 * [Mechanize](http://mechanize.rubyforge.org/)
 * ffmpeg if you want to extract audio tracks from the videos
@@ -115,7 +116,7 @@ __Requirements:__
 __Co Maintainer:__
 * [kl](https://github.com/kl): Windows support (who knew!), bug fixes, veoh plugin, metacafe plugin, refactoring it into a library, ...
 
-__Contributors:__  
+__Contributors:__
 * [divout](https://github.com/divout) aka Ivan K: blip.tv plugin, bugfixes
 * Sniper: bugfixes
 * [Serabe](https://github.com/Serabe) aka Sergio Arbeo: packaging viddl as a binary
