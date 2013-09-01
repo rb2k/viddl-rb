@@ -10,7 +10,11 @@ class Downloader
 
       result = ViddlRb::DownloadHelper.save_file(url, name, :save_dir => params[:save_dir], :tool => params[:tool])
       unless result
-        raise DownloadFailedError, "Download for #{name} failed."
+        if params[:abort_on_failure]
+          raise DownloadFailedError, "Download for #{name} failed."
+        else
+          puts "Download for #{name} failed. Moving onto next file."
+        end
       else
         puts "Download for #{name} successful."
         ViddlRb::AudioHelper.extract(name, params[:save_dir]) if params[:extract_audio]
