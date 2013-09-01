@@ -81,8 +81,7 @@ class Youtube < PluginBase
     file_name = PluginBase.make_filename_safe(title) + "." + VIDEO_FORMATS[selected_format][:extension]
 
     # cleaning
-    clean_url = urls_formats[selected_format].gsub(/\\u0026[^&]*/, "")
-
+    clean_url = urls_formats[selected_format].gsub(/\\u0026[^&]*/, "").split(',type=video').first
     {:url => clean_url, :name => file_name}
   end
 
