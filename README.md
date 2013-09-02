@@ -123,3 +123,4 @@ __Contributors:__
 * Sniper: bugfixes
 * [Serabe](https://github.com/Serabe) aka Sergio Arbeo: packaging viddl as a binary
 * [laserlemon](https://github.com/laserlemon): Adding gemnasium images to readme
+* [farleyknight](https://github.com/farleyknight): Various small fixes and improvements
