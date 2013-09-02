@@ -1,6 +1,8 @@
 __viddl-rb:__
-Initially created by Marc Seeger (@rb2k)
+Initially created by Marc Seeger ([@rb2k](github.com/rb2k))
+
 Repo: http://github.com/rb2k/viddl-rb
+
 [![Gem Version](https://badge.fury.io/rb/viddl-rb.png)](http://badge.fury.io/rb/viddl-rb)[![Build Status](https://secure.travis-ci.org/rb2k/viddl-rb.png)](http://travis-ci.org/rb2k/viddl-rb) [![Dependency Status](https://gemnasium.com/rb2k/viddl-rb.png)](https://gemnasium.com/rb2k/viddl-rb)
 
 __Installation:__
