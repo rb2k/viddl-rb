@@ -71,6 +71,9 @@ class Youtube < PluginBase
       grab_url_embeddable(url) || grab_url_non_embeddable(url)
     end
 
+    # VEVO video: http://www.youtube.com/watch?v=A_J7kEhY9sM
+    # Non-VEVO video: http://www.youtube.com/watch?v=WkkC9cK8Hz0
+
     def grab_url_embeddable(url)
       video_info   = get_video_info(url)
       video_params = extract_video_parameters(video_info)
@@ -108,13 +111,13 @@ class Youtube < PluginBase
     end
 
     def extract_video_parameters(video_info)
-      decoded = url_decode(video_info)
+      video_params = CGI.parse(url_decode(video_info))
 
       {
-        :title      => decoded[/title=(.+?)(?:&|$)/, 1],
-        :length_sec => decoded[/length_seconds=(.+?)(?:&|$)/, 1],
-        :author     => decoded[/author=(.+?)(?:&|$)/, 1],
-        :embeddable => !decoded.include?("status=fail")
+        :title      => video_params["title"].first,
+        :length_sec => video_params["length_seconds"].first,
+        :author     => video_params["author"].first,
+        :embeddable => (video_params["status"].first != "fail")
       }
     end
 
