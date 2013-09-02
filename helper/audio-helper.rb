@@ -37,7 +37,7 @@ module ViddlRb
           puts "Audio file seems to exist already, removing it before extraction."
           File.delete(output_filename)
         end
-        Open3.popen3("ffmpeg -i #{file_path} -vn -acodec copy #{output_filename}") { |stdin, stdout, stderr, wait_thr| stdout.read }
+        Open3.popen3("ffmpeg -i #{File.join(save_dir, file_path)} -vn -acodec copy #{output_filename}") { |stdin, stdout, stderr, wait_thr| stdout.read }
         puts "Done extracting audio to #{output_filename}"
       else
         raise "ERROR: Error while checking audio track of #{file_path}"
