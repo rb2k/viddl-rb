@@ -278,7 +278,7 @@ class Youtube < PluginBase
     #returns only the urls that match the --filter argument regex (if present)
     def filter_urls(url_hash)
       if @filter
-        Youtub.notify "Using filter: #{@filter}"
+        Youtube.notify "Using filter: #{@filter}"
         filtered = url_hash.select { |url, title| title =~ @filter }
         filtered.keys
       else
