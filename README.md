@@ -118,7 +118,7 @@ __Requirements:__
 __Co Maintainers:__
 * [kl](https://github.com/kl): Windows support (who knew!), bug fixes, veoh plugin, metacafe plugin, refactoring it into a library, ...
 * [farleyknight](https://github.com/farleyknight): Various small fixes and improvements
-* 
+
 __Contributors:__
 * [divout](https://github.com/divout) aka Ivan K: blip.tv plugin, bugfixes
 * Sniper: bugfixes
