@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.add_dependency('nokogiri', '~> 1.5.0')
   s.add_dependency('mechanize')
   s.add_dependency('progressbar')
+  s.add_dependency('multi_json')
   s.add_development_dependency('rake')
   s.add_development_dependency('rest-client')
   s.add_development_dependency('minitest')

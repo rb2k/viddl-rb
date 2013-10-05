@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'minitest/autorun'
 require 'rest_client'
+require 'multi_json'
 
 class TestURLExtraction < Minitest::Test
   def setup
@@ -23,6 +24,15 @@ class TestURLExtraction < Minitest::Test
     result = `ruby bin/viddl-rb http://www.youtube.com/watch?v=CFw6s0TN3hY --url-only`
     assert_equal $?, 0
     can_download_test(result)
+  end
+  
+  def test_arte_plus_seven
+    response = RestClient.get('http://www.arte.tv/sites/autopromo/category/de_plus7/').to_str    
+    test_url = MultiJson.load(response)['data']['autopromo_link_href']
+    puts "Running test using promo URL: #{test_url}"
+    result = `ruby bin/viddl-rb #{test_url} --url-only`
+    assert_equal $?, 0
+    can_download_test(result){|url_output| curl_code_grabber(url_output) }
   end
 
   # see http://en.wikipedia.org/wiki/YouTube#Quality_and_codecs for format codes
@@ -97,7 +107,6 @@ class TestURLExtraction < Minitest::Test
   def can_download_test(result, &grabber)
     url_output = result.split("\n").last
     assert_includes(CGI.unescape(url_output), 'http://')
-
     code_grabber = grabber || proc { |url_output| http_code_grabber(url_output) }    
     tries = 0
     http_response_code = 0

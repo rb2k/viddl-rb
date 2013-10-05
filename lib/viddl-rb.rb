@@ -4,6 +4,7 @@ $LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'helper')
 require "rubygems"
 require "net/http"
 require "nokogiri"
+require "multi_json"
 require "mechanize"
 require "cgi"
 require "open-uri"
