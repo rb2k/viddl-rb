@@ -1,3 +1,0 @@
-* wrap all classes used by the lib in a module (for namespace reasons)
-* add save_file method to library
-
