@@ -115,12 +115,12 @@ __Requirements:__
 * [Mechanize](http://mechanize.rubyforge.org/)
 * ffmpeg if you want to extract audio tracks from the videos
 
-__Co Maintainer:__
+__Co Maintainers:__
 * [kl](https://github.com/kl): Windows support (who knew!), bug fixes, veoh plugin, metacafe plugin, refactoring it into a library, ...
+* [farleyknight](https://github.com/farleyknight): Various small fixes and improvements
 
 __Contributors:__
 * [divout](https://github.com/divout) aka Ivan K: blip.tv plugin, bugfixes
 * Sniper: bugfixes
 * [Serabe](https://github.com/Serabe) aka Sergio Arbeo: packaging viddl as a binary
 * [laserlemon](https://github.com/laserlemon): Adding gemnasium images to readme
-* [farleyknight](https://github.com/farleyknight): Various small fixes and improvements
