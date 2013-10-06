@@ -13,10 +13,11 @@ class Blip < PluginBase
     user         = doc.at("//channel/item/blip:user").inner_text
     title        = PluginBase.make_filename_safe(doc.at("//channel/item/title").inner_text)
     download_url = doc.at("//channel/item/media:group/media:content").attributes["url"].value
+    final_url    = UtilityHelper.get_final_location(download_url)
     extention    = download_url.split(".").last
     file_name    = "#{id}-#{user}-#{title}.#{extention}"
 
-    [{:url => download_url, :name => file_name}]
+    [{:url => final_url, :name => file_name}]
   end
 
   # usually id is last 7 digits
