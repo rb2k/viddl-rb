@@ -23,7 +23,7 @@ class TestURLExtraction < Minitest::Test
 
   def test_can_extract_extensions_from_url_names
     download_urls = ViddlRb.get_urls_exts("http://www.youtube.com/watch?v=73rS-EnhP70")
-    assert_equal(".webm", download_urls.first[:ext])
+    assert valid_youtube_extension?(download_urls.first[:ext])
   end
 
   def test_raises_plugin_error_when_plugin_fails
@@ -38,6 +38,7 @@ class TestURLExtraction < Minitest::Test
   end  
 
   private
+
   def can_get_single_youtube_url_and_filename(video_url, filename)
     download_urls = ViddlRb.get_urls_names(video_url)
 
@@ -53,4 +54,9 @@ class TestURLExtraction < Minitest::Test
       break # break here because otherwise it will read the body for some reason (I think this is bug in Ruby)
     end
   end
+
+  def valid_youtube_extension?(ext)
+    valid = ViddlRb::Youtube::VIDEO_FORMATS.map { |id, format| "." + format[:extension] }
+    valid.include?(ext)
+  end  
 end
