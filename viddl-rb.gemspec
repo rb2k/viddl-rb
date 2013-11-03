@@ -3,6 +3,7 @@ Gem::Specification.new do |s|
   s.version     = "0.87"
   s.author      = "Marc Seeger"
   s.email       = "mail@marc-seeger.de"
+  s.license     = 'MIT'
   s.homepage    = "https://github.com/rb2k/viddl-rb"
   s.summary     = "An extendable commandline video downloader for flash video sites."
   s.description = "An extendable commandline video downloader for flash video sites. Includes plugins for vimeo, youtube, dailymotion and more"
