@@ -2,17 +2,31 @@ module ViddlRb
 
   class RequirementError < StandardError; end
 
+  class Tool
+    attr_reader :name
+
+    def initialize(name, call_string)
+      @name = name
+      @call_string = call_string
+    end
+
+    def call_string(download_url, save_path)
+      @call_string % [download_url, save_path]
+    end
+  end
+    
   class DownloadHelper
 
-    #viddl will use the first of these tools it finds on the system to download the video.
-    #if the system does not have any of these tools, net/http is used instead.
-    TOOLS_PRIORITY_LIST = [:wget, :curl]
+    TOOLS_PRIORITY_LIST = [
+      Tool.new(:aria2c, "aria2c %s -x4 -o %s"),
+      Tool.new(:wget,   "wget %s -O %s"),
+      Tool.new(:curl,   "curl -A 'Wget/1.8.1' --retry 10 --retry-delay 5 --retry-max-time 4  -L %s -o %s")
+    ]
 
     #simple helper that will save a file from the web and save it with a progress bar
     def self.save_file(file_url, file_name, opts = {})
       trap("SIGINT") { puts "goodbye"; exit }
 
-      #default options
       options = {:save_dir => ".",
                  :amount_of_retries => 6,
                  :tool => get_tool}
@@ -25,18 +39,17 @@ module ViddlRb
 
       #Some providers seem to flake out every now end then
       options[:amount_of_retries].times do |i|
-        case options[:tool].to_sym
-        when :wget
-          puts "Using wget"
-          success = system "wget \"#{file_url}\" -O #{file_path.inspect}"
-        when :curl
-          puts "Using curl"
-          #-L means: follow redirects, We set an agent because Vimeo seems to want one
-          success = system "curl -A 'Wget/1.8.1' --retry 10 --retry-delay 5 --retry-max-time 4  -L \"#{file_url}\" -o #{file_path.inspect}"
-        else
+        if options[:tool] == :net_http
           require_progressbar
           puts "Using net/http"
           success = download_and_save_file(file_url, file_path)
+        else
+          tool = options[:tool]
+          puts "Using #{tool.name}"
+          #cs = tool.call_string(file_url.inspect, file_path.inspect)
+          #require 'pry'; binding.pry; exit
+
+          success = system tool.call_string(file_url.inspect, file_path.inspect)
         end
         #we were successful, we're outta here
         if success
@@ -46,11 +59,12 @@ module ViddlRb
           sleep 2
         end
       end
+
       success
     end
 
     def self.get_tool
-      tool = TOOLS_PRIORITY_LIST.find { |tool| ViddlRb::UtilityHelper.os_has?(tool) }
+      tool = TOOLS_PRIORITY_LIST.find { |tool| ViddlRb::UtilityHelper.os_has?(tool.name) }
       tool || :net_http
     end
 
@@ -63,7 +77,6 @@ module ViddlRb
       end
     end
 
-    # downloads and saves a file using the net/http streaming api
     # return true if the download was successful, else returns false
     def self.download_and_save_file(download_url, full_path)
       final_url = UtilityHelper.get_final_location(download_url)    # follow all redirects
