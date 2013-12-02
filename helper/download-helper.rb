@@ -2,54 +2,67 @@ module ViddlRb
 
   class RequirementError < StandardError; end
 
-  class Tool
-    attr_reader :name
-
-    def initialize(name, call_string)
-      @name = name
-      @call_string = call_string
-    end
-
-    def call_string(download_url, save_path)
-      @call_string % [download_url, save_path]
-    end
-  end
-    
   class DownloadHelper
 
+    class Tool
+      attr_reader :name
+
+      def initialize(name, &command_proc)
+        @name = name
+        @command_proc = command_proc
+      end
+
+      def get_command(download_url, save_path)
+        @command_proc.call(download_url, save_path)
+      end
+    end
+
+    # This array specifies the order of and how to invoke the different download tools.
+    # A Tool is created with a name and block, where the block should evaluate to the cmd call
+    # given a download url and a full file save path.
     TOOLS_PRIORITY_LIST = [
-      Tool.new(:aria2c, "aria2c %s -x4 -o %s"),
-      Tool.new(:wget,   "wget %s -O %s"),
-      Tool.new(:curl,   "curl -A 'Wget/1.8.1' --retry 10 --retry-delay 5 --retry-max-time 4  -L %s -o %s")
+
+      Tool.new(:aria2c) do |url, path|
+        "aria2c #{url.inspect} -x4 -d #{File.dirname(path).inspect} -o #{File.basename(path).inspect}"
+      end,
+
+      Tool.new(:wget) do |url, path|
+        "wget #{url.inspect} -O #{path.inspect}"
+      end,
+
+      Tool.new(:curl) do |url, path|
+        "curl -A 'Wget/1.8.1' --retry 10 --retry-delay 5 --retry-max-time 4  -L #{url.inspect} -o #{path.inspect}"
+      end
     ]
 
     #simple helper that will save a file from the web and save it with a progress bar
-    def self.save_file(file_url, file_name, opts = {})
+    def self.save_file(file_url, file_name, user_opts = {})
       trap("SIGINT") { puts "goodbye"; exit }
 
-      options = {:save_dir => ".",
-                 :amount_of_retries => 6,
-                 :tool => get_tool}
+      default_opts = {:save_dir => ".",
+                      :amount_of_retries => 6,
+                      :tool => get_default_tool}
 
-      opts[:tool] = options[:tool] if opts[:tool].nil?
-      options.merge!(opts)
+      if user_tool = user_opts[:tool]
+        user_opts[:tool] = TOOLS_PRIORITY_LIST.find { |tool| tool.name == user_tool } unless user_tool == :"net-http"
+      else
+        user_opts[:tool] = default_opts[:tool]
+      end
 
+      options = default_opts.merge(user_opts)
       file_path = File.expand_path(File.join(options[:save_dir], file_name))
       success = false
 
       #Some providers seem to flake out every now end then
       options[:amount_of_retries].times do |i|
-        if options[:tool] == :net_http
+        if options[:tool] == :"net-http"
           require_progressbar
           puts "Using net/http"
           success = download_and_save_file(file_url, file_path)
         else
           tool = options[:tool]
           puts "Using #{tool.name}"
-          #cs = tool.call_string(file_url.inspect, file_path.inspect)
-          #require 'pry'; binding.pry; exit
-
-          success = system tool.call_string(file_url.inspect, file_path.inspect)
+          success = system tool.get_command(file_url, file_path)
         end
         #we were successful, we're outta here
         if success
@@ -63,7 +76,7 @@ module ViddlRb
       success
     end
 
-    def self.get_tool
+    def self.get_default_tool
       tool = TOOLS_PRIORITY_LIST.find { |tool| ViddlRb::UtilityHelper.os_has?(tool.name) }
       tool || :net_http
     end
@@ -73,7 +86,7 @@ module ViddlRb
         require "progressbar"
       rescue LoadError
         raise RequirementError,
-          "you don't seem to have curl or wget on your system. In this case you'll need to install the 'progressbar' gem."
+          "you don't seem to have aria2, curl or wget on your system. In this case you'll need to install the 'progressbar' gem."
       end
     end
 
