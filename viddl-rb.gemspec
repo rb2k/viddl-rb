@@ -19,7 +19,8 @@ Gem::Specification.new do |s|
   # We still want to support 1.8.7
   s.add_dependency('mime-types', '~> 1.2')
   s.add_dependency('nokogiri', '~> 1.5.0')
-  s.add_dependency('mechanize')
+  # Mechanize 2.7 depends on mime_types 2.0 which doesn't support 1.8.7 
+  s.add_dependency('mechanize', '~> 2.6.0') 
   s.add_dependency('progressbar')
   s.add_dependency('multi_json')
   s.add_development_dependency('rake')

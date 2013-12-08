@@ -67,7 +67,7 @@ class ParameterParser
       end
 
       opts.on("-d", "--downloader TOOL", "Specifies the tool to download with. Supports 'wget', 'curl' and 'net-http'") do |tool|
-        if tool =~ /(^wget$)|(^curl$)|(^net-http$)/
+        if tool =~ /(^wget$)|(^curl$)|(^net-http$)|(^aria2c$)/
           options[:tool] = tool
         else
           raise OptionParser::InvalidArgument.new("'#{tool}' is not a valid tool.")

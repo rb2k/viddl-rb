@@ -8,7 +8,10 @@ class Downloader
       url = url_name[:url]
       name = url_name[:name]
 
-      result = ViddlRb::DownloadHelper.save_file(url, name, :save_dir => params[:save_dir], :tool => params[:tool])
+      result = ViddlRb::DownloadHelper.save_file url,
+                                                 name,
+                                                 :save_dir => params[:save_dir],
+                                                 :tool => params[:tool] && params[:tool].to_sym
       unless result
         if params[:abort_on_failure]
           raise DownloadFailedError, "Download for #{name} failed."
