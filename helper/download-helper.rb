@@ -23,7 +23,7 @@ module ViddlRb
     TOOLS_PRIORITY_LIST = [
 
       Tool.new(:aria2c) do |url, path|
-        "aria2c #{url.inspect} -x4 -d #{File.dirname(path).inspect} -o #{File.basename(path).inspect}"
+        "aria2c #{url.inspect} -U 'Wget/1.8.1' -x4 -d #{File.dirname(path).inspect} -o #{File.basename(path).inspect}"
       end,
 
       Tool.new(:wget) do |url, path|
