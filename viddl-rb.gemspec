@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = "viddl-rb"
-  s.version     = "0.87"
+  s.version     = "0.88"
   s.author      = "Marc Seeger"
   s.email       = "mail@marc-seeger.de"
   s.license     = 'MIT'
@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency "jruby-openssl" if RUBY_PLATFORM == "java"
   # We still want to support 1.8.7
+  s.add_dependency('mime-types', '~> 1.2')
   s.add_dependency('nokogiri', '~> 1.5.0')
   s.add_dependency('mechanize')
   s.add_dependency('progressbar')
