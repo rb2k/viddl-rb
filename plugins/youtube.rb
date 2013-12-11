@@ -41,7 +41,7 @@ class Youtube < PluginBase
     "172" => {:extension => "webm", :name => "WebM (Vorbis)"}
   }
 
-  DEFAULT_FORMAT_ORDER = VIDEO_FORMATS.keys
+  DEFAULT_FORMAT_ORDER = %w[38 37 22 46 45 44 43 18 35 34 6 5 36 17 13 82 83 84 85 100 101 102 120 133 134 135 136 137 139 140 141 160 171 172]
   VIDEO_INFO_URL       = "http://www.youtube.com/get_video_info?video_id="
   VIDEO_INFO_PARMS     = "&ps=default&eurl=&gl=US&hl=en"
 
