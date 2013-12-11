@@ -15,8 +15,11 @@ class Youtube < PluginBase
     "18" => {:extension => "mp4",  :name => "MP4 640x360 (H.264, AAC)"},
     "35" => {:extension => "flv",  :name => "FLV 854x480 (H.264, AAC)"},
     "34" => {:extension => "flv",  :name => "FLV 640x360 (H.264, AAC)"},
+    "6"  => {:extension => "flv",  :name => "FLV 640x360"},
     "5"  => {:extension => "flv",  :name => "FLV 400x240 (Soerenson H.263)"},
-    "17" => {:extension => "3gp",  :name => "3gp"}
+    "36" => {:extension => "3gp",  :name => "3gp Medium Quality - 320x240"},
+    "17" => {:extension => "3gp",  :name => "3gp Medium Quality - 176x144"},
+    "13" => {:extension => "3gp",  :name => "3gp Low Quality - 176x144"}
   }
 
   DEFAULT_FORMAT_ORDER = %w[38 37 22 46 45 44 43 18 35 34 5 17]
