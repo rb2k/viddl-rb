@@ -146,9 +146,9 @@ class Youtube < PluginBase
 
       if @quality                        #if the user specified a format
         ext = @quality[:extension]
-        res = @quality[:resolution]
+        res = @quality[:resolution] || ""
         #gets a nested array with all the formats of the same res as the user wanted
-        requested = VIDEO_FORMATS.select { |id, format| format[:name].include?(res) }.to_a
+        requested = VIDEO_FORMATS.select { |id, format| available_formats.include?(id) && format[:name].include?(res) }.to_a
 
         if requested.empty?
           Youtube.notify "Requested format \"#{res}:#{ext}\" not found. Downloading default format."
