@@ -5,24 +5,43 @@ class Youtube < PluginBase
   # see http://en.wikipedia.org/wiki/YouTube#Quality_and_codecs
   # TODO: we don't have all the formats from the wiki article here
   VIDEO_FORMATS = {
-    "38" => {:extension => "mp4",  :name => "MP4 Highest Quality 4096x3027 (H.264, AAC)"},
-    "37" => {:extension => "mp4",  :name => "MP4 Highest Quality 1920x1080 (H.264, AAC)"},
-    "22" => {:extension => "mp4",  :name => "MP4 1280x720 (H.264, AAC)"},
-    "46" => {:extension => "webm", :name => "WebM 1920x1080 (VP8, Vorbis)"},
-    "45" => {:extension => "webm", :name => "WebM 1280x720 (VP8, Vorbis)"},
-    "44" => {:extension => "webm", :name => "WebM 854x480 (VP8, Vorbis)"},
-    "43" => {:extension => "webm", :name => "WebM 480x360 (VP8, Vorbis)"},
-    "18" => {:extension => "mp4",  :name => "MP4 640x360 (H.264, AAC)"},
-    "35" => {:extension => "flv",  :name => "FLV 854x480 (H.264, AAC)"},
-    "34" => {:extension => "flv",  :name => "FLV 640x360 (H.264, AAC)"},
-    "6"  => {:extension => "flv",  :name => "FLV 640x360"},
-    "5"  => {:extension => "flv",  :name => "FLV 400x240 (Soerenson H.263)"},
-    "36" => {:extension => "3gp",  :name => "3gp Medium Quality - 320x240"},
-    "17" => {:extension => "3gp",  :name => "3gp Medium Quality - 176x144"},
-    "13" => {:extension => "3gp",  :name => "3gp Low Quality - 176x144"}
+     "38" => {:extension => "mp4",  :name => "MP4 Highest Quality 4096x3027 (H.264, AAC)"},
+     "37" => {:extension => "mp4",  :name => "MP4 Highest Quality 1920x1080 (H.264, AAC)"},
+     "22" => {:extension => "mp4",  :name => "MP4 1280x720 (H.264, AAC)"},
+     "46" => {:extension => "webm", :name => "WebM 1920x1080 (VP8, Vorbis)"},
+     "45" => {:extension => "webm", :name => "WebM 1280x720 (VP8, Vorbis)"},
+     "44" => {:extension => "webm", :name => "WebM 854x480 (VP8, Vorbis)"},
+     "43" => {:extension => "webm", :name => "WebM 480x360 (VP8, Vorbis)"},
+     "18" => {:extension => "mp4",  :name => "MP4 640x360 (H.264, AAC)"},
+     "35" => {:extension => "flv",  :name => "FLV 854x480 (H.264, AAC)"},
+     "34" => {:extension => "flv",  :name => "FLV 640x360 (H.264, AAC)"},
+     "6"  => {:extension => "flv",  :name => "FLV 640x360 (Soerenson H.263)"},
+     "5"  => {:extension => "flv",  :name => "FLV 400x240 (Soerenson H.263)"},
+     "36" => {:extension => "3gp",  :name => "3gp Medium Quality - 320x240 (MPEG-4 Visual, AAC)"},
+     "17" => {:extension => "3gp",  :name => "3gp Medium Quality - 176x144 (MPEG-4 Visual, AAC)"},
+     "13" => {:extension => "3gp",  :name => "3gp Low Quality - 176x144 (MPEG-4 Visual, AAC)"},
+     "82" => {:extension => "mp4",  :name => "MP4 360p (H.264 AAC)"}, 
+     "83" => {:extension => "mp4",  :name => "MP4 240p (H.264 AAC)"}, 
+     "84" => {:extension => "mp4",  :name => "MP4 720p (H.264 AAC)"}, 
+     "85" => {:extension => "mp4",  :name => "MP4 520p (H.264 AAC)"}, 
+    "100" => {:extension => "webm", :name => "WebM 360p (VP8 Vorbis)"}, 
+    "101" => {:extension => "webm", :name => "WebM 360p (VP8 Vorbis)"}, 
+    "102" => {:extension => "webm", :name => "WebM 720p (VP8 Vorbis)"}, 
+    "120" => {:extension => "flv",  :name => "FLV 720p (H.264 AAC)"}, 
+    "133" => {:extension => "mp4",  :name => "MP4 240p (H.264)"}, 
+    "134" => {:extension => "mp4",  :name => "MP4 360p (H.264)"}, 
+    "135" => {:extension => "mp4",  :name => "MP4 480p (H.264)"}, 
+    "136" => {:extension => "mp4",  :name => "MP4 720p (H.264)"}, 
+    "137" => {:extension => "mp4",  :name => "MP4 1080p  (H.264)"}, 
+    "139" => {:extension => "mp4",  :name => "MP4 (AAC)"}, 
+    "140" => {:extension => "mp4",  :name => "MP4 (AAC"}, 
+    "141" => {:extension => "mp4",  :name => "MP4 (AAC)"}, 
+    "160" => {:extension => "mp4",  :name => "MP4 (H.264)"}, 
+    "171" => {:extension => "webm", :name => "WebM (Vorbis)"}, 
+    "172" => {:extension => "webm", :name => "WebM (Vorbis)"}
   }
 
-  DEFAULT_FORMAT_ORDER = %w[38 37 22 46 45 44 43 18 35 34 5 17]
+  DEFAULT_FORMAT_ORDER = VIDEO_FORMATS.keys
   VIDEO_INFO_URL       = "http://www.youtube.com/get_video_info?video_id="
   VIDEO_INFO_PARMS     = "&ps=default&eurl=&gl=US&hl=en"
 
