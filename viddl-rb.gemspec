@@ -11,7 +11,6 @@ Gem::Specification.new do |s|
   s.files       = Dir["{bin,lib,helper,plugins}/**/*"] + Dir["[A-Z]*"] + ["README.md"]
   s.require_paths = ['lib']
   s.executables = ['viddl-rb']
-  
   s.rubyforge_project = s.name
   s.required_rubygems_version = ">= 1.3.4"
 
@@ -20,11 +19,12 @@ Gem::Specification.new do |s|
   s.add_dependency('mime-types', '~> 1.2')
   # We still want to support 1.8.7
   s.add_dependency('nokogiri', '~> 1.5.0')
-  s.add_dependency('mechanize')
+  # We still want to support 1.8.7
+  s.add_dependency('mechanize', '2.7.2')
   s.add_dependency('progressbar')
   s.add_dependency('multi_json')
   s.add_development_dependency('rake')
   s.add_development_dependency('rest-client')
   s.add_development_dependency('minitest')
-  
+
 end
