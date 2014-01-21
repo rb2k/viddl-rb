@@ -54,17 +54,13 @@ class URLExtractionTest < Minitest::Test
     can_download_test(result) { |url_output| http_code_grabber(url_output, {:method => :get}) }
   end
 
-  # NOTE: the Vimeo tests are skipped because the plugin is currently broken.
-  
   def test_vimeo
-    #skip "plugin broken"
     result = `ruby bin/viddl-rb http://vimeo.com/80209061 --url-only`
     assert_equal $?, 0
     can_download_test(result) {|url_output| curl_code_grabber(url_output) }
   end
 
   def test_vimeo_sd_video
-    skip "plugin broken"
     result = `ruby bin/viddl-rb http://vimeo.com/38372260 --url-only`
     assert_equal $?, 0
     can_download_test(result) {|url_output| curl_code_grabber(url_output) }
