@@ -14,7 +14,7 @@ class Vimeo < PluginBase
     video_page = open(video_url).read
 
     info_json = video_page[/a=(\{.+?);/, 1]
-    parsed = JSON.parse(info_json)
+    parsed = MultiJson.load(info_json)
 
     files = parsed["request"]["files"] 
     codecs = files["codecs"]
@@ -36,24 +36,3 @@ class Vimeo < PluginBase
   end
 end
 
-=begin
-
-
-
-    doc = Nokogiri::HTML(page_html)
-    title = doc.at('meta[property="og:title"]').attributes['content'].value
-    puts "[VIMEO] Title: #{title.inspect}"
-
-    #the timestamp and sig info is in the embedded player javascript in the video page
-    timestamp = page_html[/"timestamp":(\d+),/, 1]
-    signature = page_html[/"signature":"([\d\w]+)",/, 1]
-
-    redirect_url = "http://player.vimeo.com/play_redirect?clip_id=#{vimeo_id}&sig=#{signature}&time=#{timestamp}&quality=hd,sd&codecs=H264,VP8,VP6"
-
-    #the download url is the value of the location (redirect) header
-    download_url = agent.get(redirect_url).header["location"]
-    file_name = PluginBase.make_filename_safe(title) + ".mp4"
-
-  end
-end
-=end
