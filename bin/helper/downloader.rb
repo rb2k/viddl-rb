@@ -5,6 +5,10 @@ class Downloader
 
   def download(download_queue, params)
     download_queue.each do |url_name|
+      # Skip invalid invalid link
+      next if url_name.nil?
+
+      # Url
       url = url_name[:url]
       name = url_name[:name]
 

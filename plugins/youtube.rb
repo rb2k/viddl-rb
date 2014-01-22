@@ -116,6 +116,13 @@ class Youtube < PluginBase
     def grab_url_non_embeddable(url)
       video_info      = open(url).read
       stream_map      = video_info[/url_encoded_fmt_stream_map\" *: *\"([^\"]+)\"/,1]
+
+      # Video has been deleted!
+      if stream_map.nil? or !stream_map.index("been+removed").nil?
+        Youtube.notify("VIDEO IS REMOVED")
+        return false
+      end
+
       urls_formats    = parse_stream_map(url_decode(stream_map))
       selected_format = choose_format(urls_formats)
       title           = video_info[/<meta name="title" content="([^"]*)">/, 1]
