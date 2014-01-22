@@ -1,4 +1,3 @@
-
 # Downloader iterates over a download queue and downloads and saves each video in the queue.
 class Downloader
   class DownloadFailedError < StandardError; end
@@ -6,7 +5,7 @@ class Downloader
   def download(download_queue, params)
     download_queue.each do |url_name|
       # Skip invalid invalid link
-      next if url_name.nil?
+      next unless url_name
 
       # Url
       url = url_name[:url]
