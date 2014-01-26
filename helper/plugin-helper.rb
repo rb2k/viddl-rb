@@ -23,7 +23,7 @@ module ViddlRb
 
     #takes a string a returns a new string that is file name safe on Windows and Unix systems.
     def self.make_filename_safe(string)
-      safe = UtilityHelper.windows? ? string.gsub(/[^:*?"<>|\/\\]/, "_") : string.gsub(/[\/\\0]/, "_")
+      safe = UtilityHelper.windows? ? string.gsub(/[:*?"<>^|\/\\]/, "_") : string.gsub(/[\/\\0]/, "_")
       safe.squeeze("_")
     end
 
