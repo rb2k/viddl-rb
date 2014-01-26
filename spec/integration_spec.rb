@@ -21,7 +21,7 @@ class IntegrationTest < Minitest::Test
     before = Dir['*']
     assert system("ruby bin/viddl-rb #{url} --extract-audio --quality 360:webm --downloader aria2c")
     new_files = Dir['*'] - before
-    assert_equal new_files.size, 2
+    assert_equal 2, new_files.size
 
     video_file = new_files.find { |file| file.include?(".webm") }
     audio_file = new_files.find { |file| file.include?(".ogg") }

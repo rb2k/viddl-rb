@@ -11,13 +11,16 @@ module ViddlRb
       end
     end
 
+    def self.windows?
+      (RbConfig::CONFIG["host_os"] =~ /windows|mingw/i) != nil
+    end
+
     #checks to see whether the os has a certain utility like wget or curl
     #`` returns the standard output of the process
     #system returns the exit code of the process
     def self.os_has?(utility)
-      windows = ENV['OS'] =~ /windows/i
-
-      unless windows
+      
+      unless windows?
         `which #{utility}`.include?(utility.to_s)
       else
         if !system("where /q where").nil?   #if Windows has the where utility

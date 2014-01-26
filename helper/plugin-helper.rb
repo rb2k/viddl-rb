@@ -21,10 +21,10 @@ module ViddlRb
       PluginBase.registered_plugins << child
     end
 
-    #takes a string a returns a new string that is file name safe
-    #deletes \"' and replaces anything else that is not a digit or letter with _
+    #takes a string a returns a new string that is file name safe on Windows and Unix systems.
     def self.make_filename_safe(string)
-      string.delete("\"'").gsub(/[^\d\w]/, '_')
+      safe = UtilityHelper.windows? ? string.gsub(/[^:*?"<>|\/\\]/, "_") : string.gsub(/[\/\\0]/, "_")
+      safe.squeeze("_")
     end
 
     #the following methods redirects the Kernel printing methods (except #p) to the
