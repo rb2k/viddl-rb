@@ -5,12 +5,11 @@ module ViddlRb
   # This class is responsible for extracting audio from video files using ffmpeg.
   class AudioHelper
 
-    def self.extract(file_path, save_dir)
-
-      no_ext_filename = file_path.reverse.sub(/^.+?\./, "").reverse
-      #capture stderr because ffmpeg expects an output param and will error out
+    def self.extract(file_name, save_dir)
+      # capture stderr because ffmpeg expects an output param and will error out
       puts "Gathering information about the downloaded file."
-      file_info = Open3.popen3("ffmpeg -i #{Shellwords.escape(File.join(save_dir, file_path))}") {|stdin, stdout, stderr, wait_thr| stderr.read }
+      escaped_input_file_path = Shellwords.escape(File.join(save_dir, file_name))
+      file_info = Open3.popen3("ffmpeg -i #{escaped_input_file_path}") {|stdin, stdout, stderr, wait_thr| stderr.read }
       puts "Done gathering information about the downloaded file."
 
       if !file_info.to_s.empty?
@@ -35,13 +34,15 @@ module ViddlRb
           puts "Unknown audio format: #{audio_format}, using name as extension: '.#{audio_format}'."
           output_extension = audio_format
         end
-        output_filename = File.join(save_dir, "#{no_ext_filename}.#{output_extension}")
-        if File.exist?(output_filename)
+        no_ext_filename = File.basename(file_name, File.extname(file_name))
+        output_file_path = File.join(save_dir, "#{no_ext_filename}.#{output_extension}")
+        escaped_output_file_path = Shellwords.escape(output_file_path)
+        if File.exist?(output_file_path)
           puts "Audio file seems to exist already, removing it before extraction."
-          File.delete(output_filename)
+          File.delete(output_file_path)
         end
-        Open3.popen3("ffmpeg -i #{Shellwords.escape(File.join(save_dir, file_path))} -vn -acodec copy #{Shellwords.escape(output_filename)}") { |stdin, stdout, stderr, wait_thr| stdout.read }
-        puts "Done extracting audio to #{output_filename}"
+        Open3.popen3("ffmpeg -i #{escaped_input_file_path} -vn -acodec copy #{escaped_output_file_path}") { |stdin, stdout, stderr, wait_thr| stdout.read }
+        puts "Done extracting audio to #{output_file_path}"
       else
         raise "ERROR: Error while checking audio track of #{file_path}"
       end
