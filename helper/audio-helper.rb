@@ -1,3 +1,5 @@
+require 'shellwords'
+
 module ViddlRb
 
   # This class is responsible for extracting audio from video files using ffmpeg.
@@ -8,7 +10,7 @@ module ViddlRb
       no_ext_filename = file_path.reverse.sub(/^.+?\./, "").reverse
       #capture stderr because ffmpeg expects an output param and will error out
       puts "Gathering information about the downloaded file."
-      file_info = Open3.popen3("ffmpeg -i \"#{File.join(save_dir, file_path)}\"") {|stdin, stdout, stderr, wait_thr| stderr.read }
+      file_info = Open3.popen3("ffmpeg -i #{Shellwords.escape(File.join(save_dir, file_path))}") {|stdin, stdout, stderr, wait_thr| stderr.read }
       puts "Done gathering information about the downloaded file."
 
       if !file_info.to_s.empty?
@@ -38,7 +40,7 @@ module ViddlRb
           puts "Audio file seems to exist already, removing it before extraction."
           File.delete(output_filename)
         end
-        Open3.popen3("ffmpeg -i \"#{File.join(save_dir, file_path)}\" -vn -acodec copy \"#{output_filename}\"") { |stdin, stdout, stderr, wait_thr| stdout.read }
+        Open3.popen3("ffmpeg -i #{Shellwords.escape(File.join(save_dir, file_path))} -vn -acodec copy #{Shellwords.escape(output_filename)}") { |stdin, stdout, stderr, wait_thr| stdout.read }
         puts "Done extracting audio to #{output_filename}"
       else
         raise "ERROR: Error while checking audio track of #{file_path}"
