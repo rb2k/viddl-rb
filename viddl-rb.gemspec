@@ -13,18 +13,14 @@ Gem::Specification.new do |s|
   s.executables = ['viddl-rb']
   s.rubyforge_project = s.name
   s.required_rubygems_version = ">= 1.3.4"
+  s.required_ruby_version = ">= 1.9.0"
 
   s.add_dependency "jruby-openssl" if RUBY_PLATFORM == "java"
-  # We still want to support 1.8.7
-  s.add_dependency('mime-types', '~> 1.2')
-  # We still want to support 1.8.7
-  s.add_dependency('nokogiri', '~> 1.5.0')
-  # We still want to support 1.8.7
-  s.add_dependency('mechanize', '2.7.2')
+  s.add_dependency('mime-types')
+  s.add_dependency('nokogiri')
   s.add_dependency('progressbar')
   s.add_dependency('multi_json')
   s.add_development_dependency('rake')
   s.add_development_dependency('rest-client')
   s.add_development_dependency('minitest')
-
 end
