@@ -4,6 +4,10 @@ rvm:
   - 2.1.0
   - rbx
   - jruby-19mode
+matrix:
+  allow_failures:
+    - rvm: jruby-19mode
+    - rvm: rbx
 cache: 
   - bundler
   - apt
