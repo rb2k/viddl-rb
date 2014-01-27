@@ -13,5 +13,4 @@ cache:
   - apt
 before_install:
   - sudo apt-get update
-  - sudo apt-get install -qq ffmpeg
-  - sudo apt-get install -qq aria2
+  - sudo apt-get install -qq ffmpeg aria2 wget curl
