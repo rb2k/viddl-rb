@@ -250,7 +250,7 @@ class Youtube < PluginBase
 
       if url.include?("view_play_list") || url.include?("playlist?list=")     # if playlist URL
         parse_playlist(url)
-      elsif username = url[/\/user\/([\w\d]+)(?:\/|$)/, 1]                       # if user URL
+      elsif username = url[/\/(?:user|channel)\/([\w\d]+)(?:\/|$)/, 1]        # if user/channel URL
         parse_user(username)
       else                                                                    # if neither return nil
         nil

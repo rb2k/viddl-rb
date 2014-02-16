@@ -38,6 +38,10 @@ Setting the video save directory:
 The --save-dir option works with both absolute and relative paths (relative based on the directory viddl-rb is run from).
 If you want to save to a folder with spaces in it, you have to quote the path like this: --save-dir "C:/my videos"
 
+__Want faster download speeds?__
+
+Consider installing aria2 (http://aria2.sourceforge.net/). aria2 differs from curl and wget in that it supports opening multiple connections when downloading a file which may give significant speed improvements if the download service limits the bandwidth a connection receives. viddl-rb will use aria2 as the default downloader if it is available.
+
 __Youtube plugin specifics:__
 
 Download all videos on a playlist:
@@ -46,7 +50,10 @@ Download all videos on a playlist:
 Download all videos from a user:
     ```viddl-rb http://www.youtube.com/user/tedtalksdirector```
 
-Filter videos to download from a user/playlist:
+Download all videos from a channel:
+    ```viddl-rb http://www.youtube.com/channel/UCa2K4rTxFfnyOhujv7Dmwlg```
+
+Filter videos to download from a user/channel/playlist:
     ```viddl-rb http://www.youtube.com/user/tedtalksdirector --filter /internet/i```
 
 The --filter argument accepts a regular expression and will only download videos where the title matches the regex.

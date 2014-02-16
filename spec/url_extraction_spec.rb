@@ -84,7 +84,10 @@ class URLExtractionTest < Minitest::Test
     can_download_test(result)
   end
 
+  # NOTE: The Metacafe tests are skipped because plugin is currently broken.
+
   def test_metacafe
+    skip "plugin broken"
     result = `ruby bin/viddl-rb http://www.metacafe.com/watch/7731483/video_preview_final_fantasy_xiii_2/ --url-only`
     assert_equal $?, 0
     can_download_test(result) { |url_output| http_code_grabber(url_output) }

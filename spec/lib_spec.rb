@@ -10,7 +10,7 @@ require 'viddl-rb.rb'
 class LibTest < Minitest::Test
 
   def test_can_get_single_youtube_url_and_filename
-    can_get_single_youtube_url_and_filename("https://www.youtube.com/watch?v=VlQM_5AAjY8", "晩夏（ひとりの季節）")
+    can_get_single_youtube_url_and_filename("https://www.youtube.com/watch?v=kCfiKj8Iehk", "いいぜメーン")
   end
 
   def test_can_get_single_youtube_url_and_filename_for_non_embeddable_videos
