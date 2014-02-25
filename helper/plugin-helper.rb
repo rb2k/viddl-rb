@@ -55,6 +55,4 @@ module ViddlRb
       nil
     end
   end
-
 end
-

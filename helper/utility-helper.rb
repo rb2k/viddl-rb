@@ -3,11 +3,29 @@
 module ViddlRb
 
   class UtilityHelper
-    #loads all plugins in the plugin directory.
-    #the plugin classes are dynamically added to the ViddlRb module.
+
+    # Loads all plugins in the plugin directory.
+    # The plugin classes are dynamically added to the ViddlRb module.
+    # A plugin can have helper classes. These classes must exist in a in directory under the
+    # plugins directory that has the same name as the plugin filename wihouth the .rb extension.
+    # All classes found in such a directory will dynamically added as inner classes of the
+    # plugin class.
     def self.load_plugins
-      Dir[File.join(File.dirname(__FILE__), "../plugins/*.rb")].each do |plugin|
-        ViddlRb.class_eval(File.read(plugin))
+      plugins_dir  = File.join(File.dirname(__FILE__), "../plugins")
+      plugin_paths = Dir[File.join(plugins_dir, "*.rb")]
+
+      plugin_paths.each do |path|
+        filename = File.basename(path, File.extname(path))
+        plugin_code = File.read(path)
+        class_name = plugin_code[/class (\w+) < PluginBase/, 1]
+        components = Dir[File.join(plugins_dir, filename, "*.rb")]
+
+        ViddlRb.class_eval(plugin_code)
+
+        components.each do |component|
+          code = File.read(component)
+          ViddlRb.const_get(class_name).class_eval(code)
+        end
       end
     end
 

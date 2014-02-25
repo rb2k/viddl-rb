@@ -34,6 +34,10 @@ class ParameterParser
     optparse = OptionParser.new do |opts|
       opts.banner = "Usage: viddl-rb URL [options]"
 
+      opts.on('-h', '--help', 'Display this screen') do
+        print_help_and_exit(opts)
+      end
+
       opts.on("-e", "--extract-audio", "Save video audio to file") do
         if ViddlRb::UtilityHelper.os_has?("ffmpeg")
           options[:extract_audio] = true
@@ -75,21 +79,18 @@ class ParameterParser
       end
 
       opts.on("-q", "--quality QUALITY",
-              "Specifies the video format and resolution in the following way => resolution:extension (e.g. 720:mp4)") do |quality|
-        if match = quality.match(/(\d+):(.*)/)
-          res = match[1]
-          ext = match[2]
-        elsif match = quality.match(/\d+/)
-          res = match[0]
-          ext = nil
-        else
-          raise OptionParse.InvalidArgument.new("#{quality} is not a valid argument.")
-        end
-        options[:quality] = {:extension => ext, :resolution => res}
-      end
+              "Specifies the video format and resolution in the following way: width:height:res (e.g. 1280:720:mp4). " +
+              "The width, height and resolution may be omitted with a *. For example, to match any quality with a " +
+              "width of 720 pixels in any format specify --quality *:720:*") do |quality|
 
-      opts.on_tail('-h', '--help', 'Display this screen') do
-        print_help_and_exit(opts)
+        tokens = quality.split(":")
+        raise OptionParser::InvalidArgument.new("#{quality} is not a valid argument.") unless tokens.size == 3
+        width, height, ext = tokens
+        validate_quality_options!(width, height, ext, quality)
+
+        options[:quality] = {width: width == "*" ? nil : width.to_i,
+                             height: height == "*" ? nil : height.to_i,
+                             extension: ext == "*" ? nil : ext}
       end
     end
 
@@ -109,7 +110,25 @@ class ParameterParser
   def self.validate_url!(url)
     unless url =~ /^http/
       raise OptionParser::InvalidArgument.new(
-                                              "please include 'http' with your URL e.g. http://www.youtube.com/watch?v=QH2-TGUlwu4")
+          "please include 'http' with your URL e.g. http://www.youtube.com/watch?v=QH2-TGUlwu4")
+    end
+  end
+
+  def self.validate_quality_options!(width, height, extension, quality)
+    if !width =~ /(\*|\d+)/ || !height =~ /(\*|\d+)/ || !extension =~ /(\*|\w+)/
+      raise OptionParser::InvalidArgument.new("#{quality} is not a valid argument.")
     end
   end
 end
+
+
+
+
+
+
+
+
+
+
+
+
