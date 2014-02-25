@@ -22,7 +22,7 @@ class UrlResolver
     #http://www.youtube.com/watch?v=9WEP5nCxkEY&videos=jKY836_WMhE&playnext_from=TL&playnext=1
     #http://www.youtube.com/watch?v=Tk78sr5JMIU&videos=jKY836_WMhE
 
-    playlist_ID = url[/(?:list=PL|p=)(.+?)(?:&|\/|$)/, 1]
+    playlist_ID = url[/(?:list=PL|p=|list=)(.+?)(?:&|\/|$)/, 1]
     Youtube.notify "Playlist ID: #{playlist_ID}"
     feed_url = PLAYLIST_FEED % playlist_ID
     url_array = get_video_urls(feed_url)
