@@ -2,21 +2,31 @@ require 'rubygems'
 require 'bundler/setup'
 require 'rake/testtask'
 
-task :default => [:test]
+ALL_INTEGRATION = FileList["spec/integration/*.rb"]
+ALL_UNIT 		= FileList["spec/unit/*/*.rb"]
 
-Rake::TestTask.new(:test) do |t|
-  #t.pattern = "spec/*_spec.rb"
-  t.test_files = ["spec/lib_spec.rb", "spec/url_extraction_spec.rb",  "spec/integration_spec.rb"]
+task :default => [:all]
+
+Rake::TestTask.new(:all) do |t|
+  t.test_files =  ALL_INTEGRATION + ALL_UNIT
 end
 
-Rake::TestTask.new(:test_lib) do |t|
-  t.test_files = FileList["spec/lib_spec.rb"]
-end
-
-Rake::TestTask.new(:test_extract) do |t|
-  t.test_files = FileList["spec/url_extraction_spec.rb"]
+Rake::TestTask.new(:test_unit) do |t|
+  t.test_files = ALL_UNIT
 end
 
 Rake::TestTask.new(:test_integration) do |t|
-  t.test_files = FileList["spec/integration_spec.rb"]
+  t.test_files = ALL_INTEGRATION
+end
+
+Rake::TestTask.new(:test_lib) do |t|
+  t.test_files = FileList["spec/integration/lib_spec.rb"]
+end
+
+Rake::TestTask.new(:test_extract) do |t|
+  t.test_files = FileList["spec/integration/url_extraction_spec.rb"]
+end
+
+Rake::TestTask.new(:test_download) do |t|
+  t.test_files = FileList["spec/integration/download_spec.rb"]
 end

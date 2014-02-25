@@ -36,7 +36,7 @@ class Driver
       plugin.get_urls_and_filenames(url, @params)
       
     rescue ViddlRb::PluginBase::CouldNotDownloadVideoError => e
-      raise "ERROR: The video could not be downloaded.\n" +
+      raise "CouldNotDownloadVideoError.\n" +
             "Reason: #{e.message}"
     rescue StandardError => e
       raise "Error while running the #{plugin.name.inspect} plugin. Maybe it has to be updated?\n" +

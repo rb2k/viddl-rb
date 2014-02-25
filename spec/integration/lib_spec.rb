@@ -1,8 +1,7 @@
 #encoding: utf-8
 
-$LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib')
+$LOAD_PATH << File.join(File.dirname(__FILE__), '../..', 'lib')
 
-require 'rubygems'
 require 'minitest/autorun'
 require 'rest_client'
 require 'viddl-rb.rb'
@@ -57,7 +56,7 @@ class LibTest < Minitest::Test
   end
 
   def valid_youtube_extension?(ext)
-    valid = ViddlRb::Youtube::VIDEO_FORMATS.map { |id, format| "." + format[:extension] }
+    valid = ViddlRb::Youtube::FormatPicker::FORMATS.map { |format| "." + format.extension }
     valid.include?(ext)
   end  
 end
