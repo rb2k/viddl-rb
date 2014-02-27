@@ -1,4 +1,3 @@
-require 'shellwords'
 
 module ViddlRb
 
@@ -8,7 +7,7 @@ module ViddlRb
     def self.extract(file_name, save_dir)
       # capture stderr because ffmpeg expects an output param and will error out
       puts "Gathering information about the downloaded file."
-      escaped_input_file_path = Shellwords.escape(File.join(save_dir, file_name))
+      escaped_input_file_path = UtilityHelper.make_shellsafe_path(File.join(save_dir, file_name))
       file_info = Open3.popen3("ffmpeg -i #{escaped_input_file_path}") {|stdin, stdout, stderr, wait_thr| stderr.read }
       puts "Done gathering information about the downloaded file."
 

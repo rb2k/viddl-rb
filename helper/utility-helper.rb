@@ -1,7 +1,9 @@
-# This class contains utility methods that are used by both the bin utility and the library.
+
+require 'shellwords'
 
 module ViddlRb
 
+  # This class contains utility methods that are used by both the bin utility and the library.
   class UtilityHelper
 
     # Loads all plugins in the plugin directory.
@@ -31,6 +33,19 @@ module ViddlRb
 
     def self.windows?
       (RbConfig::CONFIG["host_os"] =~ /windows|mingw/i) != nil
+    end
+
+    def self.jruby?
+      ENV["RUBY_VERSION"].downcase.include?("jruby")
+    end
+
+    def self.make_shellsafe_path(path)
+      # JRuby cannot open some paths that are escaped with Shellwords.escape so this is a workaround.
+      if jruby?
+        '"' + path + '"'
+      else
+        Shellwords.escape(path)
+      end
     end
 
     #checks to see whether the os has a certain utility like wget or curl
