@@ -87,7 +87,6 @@ class VideoResolver
 
   def get_deciphered_sig(sig)
     return sig if sig.length == CORRECT_SIGNATURE_LENGTH
-    #crequire 'pry'; binding.pry; exit
     @decipherer.decipher_with_version(sig, get_html5player_version)
   end
 
