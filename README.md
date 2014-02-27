@@ -119,9 +119,8 @@ end
 
 __Requirements:__
 
-* curl/wget or the [progress bar](http://github.com/nex3/ruby-progressbar/) gem
+* curl/wget/aria2c or the [progress bar](http://github.com/nex3/ruby-progressbar/) gem
 * [Nokogiri](http://nokogiri.org/)
-* [Mechanize](http://mechanize.rubyforge.org/)
 * ffmpeg if you want to extract audio tracks from the videos
 
 __Co Maintainers:__
