@@ -87,7 +87,8 @@ class Decipherer
     'vflLjFx3B' => 'w40 w62 r s2 w21 s3 r w7 s3',     # 10 Feb 2014
     'vfliqjKfF' => 'w40 w62 r s2 w21 s3 r w7 s3',     # 13 Feb 2014
     'ima-vflxBu-5R' => 'w40 w62 r s2 w21 s3 r w7 s3', # 13 Feb 2014
-    'ima-vflrGwWV9' => 'w36 w45 r s2 r'               # 20 Feb 2014
+    'ima-vflrGwWV9' => 'w36 w45 r s2 r',              # 20 Feb 2014
+    'ima-vflCME3y0' => 'w8 s2 r w52'                  # 27 Feb 2014
   }
 
   def decipher_with_version(cipher, cipher_version)
