@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = "viddl-rb"
-  s.version     = "0.96"
+  s.version     = "0.98"
   s.author      = "Marc Seeger"
   s.email       = "mail@marc-seeger.de"
   s.license     = 'MIT'
