@@ -25,7 +25,7 @@ Viddl-rb supports the following command line options:
 -d, --downloader TOOL            Specifies the tool to download with. Supports 'wget', 'curl' and 'net-http'
 -q, --quality QUALITY            Specifies the video format and resolution in the following way: width:height:res (e.g. 1280:720:mp4)
                                  The width, height and resolution may be omitted with a *.
-                                 For example, to match any quality with a width of 720 pixels in any format specify --quality *:720:*
+                                 For example, to match any quality with a height of 720 pixels in any format specify --quality *:720:*
 -h, --help                       Displays the help screen
 ```
 
