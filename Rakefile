@@ -30,3 +30,7 @@ end
 Rake::TestTask.new(:test_download) do |t|
   t.test_files = FileList["spec/integration/download_spec.rb"]
 end
+
+Rake::TestTask.new(:test_cipher_loader) do |t|
+  t.test_files = FileList["spec/integration/cipher_loader_spec.rb"]
+end

@@ -18,7 +18,8 @@ class LibTest < Minitest::Test
 
   def test_can_get_youtube_playlist
     download_urls = ViddlRb.get_urls_names("http://www.youtube.com/playlist?list=PL41AAC84379472529")
-    assert(download_urls.size == 3)
+    assert download_urls.size == 3,
+      "Expected size to be 3 but was #{download_urls.size}"
   end
 
   def test_can_extract_extensions_from_url_names

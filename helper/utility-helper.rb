@@ -48,6 +48,10 @@ module ViddlRb
       end
     end
 
+    def self.base_path
+      File.join(File.dirname(File.expand_path(__FILE__)), "..")
+    end
+
     #checks to see whether the os has a certain utility like wget or curl
     #`` returns the standard output of the process
     #system returns the exit code of the process

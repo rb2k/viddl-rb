@@ -19,7 +19,6 @@ class IntegrationTest < Minitest::Test
   def download_test(url)
     Dir.mktmpdir do |tmp_dir|
       Dir.chdir(tmp_dir) do
-        binding.pry; exit
         assert system("ruby #{VIDDLRB_PATH} #{url} --extract-audio --quality *:360:webm --downloader aria2c")
         new_files = Dir['*']
         assert_equal 2, new_files.size
