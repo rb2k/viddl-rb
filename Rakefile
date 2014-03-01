@@ -2,8 +2,8 @@ require 'rubygems'
 require 'bundler/setup'
 require 'rake/testtask'
 
-ALL_INTEGRATION = FileList["spec/integration/*.rb"]
-ALL_UNIT 		= FileList["spec/unit/*/*.rb"]
+ALL_INTEGRATION = FileList["spec/integration/*.rb", "spec/integration/*/*.rb"]
+ALL_UNIT        = FileList["spec/unit/*/*.rb"]
 
 task :default => [:all]
 
@@ -32,5 +32,5 @@ Rake::TestTask.new(:test_download) do |t|
 end
 
 Rake::TestTask.new(:test_cipher_loader) do |t|
-  t.test_files = FileList["spec/integration/cipher_loader_spec.rb"]
+  t.test_files = FileList["spec/integration/youtube/cipher_loader_spec.rb"]
 end
