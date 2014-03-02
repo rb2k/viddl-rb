@@ -1,4 +1,3 @@
-
 class Youtube < PluginBase
 
   # this will be called by the main app to check whether this plugin is responsible for the url passed

@@ -1,4 +1,3 @@
-
 require 'minitest/autorun'
 require 'rest_client'
 require 'multi_json'
