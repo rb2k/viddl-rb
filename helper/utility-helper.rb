@@ -52,27 +52,28 @@ module ViddlRb
       File.join(File.dirname(File.expand_path(__FILE__)), "..")
     end
 
-    #checks to see whether the os has a certain utility like wget or curl
-    #`` returns the standard output of the process
-    #system returns the exit code of the process
+    # checks to see whether the os has a certain utility like wget or curl
+    # `` returns the standard output of the process
+    # system returns the exit code of the process
     def self.os_has?(utility)
-      
-      unless windows?
-        `which #{utility}`.include?(utility.to_s)
-      else
+      if windows?
         if !system("where /q where").nil?   #if Windows has the where utility
           system("where /q #{utility}")     #/q is the quiet mode flag
         else
-          begin                             #as a fallback we just run the utility itself
+          begin #as a fallback we just run the utility itself
             system(utility)
           rescue Errno::ENOENT
             false
           end
         end
+      else
+        # This might work in windows too... I am not quite sure :-/
+        ENV['PATH'].split(':').any?{|dir| File.exist?( File.join(dir, utility.to_s) ) }
       end
     end
 
-    #recursively get the final location (after following all redirects) for an url.
+    # recursively get the final location (after following all redirects)
+    # for an url.
     def self.get_final_location(url)
       Net::HTTP.get_response(URI.parse(url)) do |res|
         location = res["location"]
