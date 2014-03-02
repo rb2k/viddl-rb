@@ -9,7 +9,7 @@ class Youtube < PluginBase
   def self.get_urls_and_filenames(url, options = {})
 
     @url_resolver   = UrlResolver.new
-    @video_resolver = VideoResolver.new(Decipherer.new)
+    @video_resolver = VideoResolver.new(Decipherer.new(CipherLoader.new))
     @format_picker  = FormatPicker.new(options)
 
     urls = @url_resolver.get_all_urls(url, options[:filter])

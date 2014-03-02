@@ -3,11 +3,12 @@ $LOAD_PATH << File.join(File.dirname(__FILE__), '../../..', 'plugins/youtube')
 
 require 'minitest/autorun'
 require 'decipherer.rb'
+require 'cipher_loader.rb'
 
 class DeciphererTest < Minitest::Test
 
   def setup
-    @dc = Decipherer.new
+    @dc = Decipherer.new(CipherLoader.new)
   end
 
   def test_raises_UnkownCipherVersionError_if_cipher_version_not_recognized
