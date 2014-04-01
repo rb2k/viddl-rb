@@ -110,7 +110,7 @@ class FormatPicker
     when 1
       formats.first
     else
-      get_default_format(matches_resolution)
+      get_default_format(formats)
     end
   end
 end
