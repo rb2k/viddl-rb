@@ -30,6 +30,7 @@ class Decipherer
 
   def decipher_with_operations(cipher, operations)
     cipher = cipher.dup
+    operations = operations.split if operations.is_a?(String)
 
     operations.each do |op|
       cipher = apply_operation(cipher, op)
