@@ -4,7 +4,7 @@ require 'net/http'
 require 'openssl'
 require 'yaml'
 
-class CipherLoader
+class CipherIO
 
   CIPHER_YAML_URL = "https://raw.github.com/rb2k/viddl-rb/master/plugins/youtube/ciphers.yml"
   CIPHER_YAML_PATH = File.join(ViddlRb::UtilityHelper.base_path, "plugins/youtube/ciphers.yml")
@@ -23,24 +23,29 @@ class CipherLoader
     @ciphers.dup
   end
 
+  def add_cipher(version, operations)
+    File.open(CIPHER_YAML_PATH, "a") do |file|
+      file.puts("#{version}: #{operations}")
+    end
+  end
+
   private
 
   def update_ciphers
-    return if get_server_file_size == get_local_file_size
+    server_etag = get_server_etag
+    return if server_etag == @ciphers["ETag"]
 
     @ciphers.merge!(download_server_ciphers)
+    @ciphers["ETag"] = server_etag
     save_local_ciphers(@ciphers)
   end
 
-  def get_local_file_size
-    File.size(CIPHER_YAML_PATH)
-  end
-
-  def get_server_file_size 
+  def get_server_etag
     uri = URI.parse(CIPHER_YAML_URL)
     http = make_http(uri)
     head = Net::HTTP::Head.new(uri.request_uri)
-    http.request(head)["Content-Length"].to_i
+    etag = http.request(head)["ETag"]
+    etag.gsub('"', '')  # remove leading and trailing quotes
   end
 
   def make_http(uri)

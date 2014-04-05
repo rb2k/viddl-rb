@@ -1,14 +1,19 @@
 
-$LOAD_PATH << File.join(File.dirname(__FILE__), '../../..', 'plugins/youtube')
+YOUTUBE_PLUGIN_PATH = File.join(File.dirname(__FILE__), '../../..', 'plugins/youtube')
 
 require 'minitest/autorun'
-require 'decipherer.rb'
-require 'cipher_loader.rb'
+require 'yaml'
+require_relative File.join(YOUTUBE_PLUGIN_PATH, 'decipherer.rb')
 
 class DeciphererTest < Minitest::Test
 
+  def (STUB_CIPHER_LOADER = Object.new).load_ciphers
+    path = File.join(YOUTUBE_PLUGIN_PATH, 'ciphers.yml')
+    YAML.load_file(path)
+  end
+
   def setup
-    @dc = Decipherer.new(CipherLoader.new)
+    @dc = Decipherer.new(STUB_CIPHER_LOADER)
   end
 
   def test_raises_UnkownCipherVersionError_if_cipher_version_not_recognized
