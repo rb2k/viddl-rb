@@ -3,3 +3,4 @@
 *.gem
 test.rb
 Gemfile.lock
+plugins/youtube/ciphers.yml
