@@ -11,8 +11,13 @@ class VideoResolver
   end
 
   def get_video(url)
-    @json = load_json(url)
-    Video.new(get_title, parse_stream_map(get_stream_map))
+    @json         = load_json(url)
+    decipher_data = @decipherer.get_decipher_data(get_html5player_version)
+    url_data      = parse_stream_map(get_stream_map)
+
+    decipher_signatures!(url_data, decipher_data)
+
+    Video.new(get_title, url_data, decipher_data)
   end
 
   private
@@ -47,10 +52,7 @@ class VideoResolver
   #
   def parse_stream_map(stream_map)
     entries = stream_map.split(",")
-
-    parsed = entries.map { |entry| parse_stream_map_entry(entry) }
-    parsed.each { |entry| apply_signature!(entry) if entry[:sig] }
-    parsed
+    entries.map { |entry| parse_stream_map_entry(entry) }
   end
 
   def parse_stream_map_entry(entry)
@@ -65,7 +67,7 @@ class VideoResolver
   end
 
   # The signature key can be either "sig" or "s".
-  # Very rarely there is no "s" or "sig" paramater. In this case the signature is already
+  # Very rarely there is no "s" or "sig" parameter. In this case the signature is already
   # applied and the the video can be downloaded directly.
   def fetch_signature(params)
     sig = params.fetch("sig", nil) || params.fetch("s", nil)
@@ -79,32 +81,45 @@ class VideoResolver
     text
   end
 
-  def apply_signature!(entry)
-    sig = get_deciphered_sig(entry[:sig])
-    entry[:url] << "&#{SIGNATURE_URL_PARAMETER}=#{sig}"
-    entry.delete(:sig)
+  def decipher_signatures!(url_data, decipher_data)
+    url_data.each do |entry|
+      next unless entry[:sig]
+
+      sig = @decipherer.decipher_with_operations(entry[:sig], decipher_data[:operations])
+      entry[:url] << "&#{SIGNATURE_URL_PARAMETER}=#{sig}"
+      entry.delete(:sig)
+    end
   end
 
-  def get_deciphered_sig(sig)
-    return sig if sig.length == CORRECT_SIGNATURE_LENGTH
-    @decipherer.decipher_with_version(sig, get_html5player_version)
-  end
 
   class Video
     attr_reader :title
 
-    def initialize(title, itags_urls)
+    def initialize(title, url_data, decipher_data)
       @title = title
-      @itags_urls = itags_urls
+      @url_data = url_data
+      @decipher_data = decipher_data
     end
 
     def available_itags
-      @itags_urls.map { |iu| iu[:itag] }
+      @url_data.map { |entry| entry[:itag] }
     end
 
     def get_download_url(itag)
-      itag_url = @itags_urls.find { |iu| iu[:itag] == itag }
-      itag_url[:url] if itag_url
+      entry = @url_data.find { |entry| entry[:itag] == itag }
+      entry[:url] if entry
+    end
+
+    def signature_guess?
+      @decipher_data[:guess?]
+    end
+
+    def cipher_operations
+      @decipher_data[:operations]
+    end
+
+    def cipher_version
+      @decipher_data[:version]
     end
   end
 end

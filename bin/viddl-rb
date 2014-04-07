@@ -28,14 +28,14 @@ begin
   puts "Will try to extract audio: #{params[:extract_audio] == true}."
   puts "Analyzing URL: #{params[:url]}"
 
-  app = Driver.new(params)   
-  app.start                  # starts the download process
+  driver = Driver.new(params)   
+  driver.start                  # starts the download process
 
 rescue OptionParser::ParseError, ViddlRb::RequirementError => e
   puts "Error: #{e.message}"
   exit(1)
 
-rescue StandardError => e
+rescue => e
   puts "Error: #{e.message}"
   puts "\nBacktrace:"
   puts e.backtrace

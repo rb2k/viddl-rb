@@ -1,22 +1,36 @@
 
 class Decipherer
 
-  class UnknownCipherVersionError < StandardError; end 
   class UnknownCipherOperationError < StandardError; end
+
+  class UnknownCipherVersionError < StandardError
+
+    attr_reader :cipher_version
+
+    def initialize(cipher_version)
+      super("Unknown cipher version: #{cipher_version}")
+      @cipher_version = cipher_version
+    end
+  end
 
   def initialize(loader)
     @ciphers = loader.load_ciphers
   end
 
   def decipher_with_version(cipher, cipher_version)
-    operations = @ciphers[cipher_version] 
-    raise UnknownCipherVersionError.new("Unknown cipher version: #{cipher_version}") unless operations
+    ops = get_operations(cipher_version)
+    decipher_with_operations(cipher, ops)
+  end
 
-    decipher_with_operations(cipher, operations.split)
+  def get_operations(cipher_version)
+    operations = @ciphers[cipher_version] 
+    raise UnknownCipherVersionError.new(cipher_version) unless operations
+    operations.split
   end
 
   def decipher_with_operations(cipher, operations)
     cipher = cipher.dup
+    operations = operations.split if operations.is_a?(String)
 
     operations.each do |op|
       cipher = apply_operation(cipher, op)

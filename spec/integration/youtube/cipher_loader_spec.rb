@@ -14,9 +14,11 @@ class CipherLoaderTest < Minitest::Test
   end
 
   def test_cipher_loader_adds_new_ciphers_to_the_yaml_file_if_available
-    # Load the ciphers and delete the five last keys.
     ciphers = load_ciphers
+
+    # Delete the last five ciphers and change the ETag
     ciphers.keys[-5, 5].each { |key| ciphers.delete(key) }
+    ciphers["ETag"] = "123"
 
     # Save the current size of ciphers and write the new version to the file.
     size_before = ciphers.size

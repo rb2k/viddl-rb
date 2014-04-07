@@ -2,12 +2,13 @@ require 'rubygems'
 require 'bundler/setup'
 require 'rake/testtask'
 
-ALL_INTEGRATION = FileList["spec/integration/*.rb", "spec/integration/*/*.rb"]
-ALL_UNIT        = FileList["spec/unit/*/*.rb"]
+SKIPPED_INTEGRATION = FileList["spec/integration/youtube/cipher_guesser_spec.rb"]
+ALL_INTEGRATION     = FileList["spec/integration/*.rb", "spec/integration/*/*.rb"] - SKIPPED_INTEGRATION
+ALL_UNIT            = FileList["spec/unit/*.rb", "spec/unit/*/*.rb"]
 
-task :default => [:all]
+task :default => [:test_all]
 
-Rake::TestTask.new(:all) do |t|
+Rake::TestTask.new(:test_all) do |t|
   t.test_files =  ALL_INTEGRATION + ALL_UNIT
 end
 
@@ -33,4 +34,12 @@ end
 
 Rake::TestTask.new(:test_cipher_loader) do |t|
   t.test_files = FileList["spec/integration/youtube/cipher_loader_spec.rb"]
+end
+
+Rake::TestTask.new(:test_cipher_guesser) do |t|
+  t.test_files = FileList["spec/unit/youtube/cipher_guesser_spec.rb"]
+end
+
+Rake::TestTask.new(:test_decipherer) do |t|
+  t.test_files = FileList["spec/unit/youtube/decipherer_spec.rb"]
 end
