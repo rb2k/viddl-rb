@@ -16,15 +16,15 @@ Download a video:
 
 Viddl-rb supports the following command line options:
 ```
--e, --extract-audio              Save video audio to file
--a, --abort-on-failure           Abort download queue if one of the videos fail to download
--u, --url-only                   Prints url without downloading
--t, --title-only                 Prints title without downloading
+-e, --extract-audio              Extract the audio track of the download to a separate file
+-a, --abort-on-failure           Abort if one of the videos in a list fails to download
+-u, --url-only                   Just display the download url without downloading the file.
+-t, --title-only                 Just display the title without downloading the file.
 -f, --filter REGEX               Filters a video playlist according to the regex (Youtube only right now)
 -s, --save-dir DIRECTORY         Specifies the directory where videos should be saved
--d, --downloader TOOL            Specifies the tool to download with. Supports 'wget', 'curl' and 'net-http'
--q, --quality QUALITY            Specifies the video format and resolution in the following way: width:height:res (e.g. 1280:720:mp4)
-                                 The width, height and resolution may be omitted with a *.
+-d, --downloader TOOL            Specifies the tool to download with. Supports 'wget', 'curl', 'aria2c' and 'net-http'
+-q, --quality QUALITY            Specifies the video format and resolution in the following way: width:height:format (e.g. 1280:720:mp4)
+                                 The width, height and format may be omitted with a *.
                                  For example, to match any quality with a height of 720 pixels in any format specify --quality *:720:*
 -h, --help                       Displays the help screen
 ```
