@@ -24,6 +24,12 @@ class URLExtractionTest < Minitest::Test
     assert_equal $?, 0
     can_download_test(result)
   end
+
+  def test_youtube_vevo
+    result = `ruby bin/viddl-rb https://www.youtube.com/watch?v=y6Sxv-sUYtM --url-only`
+    assert_equal $?, 0
+    can_download_test(result)
+  end
   
   def test_arte_plus_seven
     response = RestClient.get('http://www.arte.tv/guide/de/plus7.json?regions=default%2CEUR_DE_FR%2CDE_FR%2CSAT%2CALL').to_str    
