@@ -36,7 +36,7 @@ module ViddlRb
     end
 
     def self.jruby?
-      ENV["RUBY_VERSION"].downcase.include?("jruby")
+      ENV["RUBY_VERSION"] != nil && ENV["RUBY_VERSION"].downcase.include?("jruby")
     end
 
     def self.make_shellsafe_path(path)
