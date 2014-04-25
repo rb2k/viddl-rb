@@ -1,28 +1,36 @@
 require 'open-uri'
 require 'json'
 
-class Soundcloud < PluginBase
+class Bandcamp < PluginBase
+  
   # this will be called by the main app to check whether this plugin is responsible for the url passed
   def self.matches_provider?(url)
-    url.include?("soundcloud.com")
+    url.include?("bandcamp.com")
   end
 
 
   # return the url for original video file and title
   def self.get_urls_and_filenames(url, options = {})
+    # locate the js object with all the tracks data
     url_and_files = []
     doc           = Nokogiri::HTML(open(get_http_url(url)))
+    js            = doc.at("script:eq(9)").text
+    match         = js[/trackinfo \: (\[\{.*\"\}\]),/, 1]
+    
+    # parse the js object
+    JSON.parse(match).each do |track_data|
+      track_url   = ''
 
-    # locate the controller script that contains all the tracks data
-    # this will work for either artist's or track's pages
-    doc.css('#main-content-inner .container + script').each do |container|
-      match       = container.text.to_s.match(/\((\{.*\})\)/).to_a
-      track_data  = JSON.parse(match[1])
+      # hopefully the last is the best
+      track_data['file'].each do |key, file|
+        track_url = file
+      end
       
-      file_url    = track_data['streamUrl']
-      file_name   = transliterate(track_data['title'].to_s) + '.mp3'
-
-      url_and_files << {url: file_url, name: file_name}
+      # create a good mp3 name
+      track_name  = transliterate(track_data['title']) + '.mp3'
+      
+      # add to the response
+      url_and_files << {url: track_url, name: track_name}
     end
 
     url_and_files
@@ -49,7 +57,6 @@ class Soundcloud < PluginBase
 
     str
   end
-
 
   def self.get_http_url(url)
     url.sub(/https?:\/\//, "http:\/\/")
