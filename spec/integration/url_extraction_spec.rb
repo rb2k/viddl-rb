@@ -6,6 +6,7 @@ class URLExtractionTest < Minitest::Test
   def setup
   end
 
+
   def http_code_grabber(url, options = {})
     user_agent = options[:user_agent] || "Wget/1.8.1"
     http_method = options[:method] || :head
@@ -18,7 +19,7 @@ class URLExtractionTest < Minitest::Test
     http_code = result.scan(/HTTP\/\d\.\d\s+(\d+)/).flatten.last
     http_code.to_i rescue 0  # if no match, return 0
   end
-    
+
   def test_youtube
     result = `ruby bin/viddl-rb http://www.youtube.com/watch?v=CFw6s0TN3hY --url-only`
     assert_equal $?, 0
@@ -87,6 +88,12 @@ class URLExtractionTest < Minitest::Test
     result = `ruby bin/viddl-rb http://blip.tv/red-vs-blue/red-vs-blue-episode-11-5526271 --url-only`
     assert_equal $?, 0
     can_download_test(result)
+  end
+
+  def test_bandcamp
+    result = `ruby bin/viddl-rb http://fontarabie.bandcamp.com/track/cosmogonie --url-only`
+    assert_equal $?, 0
+    can_download_test(result) { |url_output| http_code_grabber(CGI::unescape(url_output), {:method => :get}) }
   end
 
   # NOTE: The Metacafe tests are skipped because plugin is currently broken.
