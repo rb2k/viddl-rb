@@ -6,7 +6,7 @@ require 'yaml'
 
 class CipherIO
 
-  CIPHER_YAML_URL = "https://raw.github.com/rb2k/viddl-rb/master/plugins/youtube/ciphers.yml"
+  CIPHER_YAML_URL = "https://raw.githubusercontent.com/rb2k/viddl-rb/master/plugins/youtube/ciphers.yml"
   CIPHER_YAML_PATH = File.join(ViddlRb::UtilityHelper.base_path, "plugins/youtube/ciphers.yml")
 
   def initialize
