@@ -34,7 +34,7 @@ class URLExtractionTest < Minitest::Test
   
   def test_arte_plus_seven
     response = RestClient.get('http://www.arte.tv/guide/de/plus7.json?regions=default%2CEUR_DE_FR%2CDE_FR%2CSAT%2CALL').to_str    
-    test_url = "http://www.arte.tv/" + MultiJson.load(response)['videos'][0]['url']
+    test_url = "http://www.arte.tv" + MultiJson.load(response)['videos'][0]['url']
     puts "Running test using URL: #{test_url}"
     result = `ruby bin/viddl-rb #{test_url} --url-only`
     assert_equal $?, 0
