@@ -26,8 +26,8 @@ module ViddlRb
   #set the default PluginBase io object to a StringIO instance.
   #this will suppress any standard output from the plugins.
   self.io = StringIO.new
-  
-  #returns an array of hashes containing the download url(s) and filenames(s) 
+
+  #returns an array of hashes containing the download url(s) and filenames(s)
   #for the specified video url.
   #if the url does not match any plugin, return nil and if a plugin
   #throws an error, throw PluginError.
@@ -36,7 +36,7 @@ module ViddlRb
   def self.get_urls_names(url)
     plugin = PluginBase.registered_plugins.find { |p| p.matches_provider?(url) }
 
-    if plugin 
+    if plugin
       begin
         #we'll end up with an array of hashes with they keys :url and :name
         urls_filenames = plugin.get_urls_and_filenames(url)
