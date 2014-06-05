@@ -8,7 +8,7 @@ class Instagram < PluginBase
   def self.get_urls_and_filenames(url, options = {})
     video_page = open(url).read
 
-    download_url = video_page[/video_url":".*.mp4/][/http.*.mp4/].gsub('\/', '/')
+    download_url = video_page.scan(/video_url":"(http.*.mp4)/).flatten.first.gsub('\/', '/')
 
     [{:url => download_url, :name => "#{Time.now.to_i}.mp4"}]
   end
