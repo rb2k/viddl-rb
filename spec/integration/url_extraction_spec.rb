@@ -102,6 +102,12 @@ class URLExtractionTest < Minitest::Test
     can_download_test(result) { |url_output| http_code_grabber(CGI::unescape(url_output), {:method => :get}) }
   end
 
+  def test_facebook
+    result = `ruby bin/viddl-rb "https://www.facebook.com/photo.php?v=101503003357454&set=vb.310080259100701&type=2&theater" --url-only`
+    assert_equal $?, 0
+    can_download_test(result) { |url_output| http_code_grabber(CGI::unescape(url_output), {:method => :get}) }
+  end
+
   # NOTE: The Metacafe tests are skipped because plugin is currently broken.
 
   def test_metacafe
@@ -131,7 +137,8 @@ class URLExtractionTest < Minitest::Test
 
   def can_download_test(result, &grabber)
     url_output = result.split("\n").last
-    assert_includes(CGI.unescape(url_output), 'http://')
+    # Assert url includes http:// or https://
+    assert((CGI.unescape(url_output) =~ /https?:\/\//) != nil)
     code_grabber = grabber || proc { |url_output| http_code_grabber(url_output) }
     tries = 0
     http_response_code = 0
