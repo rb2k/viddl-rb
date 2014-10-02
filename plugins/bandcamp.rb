@@ -19,13 +19,12 @@ class Bandcamp < PluginBase
 
     # parse the js object
     JSON.parse(match).each do |track_data|
-      track_url   = ''
 
       # hopefully the last is the best
-      track_url  = track_data["file"].values.last
+      track_url = track_data["file"].values.last
       
       # create a good mp3 name
-      track_name  = self.make_filename_safe(track_data['title']) + '.mp3'
+      track_name = self.make_filename_safe(track_data['title']) + '.mp3'
       
       # add to the response
       url_and_files << {url: track_url, name: track_name}

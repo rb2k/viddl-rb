@@ -128,7 +128,10 @@ __Co Maintainers:__
 * [farleyknight](https://github.com/farleyknight): Various small fixes and improvements
 
 __Contributors:__
+* [albertoboni](https://github.com/albertoboni) bandcamp plugin, soundcloud improvements
 * [divout](https://github.com/divout) aka Ivan K: blip.tv plugin, bugfixes
+* [mbajur](https://github.com/mbajur) aka Mike Bajur: The instagram plugin
 * Sniper: bugfixes
 * [Serabe](https://github.com/Serabe) aka Sergio Arbeo: packaging viddl as a binary
 * [laserlemon](https://github.com/laserlemon): Adding gemnasium images to readme
+

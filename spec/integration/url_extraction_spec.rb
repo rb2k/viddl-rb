@@ -31,10 +31,10 @@ class URLExtractionTest < Minitest::Test
     assert_equal $?, 0
     can_download_test(result)
   end
-  
+
   def test_arte_plus_seven
-    response = RestClient.get('http://www.arte.tv/guide/de/plus7.json?regions=default%2CEUR_DE_FR%2CDE_FR%2CSAT%2CALL').to_str    
-    test_url = "http://www.arte.tv/" + MultiJson.load(response)['videos'][0]['url']
+    response = RestClient.get('http://www.arte.tv/guide/de/plus7.json?regions=default%2CEUR_DE_FR%2CDE_FR%2CSAT%2CALL').to_str
+    test_url = "http://www.arte.tv" + MultiJson.load(response)['videos'][0]['url']
     puts "Running test using URL: #{test_url}"
     result = `ruby bin/viddl-rb #{test_url} --url-only`
     assert_equal $?, 0
@@ -48,7 +48,7 @@ class URLExtractionTest < Minitest::Test
     can_download_test(result)
     assert result.include?("itag=18")
 
-    result2 = `ruby bin/viddl-rb http://www.youtube.com/watch?v=Zj3tYO9co44 --url-only --quality *:720:*` 
+    result2 = `ruby bin/viddl-rb http://www.youtube.com/watch?v=Zj3tYO9co44 --url-only --quality *:720:*`
     assert_equal $?, 0
     can_download_test(result2)
     assert result2.include?("itag=22")
@@ -70,7 +70,7 @@ class URLExtractionTest < Minitest::Test
     result = `ruby bin/viddl-rb http://vimeo.com/38372260 --url-only`
     assert_equal $?, 0
     can_download_test(result) {|url_output| curl_code_grabber(url_output) }
-  end  
+  end
 
   def test_soundcloud
     result = `ruby bin/viddl-rb http://soundcloud.com/rjchevalier/remembering-mavi-koy-wip --url-only`
@@ -92,6 +92,12 @@ class URLExtractionTest < Minitest::Test
 
   def test_bandcamp
     result = `ruby bin/viddl-rb http://fontarabie.bandcamp.com/track/cosmogonie --url-only`
+    assert_equal $?, 0
+    can_download_test(result) { |url_output| http_code_grabber(CGI::unescape(url_output), {:method => :get}) }
+  end
+
+  def test_instagram
+    result = `ruby bin/viddl-rb http://instagram.com/p/jKLFyKslJ-/ --url-only`
     assert_equal $?, 0
     can_download_test(result) { |url_output| http_code_grabber(CGI::unescape(url_output), {:method => :get}) }
   end
@@ -120,13 +126,13 @@ class URLExtractionTest < Minitest::Test
     assert_equal $?, 0
     can_download_test(result) { |url_output| http_code_grabber(CGI::unescape(url_output)) }
   end
-  
+
   private
-  
+
   def can_download_test(result, &grabber)
     url_output = result.split("\n").last
     assert_includes(CGI.unescape(url_output), 'http://')
-    code_grabber = grabber || proc { |url_output| http_code_grabber(url_output) }    
+    code_grabber = grabber || proc { |url_output| http_code_grabber(url_output) }
     tries = 0
     http_response_code = 0
 
@@ -139,10 +145,10 @@ class URLExtractionTest < Minitest::Test
       else
         puts "Retrying HTTP Call because of: #{e.message}"
         sleep 5
-        retry  
+        retry
       end
     end
-    
+
     assert_equal(200, http_response_code)
   end
 end
