@@ -75,13 +75,7 @@ class URLExtractionTest < Minitest::Test
   def test_soundcloud
     result = `ruby bin/viddl-rb http://soundcloud.com/rjchevalier/remembering-mavi-koy-wip --url-only`
     assert_equal $?, 0
-    can_download_test(result) {|url_output| curl_code_grabber(url_output, {:method => :get}) }
-  end
-
-  def test_soundcloud_https
-    result = `ruby bin/viddl-rb https://soundcloud.com/rjchevalier/remembering-mavi-koy-wip --url-only`
-    assert_equal $?, 0
-    can_download_test(result) {|url_output| curl_code_grabber(url_output, {:method => :get}) }
+    can_download_test(result, false) {|url_output| curl_code_grabber(url_output, {:method => :get}) }
   end
 
   def test_blip_tv
@@ -129,9 +123,9 @@ class URLExtractionTest < Minitest::Test
 
   private
 
-  def can_download_test(result, &grabber)
+  def can_download_test(result, require_ssl = true, &grabber)
     url_output = result.split("\n").last
-    assert_includes(CGI.unescape(url_output), 'http://')
+    assert_includes(CGI.unescape(url_output), 'http://') if require_ssl
     code_grabber = grabber || proc { |url_output| http_code_grabber(url_output) }
     tries = 0
     http_response_code = 0
