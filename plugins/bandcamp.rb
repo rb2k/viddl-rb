@@ -15,7 +15,7 @@ class Bandcamp < PluginBase
     url_and_files = []
     doc           = Nokogiri::HTML(open(get_http_url(url)))
     js            = doc.at("script:contains('var TralbumData')").text
-    match         = js[/trackinfo.*(\[.*\])/,1]
+    match         = /trackinfo\s?:\s?([\s\S]*?\}\])/.match(js)[1]
 
     # parse the js object
     JSON.parse(match).each do |track_data|
