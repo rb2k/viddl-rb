@@ -15,14 +15,13 @@ class Bandcamp < PluginBase
     url_and_files = []
     doc           = Nokogiri::HTML(open(get_http_url(url)))
     js            = doc.at("script:contains('var TralbumData')").text
-    match         = js[/trackinfo.*(\[.*\])/,1]
+    match         = /trackinfo\s?:\s?([\s\S]*?\}\])/.match(js)[1]
 
     # parse the js object
     JSON.parse(match).each do |track_data|
-
       # hopefully the last is the best
       track_url = track_data["file"].values.last
-      
+
       # create a good mp3 name
       track_name = self.make_filename_safe(track_data['title']) + '.mp3'
       
