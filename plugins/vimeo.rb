@@ -10,7 +10,7 @@ class Vimeo < PluginBase
     vimeo_id = url[/\d{7,}/]
 
     video_url = "http://player.vimeo.com/video/#{vimeo_id}"
-    video_page = open(video_url).read
+    video_page = RestClient.get(video_url)
 
     info_json = find_player_info(video_page)
     unless info_json

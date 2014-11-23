@@ -1,5 +1,4 @@
-
-require 'open-uri'
+require 'rest-client'
 require 'net/http'
 require 'openssl'
 require 'yaml'
@@ -58,7 +57,7 @@ class CipherIO
   end
 
   def download_server_ciphers
-    YAML.load(open(CIPHER_YAML_URL).read)
+    YAML.load(RestClient.get(CIPHER_YAML_URL))
   end
 
   def save_local_ciphers(ciphers)

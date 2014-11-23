@@ -1,4 +1,3 @@
-
 class VideoResolver
 
   class VideoRemovedError < StandardError; end
@@ -23,7 +22,7 @@ class VideoResolver
   private
 
   def load_json(url)
-    html = open(url).read
+    html = RestClient.get(url)
     json_data = html[/ytplayer\.config\s*=\s*(\{.+?\});/m, 1] 
     MultiJson.load(json_data)
   end

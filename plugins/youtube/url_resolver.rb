@@ -42,14 +42,14 @@ class UrlResolver
   def get_video_urls(feed_url)
     Youtube.notify "Retrieving videos..."
     urls_titles = {}
-    result_feed = Nokogiri::XML(open(feed_url))
+    result_feed = Nokogiri::XML(RestClient.get(feed_url))
     urls_titles.merge!(grab_urls_and_titles(result_feed))
 
     #as long as the feed has a next link we follow it and add the resulting video urls
     loop do
       next_link = result_feed.search("//feed/link[@rel='next']").first
       break if next_link.nil?
-      result_feed = Nokogiri::HTML(open(next_link["href"]))
+      result_feed = Nokogiri::HTML(RestClient.get(next_link["href"]))
       urls_titles.merge!(grab_urls_and_titles(result_feed))
     end
 

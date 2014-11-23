@@ -6,7 +6,7 @@ class Instagram < PluginBase
   end
 
   def self.get_urls_and_filenames(url, options = {})
-    video_page = open(url).read
+    video_page = RestClient.get(url)
 
     download_url = video_page[/meta property="og:video" content="(.*\.mp4)/, 1]
     # Fallback

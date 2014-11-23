@@ -10,7 +10,7 @@ class Veoh < PluginBase
   def self.get_urls_and_filenames(url, options = {})
     veoh_id = url[/\/watch\/([\w\d]+)/, 1]
     info_url = "#{VEOH_API_BASE}findByPermalink?permalink=#{veoh_id}"
-    info_doc = Nokogiri::XML(open(info_url))
+    info_doc = Nokogiri::XML(RestClient.get(info_url))
 
     download_url = get_download_url(info_doc)
     file_name = get_file_name(info_doc, download_url)

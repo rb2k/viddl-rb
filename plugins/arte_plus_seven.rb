@@ -11,7 +11,7 @@ class ArtePlusSeven < PluginBase
     id           = self.to_id(url)
     country      = self.extract_country(url)
     json_url     = "http://arte.tv/papi/tvguide/videos/stream/player/#{country}/#{id}_PLUS7-#{country.upcase}/ALL/ALL.json"
-    doc          = MultiJson.load(open(json_url))['videoJsonPlayer']
+    doc          = MultiJson.load(RestClient.get(json_url))['videoJsonPlayer']
     # This can be improved a lot,
     # check the results on http://floriancrouzat.net/arte/
     first_http_key = doc['VSR'].keys.find{|k| k.start_with?('HTTP')}

@@ -1,4 +1,4 @@
-require 'open-uri'
+require 'rest-client'
 
 class CipherGuesser
   class CipherGuessError < StandardError; end
@@ -15,7 +15,7 @@ class CipherGuesser
   private
 
   def download_player_javascript(cipher_version)
-    open(JS_URL % cipher_version).read
+    RestClient.get(JS_URL % cipher_version)
   end
 
   def extract_decipher_function_body(js)

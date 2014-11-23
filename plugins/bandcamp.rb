@@ -1,4 +1,4 @@
-require 'open-uri'
+require 'rest-client'
 require 'json'
 
 class Bandcamp < PluginBase
@@ -13,7 +13,7 @@ class Bandcamp < PluginBase
   def self.get_urls_and_filenames(url, options = {})
     # locate the js object with all the tracks data
     url_and_files = []
-    doc           = Nokogiri::HTML(open(get_http_url(url)))
+    doc           = Nokogiri::HTML(RestClient.get(get_http_url(url)))
     js            = doc.at("script:contains('var TralbumData')").text
     match         = /trackinfo\s?:\s?([\s\S]*?\}\])/.match(js)[1]
 

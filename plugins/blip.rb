@@ -8,7 +8,7 @@ class Blip < PluginBase
   def self.get_urls_and_filenames(url, options = {})
     id           = self.to_id(url)
     xml_url      = "http://blip.tv/rss/#{id}"
-    doc          = Nokogiri::XML(open(xml_url))
+    doc          = Nokogiri::XML(RestClient.get(xml_url))
     user         = doc.at("//channel/item/blip:user").inner_text
     title        = PluginBase.make_filename_safe(doc.at("//channel/item/title").inner_text)
     download_url = doc.at("//channel/item/media:group/media:content").attributes["url"].value

@@ -13,8 +13,9 @@ class Soundcloud < PluginBase
   def self.get_urls_and_filenames(url, options = {})
     url_and_files = []
 
-    doc        = Nokogiri::HTML(open(get_http_url(url)))
-    js         = doc.at("script:contains('_scPreload')").text
+    client = RestClient::Resource.new(get_http_url(url), :verify_ssl => OpenSSL::SSL::VERIFY_NONE)
+    doc = Nokogiri::HTML(client.get)
+    js = doc.at("script:contains('_scPreload')").text
 
     track_data = JSON.parse js[/_scPreload\s*?=\s*?([\s\S]*?)$/,1].to_s
 
