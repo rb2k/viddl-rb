@@ -125,7 +125,8 @@ class URLExtractionTest < Minitest::Test
 
   def can_download_test(result, assert_non_ssl = true, &grabber)
     url_output = result.split("\n").last
-    assert_includes(CGI.unescape(url_output), 'http://') if assert_non_ssl
+    expected_substring = assert_non_ssl ? 'http://' : 'https://'
+    assert_includes(CGI.unescape(url_output), expected_substring)
     code_grabber = grabber || proc { |url_output| http_code_grabber(url_output) }
     tries = 0
     http_response_code = 0
