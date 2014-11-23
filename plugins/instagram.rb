@@ -8,9 +8,18 @@ class Instagram < PluginBase
   def self.get_urls_and_filenames(url, options = {})
     video_page = open(url).read
 
-    download_url = video_page.scan(/video_url":"(http.*.mp4)/).flatten.first.gsub('\/', '/')
+    download_url = video_page[/meta property="og:video" content="(.*\.mp4)/, 1]
+    # Fallback
+    download_url ||= video_page[/"video_url":"(http[^"]+.mp4)"/, 1]
 
-    [{:url => download_url, :name => "#{Time.now.to_i}.mp4"}]
+    extracted_caption = video_page[/"caption":"([^"]+)"/, 1]
+    if extracted_caption
+      caption = PluginBase.make_filename_safe(extracted_caption)
+    else
+      caption = Time.now.to_i
+    end
+
+    [{:url => download_url, :name => "#{caption}.mp4"}]
   end
 end
 
