@@ -94,10 +94,16 @@ class ParameterParser
       end
     end
 
-    optparse.parse!(args)                           # removes all options from args
-    print_help_and_exit(optparse) if args.empty?    # exit if no video url
-    url = args.first                                # the url is the only element left
-    validate_url!(url)                              # raise exception if invalid url
+    # removes all options from args
+    optparse.parse!(args)
+    # exit if no video url
+    print_help_and_exit(optparse) if args.empty?
+    # the url is the only element left
+    url = args.first
+    # Seems like some users like to pass non protocol prefixed URIs
+    url = "http://#{url}" unless url.start_with?('http')
+    # raise exception if invalid url
+    validate_url!(url)
     options[:url] = url
     options
   end
