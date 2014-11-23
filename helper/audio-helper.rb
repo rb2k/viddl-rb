@@ -6,9 +6,11 @@ module ViddlRb
 
     def self.extract(file_name, save_dir)
       # capture stderr because ffmpeg expects an output param and will error out
+      
+      ffmpeg_app_name = ['ffmpeg', 'avconv'].find {|name| ViddlRb::UtilityHelper.os_has?(name)}
       puts "Gathering information about the downloaded file."
-      escaped_input_file_path = UtilityHelper.make_shellsafe_path(File.join(save_dir, file_name))
-      file_info = Open3.popen3("ffmpeg -i #{escaped_input_file_path}") {|stdin, stdout, stderr, wait_thr| stderr.read }
+      escaped_input_file_path = UtilityHelper.make_shellsafe_path(File.join(save_dir, file_name))  
+      file_info = Open3.popen3("#{ffmpeg_app_name} -i #{escaped_input_file_path}") {|stdin, stdout, stderr, wait_thr| stderr.read }
       puts "Done gathering information about the downloaded file."
 
       if !file_info.to_s.empty?
@@ -40,7 +42,7 @@ module ViddlRb
           puts "Audio file seems to exist already, removing it before extraction."
           File.delete(output_file_path)
         end
-        Open3.popen3("ffmpeg -i #{escaped_input_file_path} -vn -acodec copy #{escaped_output_file_path}") { |stdin, stdout, stderr, wait_thr| stdout.read }
+        Open3.popen3("#{ffmpeg_app_name} -i #{escaped_input_file_path} -vn -acodec copy #{escaped_output_file_path}") { |stdin, stdout, stderr, wait_thr| stdout.read }
         puts "Done extracting audio to #{output_file_path}"
       else
         raise "ERROR: Error while checking audio track of #{file_path}"

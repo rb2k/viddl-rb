@@ -39,10 +39,10 @@ class ParameterParser
       end
 
       opts.on("-e", "--extract-audio", "Save video audio to file") do
-        if ViddlRb::UtilityHelper.os_has?("ffmpeg")
+        if ['ffmpeg', 'avconf'].any?{ |name| ViddlRb::UtilityHelper.os_has?(name) }
           options[:extract_audio] = true
         else
-          raise OptionParser::ParseError.new("to extract audio you need to have ffmpeg on your PATH")
+          raise OptionParser::ParseError.new("to extract audio you need to have ffmpeg/avconf on your PATH")
         end
       end
 
