@@ -5,21 +5,31 @@
 class Driver
 
   def initialize(param_hash)
+    @urls = param_hash[:urls]
+    param_hash.delete :urls
     @params = param_hash
     @downloader = Downloader.new
   end
 
   #starts the downloading process or print just the urls or names.
   def start
-    queue = get_download_queue
+    @urls.each do |url|
+      @params[:url] = url
+      puts "\nAnalyzing URL: #{url}"
+      begin
+        queue = get_download_queue
 
-    if @params[:url_only]
-      queue.each { |url_name| puts url_name[:url] }
-    elsif @params[:title_only]
-      queue.each { |url_name| puts url_name[:name] }
-    else
-      @downloader.download(queue, @params)
-    end
+        if @params[:url_only]
+          queue.each { |url_name| puts url_name[:url] }
+        elsif @params[:title_only]
+          queue.each { |url_name| puts url_name[:name] }
+        else
+          @downloader.download(queue, @params)
+        end
+      rescue => e
+        puts e.message
+      end
+   end
   end
 
   private
