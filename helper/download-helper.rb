@@ -78,7 +78,7 @@ module ViddlRb
 
     def self.get_default_tool
       tool = TOOLS_PRIORITY_LIST.find { |tool| ViddlRb::UtilityHelper.os_has?(tool.name) }
-      tool || :net_http
+      tool || 'net-http'.to_sym
     end
 
     def self.require_progressbar
