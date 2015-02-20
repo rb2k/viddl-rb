@@ -8,7 +8,7 @@ class ParameterParser
   DEFAULT_SAVE_DIR = "."
 
   #returns a hash with the parameters in it:
-  # :url              => the video url
+  # :urls             => array of the video urls
   # :extract_audio    => should attempt to extract audio? (true/false)
   # :skip_failed      => should skip failed downloads? (true/false)
   # :url_only         => do not download, only print the urls to stdout
@@ -98,13 +98,8 @@ class ParameterParser
     optparse.parse!(args)
     # exit if no video url
     print_help_and_exit(optparse) if args.empty?
-    # the url is the only element left
-    url = args.first
-    # Seems like some users like to pass non protocol prefixed URIs
-    url = "http://#{url}" unless url.start_with?('http')
-    # raise exception if invalid url
-    validate_url!(url)
-    options[:url] = url
+    # remaining elements in args will be urls
+    options[:urls] = validate_urls args
     options
   end
 
@@ -113,11 +108,8 @@ class ParameterParser
     exit(0)
   end
 
-  def self.validate_url!(url)
-    unless url =~ /^http/
-      raise OptionParser::InvalidArgument.new(
-          "please include 'http' with your URL e.g. http://www.youtube.com/watch?v=QH2-TGUlwu4")
-    end
+  def self.validate_urls(urls)
+    urls.map {|url| url.start_with?("http") ? url : "http://#{url}"}
   end
 
   def self.validate_quality_options!(width, height, extension, quality)
