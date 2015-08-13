@@ -1,3 +1,5 @@
+require 'shellwords'
+
 module ViddlRb
 
   class RequirementError < StandardError; end
@@ -23,14 +25,20 @@ module ViddlRb
     TOOLS_PRIORITY_LIST = [
 
       Tool.new(:aria2c) do |url, path|
+        url = Shellwords.escape(url)
+        path = Shellwords.escape(path)
         "aria2c #{url.inspect} -U 'Wget/1.8.1' -x4 -d #{File.dirname(path).inspect} -o #{File.basename(path).inspect}"
       end,
 
       Tool.new(:wget) do |url, path|
+        url = Shellwords.escape(url)
+        path = Shellwords.escape(path)
         "wget -c #{url.inspect} -O #{path.inspect}"
       end,
 
       Tool.new(:curl) do |url, path|
+        url = Shellwords.escape(url)
+        path = Shellwords.escape(path)
         "curl -A 'Wget/1.8.1' --retry 10 --retry-delay 5 --retry-max-time 4  -L #{url.inspect} -o #{path.inspect}"
       end
     ]
