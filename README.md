@@ -1,13 +1,16 @@
-NOTE:
-This project is currently unmaintained.  
+## NOTE: UNMAINTAINED
+**This project is currently unmaintained.**  
 I am afraid that I (@rb2k) am not able to keep up with the amount of changes that sites like Youtube implement on a weekly basis. Even with the support of 3rd parties, there just isn't enough time to play catch up with the latest attempts in obfuscation of the URLs
 
-For now, I'd recommend you take a look at [youtube-dl](http://rg3.github.io/youtube-dl/)
-They have over 300 contributors and might stand a chance :)
+For now, I'd recommend you take a look at [youtube-dl](http://rg3.github.io/youtube-dl/).  
+They have over 300 contributors and might stand a chance :)  
 
-Thanks to all of the contributors!
+Thanks to all of the contributors!  
 If you feel like taking over the project, shoot me a message (@rb2k on twitter)!
 
+
+
+## Original Readme
 
 __viddl-rb:__
 Initially created by Marc Seeger ([@rb2k](github.com/rb2k))
