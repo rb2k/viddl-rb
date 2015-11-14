@@ -9,7 +9,7 @@ class Vimeo < PluginBase
     #the vimeo ID consists of 7 decimal numbers or more in the URL
     vimeo_id = url[/\d{7,}/]
 
-    video_url = "http://player.vimeo.com/video/#{vimeo_id}"
+    video_url = "https://player.vimeo.com/video/#{vimeo_id}"
     video_page = RestClient.get(video_url)
 
     info_json = find_player_info(video_page)
@@ -18,20 +18,15 @@ class Vimeo < PluginBase
           "Please report this bug at github.com/rb2k/viddl-rb so it can be fixed!"
     end
     parsed = MultiJson.load(info_json)
+    files = parsed["request"]["files"]
 
-    files = parsed["request"]["files"] 
-    codecs = files["codecs"]
-
-    unless codecs.include?("h264")
-      raise CouldNotDownloadVideoError, "Unexpected codecs: #{codecs.inspect}\n" +
+    unless files.include?("progressive")
+      raise CouldNotDownloadVideoError, "Unexpected content\n" +
           "Please report this bug at github.com/rb2k/viddl-rb so it can be fixed!"
     end
 
-    h264 = files["h264"]
-    quality = ["hd", "sd"].find { |q| h264.keys.include?(q) }
-    quality = h264.keys.first if quality.nil?
-
-    download_url = h264[quality]["url"]
+    best_file = files["progressive"].select{|p| p["mime"] == "video/mp4"}.sort_by { |p| p["width"]}.last
+    download_url = best_file["url"]
     extension = download_url[/.+?(\.[\w\d]+?)\?/, 1]
     file_name = PluginBase.make_filename_safe(parsed["video"]["title"]) + extension
 
@@ -56,7 +51,7 @@ class Vimeo < PluginBase
         /uix
 
 
-    string.scan(re).flatten.compact.select{|s| s.include? "vimeocdn.com"}.first
+    string.scan(re).flatten.compact.select{|s| s.include? "vimeocdn.com"}.last
   end
 
 end
