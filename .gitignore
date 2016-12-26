@@ -1,4 +1,5 @@
 .DS_Store
+.idea
 *.swp
 *.gem
 test.rb
